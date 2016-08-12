@@ -41,6 +41,10 @@ guidata(hObject, handles);
 % UIWAIT makes eistoolbox wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+% Clear all previously used variables (to avoid garbage data from a
+% previous execution). ToDo: do this at the exit of the program
+clearvars -global *;
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = eistoolbox_OutputFcn(hObject, eventdata, handles) 
@@ -189,10 +193,12 @@ h = waitbar(0,'Performing fitting...');
         % ToDo: select the algorithm depending on the drop-down list!
         [params,zbest] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
         results(idx,:) = num2cell(params);
-        filenames(idx,1) = fnames(idx);
+        filenames(idx,1) = fnames{idx};
         waitbar(idx / length(data));
     end
 close(h);
+
+filenames
 
 disp('Info: Fitting completed successfully');
 
