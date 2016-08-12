@@ -1,26 +1,6 @@
 function varargout = eistoolbox(varargin)
-% eistoolbox MATLAB code for eistoolbox.fig
-%      eistoolbox, by itself, creates a new eistoolbox or raises the existing
-%      singleton*.
-%
-%      H = eistoolbox returns the handle to a new eistoolbox or the handle to
-%      the existing singleton*.
-%
-%      eistoolbox('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in eistoolbox.M with the given input arguments.
-%
-%      eistoolbox('Property','Value',...) creates a new eistoolbox or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before eistoolbox_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to eistoolbox_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+% eistoolbox by Juan J. Montero-Rodriguez
 
-% Edit the above text to modify the response to help eistoolbox
 
 % Last Modified by GUIDE v2.5 12-Aug-2016 14:46:50
 
@@ -172,6 +152,14 @@ function btn_fit_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_fit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+h = waitbar(0,'Performing fitting...');
+steps = 1000;
+for step = 1:steps
+    % computations take place here
+    waitbar(step / steps)
+end
+close(h) 
 
 % END OF CALLBACK: btn_fit_Callback =======================================
 
