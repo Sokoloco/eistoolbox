@@ -2,7 +2,7 @@ function varargout = eistoolbox(varargin)
 % eistoolbox by Juan J. Montero-Rodriguez
 
 
-% Last Modified by GUIDE v2.5 12-Aug-2016 14:46:50
+% Last Modified by GUIDE v2.5 12-Aug-2016 15:42:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -89,16 +89,21 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
    disp('Info: Loading input data files -please wait-');
    
     % Clear the 'data' variable, to avoid using old data already loaded
-    if exist('data','var') clear('data'); end
-
+    if exist('data','var') clearvars -global data; end
+   
+    global data;    % Variable to store the impedance data in the program
+    global fnames;  % Variable to store the filenames for excel readability
+       
     % Check if the user had selected one file (char), or more than one (cell)
     if ~iscell(fileName) % only one file was selected by the user
         fullfname = char(fullfile(filePath,fileName));  % calculate full fname
         data{1} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
+        fnames{1} = fileName;
     else % more than one file was selected by the user
         for idx=1:length(fileName)
             fullfname = char(fullfile(filePath,fileName(idx)));  % calculate full fname
             data{idx} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
+            fnames{idx} = cellstr(fileName(idx));
         end
     end
 
@@ -144,22 +149,57 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-set(hObject,'String',{'Select Algorithm...','Zfit (fminsearch)','[ToDo] Levenberg-Marquardt','[ToDo] Nelder-Mead','[ToDo] BFGS','[ToDo] Powell'});
+set(hObject,'String',{'Zfit (fminsearch)','[ToDo] Levenberg-Marquardt','[ToDo] Nelder-Mead','[ToDo] BFGS','[ToDo] Powell'});
 
 
 % CALLBACK: btn_fit_Callback ==============================================
 function btn_fit_Callback(hObject, eventdata, handles)
-% hObject    handle to btn_fit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
+% Read configuration parameters from the edit boxes -----------------------
+    %  comment: eval is required to parse the strings and get the arrays!
+circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
+initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
+indexes = [];       % empty = all input data is used (OR use custom ranges)
+fitstring = 'fitNP'; % 'fitNP' non-proportional, OR '' proportional
+LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
+UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters
+plotstr = '';   % '' for silent computation
+
+% ToDo: Check formatting of text boxes, error handling
+if isempty(circuit) disp('Error: Circuit string is empty'); end
+if isempty(initparams) fprintf('Error: Init Params string is empty'); end
+if isempty(LB) fprintf('Error: Lower Bounds string is empty'); end
+if isempty(UB) fprintf('Error: Upper Bounds string is empty'); end
+
+% initializing variables for speed optimization!
+global data;    % ToDo: Check if data variable is empty! if it is, abort fitting
+global fnames;
+
+global results;
+global filenames;
+
+results = cell(length(data{1}),length(initparams)); % preallocating for speed
+filenames = cell(length(data{1}),1);    % preallocating for speed
+
+% perform the fitting
+disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting...');
-steps = 1000;
-for step = 1:steps
-    % computations take place here
-    waitbar(step / steps)
-end
-close(h) 
+
+    for idx = 1:length(data)
+        % ToDo: select the algorithm depending on the drop-down list!
+        [params,zbest] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
+        results(idx,:) = num2cell(params);
+        filenames(idx,1) = fnames(idx);
+        waitbar(idx / length(data));
+    end
+close(h);
+
+disp('Info: Fitting completed successfully');
+
+% ToDo: plot the results, display the statistics! 
+
+
+
 
 % END OF CALLBACK: btn_fit_Callback =======================================
 
@@ -183,18 +223,18 @@ function axes2_CreateFcn(hObject, eventdata, handles)
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function edit_circuit_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_circuit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of edit_circuit as text
+%        str2double(get(hObject,'String')) returns contents of edit_circuit as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function edit_circuit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_circuit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -207,25 +247,27 @@ end
 
 % --- Executes on button press in btn_saveas.
 function btn_saveas_Callback(hObject, eventdata, handles)
-% hObject    handle to btn_saveas (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+global filenames;
+global results;
+
 [outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
+disp('Info: Saving the results -please wait-');
+outfullfname = fullfile(outPathName,outFileName);
+xlswrite(outfullfname, [filenames results]);
+disp('Info: Results saved successfully!');
 
-
-
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function edit_initparams_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_initparams (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of edit_initparams as text
+%        str2double(get(hObject,'String')) returns contents of edit_initparams as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function edit_initparams_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_initparams (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -237,18 +279,18 @@ end
 
 
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function edit_LB_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_LB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of edit_LB as text
+%        str2double(get(hObject,'String')) returns contents of edit_LB as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function edit_LB_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_LB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -260,18 +302,18 @@ end
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function edit_UB_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_UB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+% Hints: get(hObject,'String') returns contents of edit_UB as text
+%        str2double(get(hObject,'String')) returns contents of edit_UB as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function edit_UB_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_UB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
