@@ -2,15 +2,19 @@
 
 MATLAB (R) Toolbox for fitting EIS data to circuit models
 
-## eistoolbox.m
+## Instructions
 
-Run this file to start the main program!
+Run 'eistoolbox.m' to start the main program!
 
 1. Add data with the button 'Add files...'
 2. Write your circuit in the dialog (based on Zfit format)
 3. Select the fitting algorithm
 4. Hit the 'Fit' button!
 5. Save the results with the button 'Save as...'
+
+## Screenshot
+
+![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/images/main_screenshot.png)
 
 ## External libraries used in this toolbox
 
