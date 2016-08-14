@@ -54,6 +54,7 @@ function [zfitdata] = GamryRead(filename)
     % Export the data (matrix with three columns): FREQ ZREAL ZIMAG
     outdata = transpose([freq;real;imag]);
     zfitdata = outdata;
+    % csvwrite(strcat(filename,'.csv'),outdata);    % Uncomment to convert from DTA to CSV
     
 end
 
