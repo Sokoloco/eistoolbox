@@ -160,6 +160,15 @@ set(hObject,'String',{'Zfit (fminsearch)','[ToDo] Levenberg-Marquardt','[ToDo] N
 
 % CALLBACK: btn_fit_Callback ==============================================
 function btn_fit_Callback(hObject, eventdata, handles)
+global data;        % input files loaded to the program
+global fnames;      % index of the file names
+global results;     % output results obtained after the fitting
+global filenames;   % formatted output filenames to be saved
+
+if isempty(data)
+    disp('Error: there is NO input data selected yet. Add some files first!');
+    return;
+end
 
 % Read configuration parameters from the edit boxes -----------------------
     %  comment: eval is required to parse the strings and get the arrays!
@@ -178,12 +187,6 @@ if isempty(LB) fprintf('Error: Lower Bounds string is empty'); end
 if isempty(UB) fprintf('Error: Upper Bounds string is empty'); end
 
 % initializing variables for speed optimization!
-global data;    % ToDo: Check if data variable is empty! if it is, abort fitting
-global fnames;
-
-global results;
-global filenames;
-
 results = cell(length(data{1}),length(initparams)); % preallocating for speed
 filenames = cell(length(data{1}),1);    % preallocating for speed
 
@@ -259,7 +262,7 @@ global filenames;
 global results;
 
 if isempty(results) 
-    disp('Warning: there is NO output data to be saved yet. Fit some data first!');
+    disp('Error: there is NO output data to be saved yet. Fit some data first!');
     return;
 end
 
