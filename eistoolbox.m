@@ -261,9 +261,11 @@ t = uitable(f,'data',[filenames results],'ColumnWidth',{80},'ColumnName',cnames)
 
 % Adjust the size to match the table
 t.Position(3) = t.Extent(3);
-f.Position(3) = t.Extent(3) + 10;
 %t.Position(4) = t.Extent(4);
-% ToDo: plot the results, display the statistics! 
+
+% ToDo: simulate the fitted circuit, plot the results, display the statistics!
+% Calculate correlation coefficient from the plotted curves vs input curves
+% (one can make an XY plot, ideally should be linear).
 
 
 
