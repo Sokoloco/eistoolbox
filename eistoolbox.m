@@ -95,7 +95,9 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
    
     global data;    % Variable to store the impedance data in the program
     global fnames;  % Variable to store the filenames for excel readability
-       
+
+    h = waitbar(0,'Loading input data files... please wait');
+    
     % Check if the user had selected one menu_file (char), or more than one (cell)
     if ~iscell(fileName) % only one file was selected by the user
         fullfname = char(fullfile(filePath,fileName));  % calculate full fname
@@ -108,9 +110,12 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
             data{idx} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
             fnames{idx} = cellstr(fileName(idx));
             set(handles.txt_datafilecount,'string',strcat(num2str(length(fnames)),' data files loaded')); % display info in main GUI
+            waitbar(idx / length(fileName));
         end
     end
 
+    close(h);
+    
     disp('Info: Input data files succesfully loaded');
     disp('Info: Plotting Nyquist response of input data files');
     
@@ -195,7 +200,7 @@ filenames = cell(length(data{1}),1);    % preallocating for speed
 
 % perform the fitting
 disp('Info: Starting fitting process... -please wait-');
-h = waitbar(0,'Performing fitting...');
+h = waitbar(0,'Performing fitting... please wait');
 
     for idx = 1:length(data)
         % ToDo: select the algorithm depending on the drop-down list!
@@ -206,9 +211,9 @@ h = waitbar(0,'Performing fitting...');
     end
 close(h);
 
-filenames
-
 disp('Info: Fitting completed successfully');
+
+set(handles.txt_savestatus,'string','Fitting results ready, please save');
 
 % ToDo: plot the results, display the statistics! 
 
