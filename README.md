@@ -54,3 +54,18 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+## ToDo and development status
+
+[x] Read Gamry DTA files
+[x] Read CSV files in the format [FREQ,REAL,IMAG]
+[x] Fit using fminsearch (thanks to Zfit from Jean-Luc Dellis!)
+[ ] Fit using Levenberg-Marquardt
+[ ] Fit using Nelder-Mead
+[ ] Fit using BFGS
+[ ] Fit using Powell
+[ ] Simulate fitted data
+[ ] Compute correlation coefficient between source data and simulated data
+
+If you have comments or suggestions, [send me an e-mail](juan.montero@tu-harburg.de)
