@@ -2,8 +2,6 @@ function varargout = eistoolbox(varargin)
 % eistoolbox by Juan J. Montero-Rodriguez
 
 
-% Last Modified by GUIDE v2.5 12-Aug-2016 15:42:54
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -63,7 +61,7 @@ function figure1_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% CODE FOR JAVA FILE PICKER (INSTEAD OF UIGETFILE)
+% CODE FOR JAVA MENU_FILE PICKER (INSTEAD OF UIGETFILE)
 % import javax.swing.JFileChooser;
 % [jPanel,hPanel] = javacomponent(javax.swing.JPanel, [5 5 600 400], hObject);
 % jchooser = javaObjectEDT('javax.swing.JFileChooser', pwd );
@@ -77,14 +75,14 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
         % - Check extension and select the reading function accordingly
         % - GamryRead for .DTA; dlmread for .CSV; etc.
 
-    % Ask for data: Open the file dialog 'uigetfile' with Multiselect 'on'
+    % Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
     [fileName, filePath] = uigetfile( ...
         {'*.dta','Gamry Files (*.dta)'; % File type definition: Gamry
          '*.csv','[ToDo] CSV Files (*.csv)';   % File type definition: CSV
          '*.*','All Files (*.*)'}, ...
        'Select the impedance files','Multiselect','on');
 
-   % What happens if no file was selected? (i.e. cancel button)
+   % What happens if no menu_file was selected? (i.e. cancel button)
    if isequal(fileName,0)
        disp('Info: No file was selected');
        return;  % terminate the callback here
@@ -98,7 +96,7 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
     global data;    % Variable to store the impedance data in the program
     global fnames;  % Variable to store the filenames for excel readability
        
-    % Check if the user had selected one file (char), or more than one (cell)
+    % Check if the user had selected one menu_file (char), or more than one (cell)
     if ~iscell(fileName) % only one file was selected by the user
         fullfname = char(fullfile(filePath,fileName));  % calculate full fname
         data{1} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
@@ -338,3 +336,38 @@ function edit_UB_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --------------------------------------------------------------------
+function menu_file_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_file (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function circuits_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to circuits_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function menu_fitting_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_fitting (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function menu_about_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_about (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function file_adddata_Callback(hObject, eventdata, handles)
+% hObject    handle to file_adddata (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
