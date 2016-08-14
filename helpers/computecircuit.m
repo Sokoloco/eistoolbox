@@ -16,7 +16,9 @@ for i=1:2:length(element-2)
     % modify the initial circuit string to make it functionnal (when used
     % with eval)
     circuit=regexprep(circuit,element(i:i+1),['z(:,',num2str(k),')'],'once');
-end
+end % ToDo: modify this to remove the numeral (a resistor is known to have only one value, a CPE has only two... etc)
+% The idea would be to be able to write s(R,R,R,R,...) or p(R,R,R,R,...) or
+% combinations with any number of parameters, and without the numerals.
 
 z=eval(circuit);% compute the global impedance
 z=[real(z),imag(z)];% real and imaginary parts are separated to be processed
@@ -40,6 +42,8 @@ function z=E(p,f)% CPE
 z=1./(p(1)*(1i*2*pi*f).^p(2));
 end
 % sub functions for the operators parallel and series
+% ToDo: modify the following two functions with varargin, to calculate the
+% series and parallel combinations of multiple elements (not only two).
 function z=s(z1,z2) % 2 zs in series
 z=z1+z2;
 end  
@@ -51,8 +55,13 @@ end
 
 % LICENSE INFORMATION FOR THIS FILE: 'computecircuit.m' ===================
 % This file was originally part of Zfit.m
-% Here it includes modifications for better performance and usage
+% Here it includes modifications for better performance and usage.
+% Modifications by Juan J. Montero-Rodriguez as part of the "eistoolbox"
+% Date: August 14th, 2016.
 % 
+% -------------------------------------------------------------------------
+% The original license reads:
+% -------------------------------------------------------------------------
 % Copyright (c) 2005, Jean-Luc Dellis
 % All rights reserved.
 % 

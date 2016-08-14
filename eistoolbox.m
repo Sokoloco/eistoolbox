@@ -221,8 +221,8 @@ if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of ini
 if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
 
 % initializing variables for speed optimization!
-results = cell(length(data{1}),length(initparams)); % preallocating for speed
-filenames = cell(length(data{1}),1);    % preallocating for speed
+results = cell(length(data),length(initparams)); % preallocating for speed
+filenames = cell(length(data),1);    % preallocating for speed
 
 % perform the fitting
 disp('Info: Starting fitting process... -please wait-');
@@ -241,8 +241,16 @@ disp('Info: Fitting completed successfully');
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
 
-% ToDo: plot the results, display the statistics! 
+% Display a table with the fitting results in a new figure
+f = figure;
+t = uitable(f,'data',[filenames results],'ColumnWidth',{80});
+% ToDo: label the columns and rows including the following parameters in
+% the uitable command: (...'ColumnName',cnames,'RowName',rnames)
 
+% Adjust the size to match the table
+t.Position(3) = t.Extent(3);
+%t.Position(4) = t.Extent(4);
+% ToDo: plot the results, display the statistics! 
 
 
 
