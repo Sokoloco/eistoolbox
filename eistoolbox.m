@@ -232,7 +232,11 @@ h = waitbar(0,'Performing fitting... please wait');
         % ToDo: select the algorithm depending on the drop-down list!
         [params,zbest] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
         results(idx,:) = num2cell(params);
-        filenames(idx,1) = fnames{idx};
+        if size(fnames,2) == 1 % only one file
+            filenames{idx} = fnames{idx};
+        else % multiple files
+            filenames(idx,1) = fnames{idx};
+        end
         waitbar(idx / length(data));
     end
 close(h);
@@ -243,12 +247,21 @@ set(handles.txt_savestatus,'string','Fitting results ready, please save');
 
 % Display a table with the fitting results in a new figure
 f = figure;
-t = uitable(f,'data',[filenames results],'ColumnWidth',{80});
+cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
+for idx=1:length(cnames)
+    if idx==1
+        cnames{idx}='Filename';
+    else
+        cnames{idx}=strcat('Param',int2str(idx-1));
+    end
+end
+t = uitable(f,'data',[filenames results],'ColumnWidth',{80},'ColumnName',cnames);
 % ToDo: label the columns and rows including the following parameters in
 % the uitable command: (...'ColumnName',cnames,'RowName',rnames)
 
 % Adjust the size to match the table
 t.Position(3) = t.Extent(3);
+f.Position(3) = t.Extent(3) + 10;
 %t.Position(4) = t.Extent(4);
 % ToDo: plot the results, display the statistics! 
 
