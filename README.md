@@ -58,14 +58,14 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## ToDo and development status
 
-[x] Read Gamry DTA files
-[x] Read CSV files in the format [FREQ,REAL,IMAG]
-[x] Fit using fminsearch (thanks to Zfit from Jean-Luc Dellis!)
-[ ] Fit using Levenberg-Marquardt
-[ ] Fit using Nelder-Mead
-[ ] Fit using BFGS
-[ ] Fit using Powell
-[ ] Simulate fitted data
-[ ] Compute correlation coefficient between source data and simulated data
+- [x] Read Gamry DTA files
+- [x] Read CSV files in the format [FREQ,REAL,IMAG]
+- [x] Fit using fminsearch (thanks to Zfit from Jean-Luc Dellis!)
+- [ ] Fit using Levenberg-Marquardt
+- [ ] Fit using Nelder-Mead
+- [ ] Fit using BFGS
+- [ ] Fit using Powell
+- [ ] Simulate fitted data
+- [ ] Compute correlation coefficient between source data and simulated data
 
 If you have comments or suggestions, [send me an e-mail](juan.montero@tu-harburg.de)
