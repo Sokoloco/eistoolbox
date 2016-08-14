@@ -43,6 +43,8 @@ At the moment, circuits can be written according to the Zfit specification:
 
 The Zfit function is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
 
+More fitting functions will be available in the future (such as Levenberg-Marquardt, Nelder-Mead, BFGS, Powell). If you have more algorithm suggestions, let me know.
+
 ## License
 
 Copyright (C) 2016  Juan J. Montero-Rodriguez
