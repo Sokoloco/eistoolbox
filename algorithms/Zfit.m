@@ -291,57 +291,7 @@ plotz(freq,zbest,data,plotstring)
 end
 end                     % END of ZFIT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function z=computecircuit(param,circuit,freq)
-% Computes the complex impedance Z 
-% process CIRCUIT to get the elements and their numeral inside CIRCUIT
-A=circuit~='p' & circuit~='s' & circuit~='(' & circuit~=')' & circuit~=',';
-element=circuit(A);
 
-k=0;
-% for each element
-for i=1:2:length(element-2)
-    k=k+1;
-    nlp=str2num(element(i+1));% idendify its numeral
-    localparam=param(1:nlp);% get its parameter values
-    param=param(nlp+1:end);% remove them from param
-    func=[element(i),'([',num2str(localparam),']',',freq)'];% buit an functionnal string
-    z(:,k)=eval(func);% compute its impedance for all the frequencies
-    % modify the initial circuit string to make it functionnal (when used
-    % with eval)
-    circuit=regexprep(circuit,element(i:i+1),['z(:,',num2str(k),')'],'once');
-end
-
-z=eval(circuit);% compute the global impedance
-z=[real(z),imag(z)];% real and imaginary parts are separated to be processed
-
-end             % END of COMPUTECIRCUIT
-% sub functions for the pre-buit elements
-function z=R(p,f)% resistor
-z=p*ones(size(f));
-end
-
-function z=C(p,f)% capacitor
-z=1i*2*pi*f*p;
-z=1./z;
-end
-
-function z=L(p,f)% inductor
-z=1i*2*pi*f*p;
-end
-
-function z=E(p,f)% CPE
-z=1./(p(1)*(1i*2*pi*f).^p(2));
-end
-% sub functions for the operators parallel and series
-function z=s(z1,z2) % 2 zs in series
-z=z1+z2;
-end  
-
-function z=p(z1,z2) % 2 zs in parallel
-z=1./(1./z1+1./z2);
-end                    
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,fitstring,options)
 % Minimization function calling fminsearch
 param=pinit;
