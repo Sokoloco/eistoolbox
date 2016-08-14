@@ -1,6 +1,13 @@
 function varargout = eistoolbox(varargin)
-% eistoolbox by Juan J. Montero-Rodriguez
-
+% eistoolbox -by Juan J. Montero-Rodriguez
+% Toolbox to fit Electrochemical Impedance Spectroscopy data to circuit models
+% 
+% Quick start guide:
+% 1. Click the "Add files..." button to load some CSV or DTA files
+% 2. Write a circuit model using the format from Zfit (or load a predefined one)
+% 3. Select the desired algorithm to perform the fitting
+% 4. Click the "Fit" button to perform the computations
+% 5. Save the results to a .xls file to obtain the fitted parameters!
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

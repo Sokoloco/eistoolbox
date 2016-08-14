@@ -68,4 +68,4 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Simulate fitted data
 - [ ] Compute correlation coefficient between source data and simulated data
 
-If you have comments or suggestions, [send me an e-mail](juan.montero@tu-harburg.de)
+If you have comments or suggestions, [send me an e-mail](mailto:juan.montero@tu-harburg.de)
