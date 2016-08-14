@@ -6,11 +6,32 @@ MATLAB (R) Toolbox for fitting EIS data to circuit models
 
 Run 'eistoolbox.m' to start the main program!
 
-1. Add data with the button 'Add files...'
+1. Add CSV or DTA data with the button 'Add files...'
 2. Write your circuit in the dialog (based on Zfit format)
 3. Select the fitting algorithm
 4. Hit the 'Fit' button!
 5. Save the results with the button 'Save as...'
+
+### Input file formats
+
+- CSV files must have three columns: FREQ,REAL,IMAG
+- DTA files are from Gamry Instruments (tested Gamry 1000 Interface)
+
+### Circuit string formats
+
+At the moment, circuits can be written according to the Zfit specification:
+
+-Elements can be connected in series as s(R1,R1) or in parallel as p(R1,R1), but only two elements are allowed in each. For connecting three elements in parallel, one has to write p(R1,p(R1,R1))
+
+-All elements must include the number of fitting parameters. A resistance has one fitting parameter and therefore it is R1. A CPE has two parameters and therefore is written as E2.
+
+-Careful! Do not treat elements as labels (i.e. R1, R2, R3... is incorrect.) The correct way is R1, R1 and R1.
+
+-ToDo: Click the "load" button next to the fit string to load some predefined circuit examples.
+
+-Read the source of the file Zfit.m for full documentation about circuit string formatting.
+
+
 
 ## Screenshot
 
