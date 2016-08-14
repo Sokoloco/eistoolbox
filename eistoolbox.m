@@ -369,10 +369,33 @@ function menu_about_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_about (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+menu_about;
 
 % --------------------------------------------------------------------
 function file_adddata_Callback(hObject, eventdata, handles)
 % hObject    handle to file_adddata (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in btn_loadcirc.
+function btn_loadcirc_Callback(hObject, eventdata, handles)
+% hObject    handle to btn_loadcirc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+disp('Error: Function not implemented yet.');
+menu_loadcirc;
+
+% Copyright (C) 2016  Juan J. Montero-Rodriguez
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, in the version 3.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
