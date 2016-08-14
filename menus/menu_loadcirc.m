@@ -85,7 +85,7 @@ function btn_cancel_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+close;
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)

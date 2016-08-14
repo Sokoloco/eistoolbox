@@ -77,9 +77,9 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
 
     % Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
     [fileName, filePath] = uigetfile( ...
-        {'*.dta','Gamry Files (*.dta)'; % File type definition: Gamry
-         '*.csv','[ToDo] CSV Files (*.csv)';   % File type definition: CSV
-         '*.*','All Files (*.*)'}, ...
+        {'*.csv','CSV Files (*.csv)';       % File type definition: CSV
+        '*.dta','Gamry Data Files (*.dta)'; % File type definition: Gamry
+         '*.*','All Files (*.*)'}, ...      % File type definition: others
        'Select the impedance files','Multiselect','on');
 
    % What happens if no menu_file was selected? (i.e. cancel button)
@@ -98,16 +98,35 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
 
     h = waitbar(0,'Loading input data files... please wait');
     
+      
     % Check if the user had selected one menu_file (char), or more than one (cell)
     if ~iscell(fileName) % only one file was selected by the user
         fullfname = char(fullfile(filePath,fileName));  % calculate full fname
-        data{1} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
+        %switch file type: if dta, gamryread; if csv, csvread
+        [path,name,ext] = fileparts(fullfname);
+        switch upper(ext)   % convert extension to uppercase
+            case '.DTA'
+                data{1} = GamryRead(fullfname);
+            case '.CSV'
+                data{1} = csvread(fullfname);
+            otherwise
+                disp('Warning: other file types not currently supported');
+        end
         fnames{1} = fileName;
         set(handles.txt_datafilecount,'string','1 data file loaded');   % display info in main GUI
     else % more than one file was selected by the user
         for idx=1:length(fileName)
             fullfname = char(fullfile(filePath,fileName(idx)));  % calculate full fname
-            data{idx} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
+                    %switch file type: if dta, gamryread; if csv, csvread
+        [path,name,ext] = fileparts(fullfname);
+        switch upper(ext)   % convert extension to uppercase
+            case '.DTA'
+                data{idx} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
+            case '.CSV'
+                data{idx} = csvread(fullfname); % directly read FREQ,REAL,IMAG
+            otherwise
+                disp('Warning: other file types not currently supported');
+        end
             fnames{idx} = cellstr(fileName(idx));
             set(handles.txt_datafilecount,'string',strcat(num2str(length(fnames)),' data files loaded')); % display info in main GUI
             waitbar(idx / length(fileName));

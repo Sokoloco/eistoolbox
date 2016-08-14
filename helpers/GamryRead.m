@@ -52,7 +52,8 @@ function [zfitdata] = GamryRead(filename)
     fclose(fileID);
     
     % Export the data (matrix with three columns): FREQ ZREAL ZIMAG
-    zfitdata = transpose([freq;real;imag]);
+    outdata = transpose([freq;real;imag]);
+    zfitdata = outdata;
     
 end
 
