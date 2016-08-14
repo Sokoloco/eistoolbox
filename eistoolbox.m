@@ -178,11 +178,16 @@ LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
 UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters
 plotstr = '';   % '' for silent computation
 
-% ToDo: Check formatting of text boxes, error handling
-if isempty(circuit) disp('Error: Circuit string is empty'); end
-if isempty(initparams) fprintf('Error: Init Params string is empty'); end
-if isempty(LB) fprintf('Error: Lower Bounds string is empty'); end
-if isempty(UB) fprintf('Error: Upper Bounds string is empty'); end
+% Check formatting of text boxes, error handling
+if isempty(circuit) disp('Error: Circuit string is empty'); return; end
+if isempty(initparams) fprintf('Error: Init Params string is empty'); return; end
+if isempty(LB) fprintf('Error: Lower Bounds string is empty'); return; end
+if isempty(UB) fprintf('Error: Upper Bounds string is empty'); return; end
+
+% ToDo: check if the number of parameters is correct depending on the circuit string
+% Check if the dimensions are consistent
+if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR lower boundaries (',int2str(length(LB)),')')); return; end
+if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
 
 % initializing variables for speed optimization!
 results = cell(length(data{1}),length(initparams)); % preallocating for speed
