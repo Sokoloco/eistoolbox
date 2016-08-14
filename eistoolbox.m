@@ -103,11 +103,13 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
         fullfname = char(fullfile(filePath,fileName));  % calculate full fname
         data{1} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
         fnames{1} = fileName;
+        set(handles.txt_datafilecount,'string','1 data file loaded');   % display info in main GUI
     else % more than one file was selected by the user
         for idx=1:length(fileName)
             fullfname = char(fullfile(filePath,fileName(idx)));  % calculate full fname
             data{idx} = GamryRead(fullfname); % open file and extract FREQ,REAL,IMAG
             fnames{idx} = cellstr(fileName(idx));
+            set(handles.txt_datafilecount,'string',strcat(num2str(length(fnames)),' data files loaded')); % display info in main GUI
         end
     end
 
@@ -255,6 +257,11 @@ end
 function btn_saveas_Callback(hObject, eventdata, handles)
 global filenames;
 global results;
+
+if isempty(results) 
+    disp('Warning: there is NO output data to be saved yet. Fit some data first!');
+    return;
+end
 
 [outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
 disp('Info: Saving the results -please wait-');

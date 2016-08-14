@@ -14,7 +14,7 @@ Run 'eistoolbox.m' to start the main program!
 
 ## Screenshot
 
-![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/images/main_screenshot.png)
+![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/blob/master/images/main_screenshot.png)
 
 ## External libraries used in this toolbox
 
