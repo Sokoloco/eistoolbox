@@ -8,6 +8,20 @@ function varargout = eistoolbox(varargin)
 % 3. Select the desired algorithm to perform the fitting
 % 4. Click the "Fit" button to perform the computations
 % 5. Save the results to a .xls file to obtain the fitted parameters!
+% 
+% Achieved
+%   * Read any number of .CSV or Gamry .DTA files
+%   * Load and save basic circuit models in .ckt text files
+%   * Fit any number of data files using the fminsearchbnd algorithm
+%   * Display the input files as a Nyquist plot
+%   * Display the fitting results as a Nyquist plot
+%   * Show a table with the fitted parameters via uitable
+%   * Export the results as a MS Excel spreadsheet
+% 
+% ToDo:
+%   - Calculate correlation coefficients between input data and fitted data
+%   - Implement iteration number control
+%   - Implement other algorithms
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,6 +107,11 @@ function edit_UB_Callback(hObject, eventdata, handles)
 
 function edit_UB_CreateFcn(hObject, eventdata, handles)
 
+function edit_iterations_Callback(hObject, eventdata, handles)
+
+function edit_iterations_CreateFcn(hObject, eventdata, handles)
+
+
 
 %% BUTTON Callbacks
 
@@ -104,6 +123,7 @@ loadckt(hObject, eventdata, handles);
 
 function btn_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
+calculate_correlations();
 
 function btn_savecirc_Callback(hObject, eventdata, handles)
 saveckt(hObject, eventdata, handles)
@@ -131,6 +151,7 @@ saveckt(hObject, eventdata, handles);
 
 function menu_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
+calculate_correlations();
 
 function menu_saveresults_Callback(hObject, eventdata, handles)
 save_results();
@@ -291,6 +312,8 @@ if isempty(data)
     return;
 end
 
+disp('Warning: Iteration number feature is not yet implemented');
+
 % Read configuration parameters from the edit boxes -----------------------
     %  comment: eval is required to parse the strings and get the arrays!
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
@@ -394,6 +417,11 @@ waitbar(1);
 close(h);
 
 
+function calculate_correlations()
+% This function calculates the correlation coefficient between the input
+% curve and the fitted curve.
+
+
 
 %% LICENSE INFORMATION
 % Copyright (C) 2016  Juan J. Montero-Rodriguez
@@ -409,5 +437,4 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
