@@ -161,6 +161,8 @@ function addfiles(hObject, eventdata, handles)
    
     % Clear the 'data' variable, to avoid using old data already loaded
     if exist('data','var') clearvars -global data; end
+    set(handles.txt_savestatus,'string','No data to save');
+    set(handles.txt_datafilecount,'string','0 data files loaded');
    
     global data;    % Variable to store the impedance data in the program
     global fnames;  % Variable to store the filenames for excel readability
@@ -375,9 +377,15 @@ if isempty(results)
     return;
 end
 
-h = waitbar(0,'Saving data... please wait');
 
 [outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
+if isequal(outFileName,0)
+   disp('Info: No file was selected');
+   return;  % terminate the callback here
+end
+
+h = waitbar(0,'Saving data... please wait');
+
 disp('Info: Saving the results -please wait-');
 outfullfname = fullfile(outPathName,outFileName);
 xlswrite(outfullfname, [filenames results]);
