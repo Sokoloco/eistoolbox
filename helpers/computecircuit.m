@@ -41,15 +41,22 @@ end
 function z=E(p,f)% CPE
 z=1./(p(1)*(1i*2*pi*f).^p(2));
 end
+
+
 % sub functions for the operators parallel and series
-% ToDo: modify the following two functions with varargin, to calculate the
-% series and parallel combinations of multiple elements (not only two).
-function z=s(z1,z2) % 2 zs in series
-z=z1+z2;
+function z=s(varargin) % Add multiple elements in series (jjmontero9 15.08.16)
+    z = 0;
+    for idx = 1:nargin
+       z = z + varargin{idx};
+    end
 end  
 
-function z=p(z1,z2) % 2 zs in parallel
-z=1./(1./z1+1./z2);
+function z=p(varargin) % Add multiple elements in parallel (jjmontero9 15.08.16)
+    z = 0;
+    for idx = 1:nargin
+       z = z + (1 ./ varargin{idx}) ;
+    end
+    z = 1 ./ z;
 end                    
 
 

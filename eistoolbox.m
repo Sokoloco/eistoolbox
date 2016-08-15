@@ -149,6 +149,7 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla reset;  % Clears any old information already present in the diagram
     hold on;
+    grid on;
     for idx=1:length(data)
         plot(data{idx}(:,2),abs(data{idx}(:,3)));
     end
@@ -249,6 +250,7 @@ set(handles.txt_savestatus,'string','Fitting results ready, please save');
 axes(handles.axes2);
 cla reset;
 hold on;
+grid on;
 for idx=1:length(data)
     plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)));
 end
