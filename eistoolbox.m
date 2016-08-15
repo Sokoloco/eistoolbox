@@ -52,8 +52,97 @@ varargout{1} = handles.output;
 function figure1_CreateFcn(hObject, eventdata, handles)
 
 
-%% BUTTON: Add file
+    
+
+%% POPUP MENUS
+% --- Executes on selection change in popupmenu1.
+function popupmenu1_Callback(hObject, eventdata, handles)
+% ToDo: Create a variable with the content of the selected algorithm
+% This variable will choose which algorithm is used for fitting
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu1_CreateFcn(hObject, eventdata, handles)
+% Set here the labels for the algorithms
+set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Levenberg-Marquardt','[ToDo] Nelder-Mead','[ToDo] BFGS','[ToDo] Powell'});
+
+
+
+%% AXES CREATION
+% --- Executes during object creation, after setting all properties.
+function axes1_CreateFcn(hObject, eventdata, handles)
+% Hint: place code in OpeningFcn to populate axes1
+
+% --- Executes during object creation, after setting all properties.
+function axes2_CreateFcn(hObject, eventdata, handles)
+% Hint: place code in OpeningFcn to populate axes2
+
+%% EDIT BOXES
+function edit_circuit_Callback(hObject, eventdata, handles)
+
+function edit_circuit_CreateFcn(hObject, eventdata, handles)
+
+function edit_initparams_Callback(hObject, eventdata, handles)
+
+function edit_initparams_CreateFcn(hObject, eventdata, handles)
+
+function edit_LB_Callback(hObject, eventdata, handles)
+
+function edit_LB_CreateFcn(hObject, eventdata, handles)
+
+function edit_UB_Callback(hObject, eventdata, handles)
+
+function edit_UB_CreateFcn(hObject, eventdata, handles)
+
+
+%% BUTTON Callbacks
+
 function btn_addfiles_Callback(hObject, eventdata, handles)
+addfiles(hObject, eventdata, handles);
+
+function btn_loadcirc_Callback(hObject, eventdata, handles)
+loadckt(hObject, eventdata, handles);
+
+function btn_fit_Callback(hObject, eventdata, handles)
+run_fitting(hObject, eventdata, handles);
+
+function btn_savecirc_Callback(hObject, eventdata, handles)
+saveckt(hObject, eventdata, handles)
+
+function btn_saveas_Callback(hObject, eventdata, handles)
+save_results();
+
+%% MENU Callbacks
+function menu_file_Callback(hObject, eventdata, handles)
+
+function circuits_menu_Callback(hObject, eventdata, handles)
+
+function menu_fitting_Callback(hObject, eventdata, handles)
+
+function menu_about_Callback(hObject, eventdata, handles)
+
+function menu_addfiles_Callback(hObject, eventdata, handles)
+addfiles(hObject, eventdata, handles);
+
+function menu_loadckt_Callback(hObject, eventdata, handles)
+loadckt(hObject, eventdata, handles);
+
+function menu_saveckt_Callback(hObject, eventdata, handles)
+saveckt(hObject, eventdata, handles);
+
+function menu_fit_Callback(hObject, eventdata, handles)
+run_fitting(hObject, eventdata, handles);
+
+function menu_saveresults_Callback(hObject, eventdata, handles)
+save_results();
+
+function menu_aboutdialog_Callback(hObject, eventdata, handles)
+menu_about();
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% INTERNAL FUNCTIONS %%
+
+function addfiles(hObject, eventdata, handles)
 
     % Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
     [fileName, filePath] = uigetfile( ...
@@ -127,27 +216,69 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
     end
     
     disp('Info: Input data files succesfully plotted');
-
+    
+    
     
 
-%% Algorithm Selection
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
-% ToDo: Create a variable with the content of the selected algorithm
-% This variable will choose which algorithm is used for fitting
+function loadckt(hObject, eventdata, handles)
+[fileName, filePath] = uigetfile( ...
+    {'*.ckt','Circuit files (*.ckt)';       % File type definition: CKT
+         '*.*','All Files (*.*)'}, ...      % File type definition: others
+   'Select the circuit file','Multiselect','off');
 
-% --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+% What happens if no file was selected? (i.e. cancel button)
+if isequal(fileName,0)
+   disp('Info: No file was selected');
+   return;  % terminate the callback here
 end
-% Set here the labels for the algorithms
-set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Levenberg-Marquardt','[ToDo] Nelder-Mead','[ToDo] BFGS','[ToDo] Powell'});
 
-%% BUTTON: Fit
-function btn_fit_Callback(hObject, eventdata, handles)
+fullfname = fullfile(filePath,fileName);
+fid = fopen(fullfname);
+
+line1 = fgetl(fid);   % first line: fitting string
+line2 = fgetl(fid);   % second line: initial parameters
+line3 = fgetl(fid);   % third line: lower boundary conditions
+line4 = fgetl(fid);   % fourth line: upper boundary conditions
+
+set(handles.edit_circuit,'String',line1);
+set(handles.edit_initparams,'String',line2);
+set(handles.edit_LB,'String',line3);
+set(handles.edit_UB,'String',line4);
+
+fclose(fid);
+
+
+
+
+function saveckt(hObject, eventdata, handles)
+[fileName, filePath] = uiputfile( ...
+    {'*.ckt','Circuit files (*.ckt)';       % File type definition: CKT
+         '*.*','All Files (*.*)'}, ...      % File type definition: others
+   'Select the circuit file');
+
+% What happens if no file was selected? (i.e. cancel button)
+if isequal(fileName,0)
+   disp('Info: No file was selected');
+   return;  % terminate the callback here
+end
+
+fullfname = fullfile(filePath,fileName);
+
+fid = fopen(fullfname,'w');
+
+line1 = get(handles.edit_circuit,'String');
+line2 = get(handles.edit_initparams,'String');
+line3 = get(handles.edit_LB,'String');
+line4 = get(handles.edit_UB,'String');
+
+fprintf(fid,strcat(line1,'\n'));   % first line: fitting string
+fprintf(fid,strcat(line2,'\n'));   % second line: initial parameters
+fprintf(fid,strcat(line3,'\n'));   % third line: lower boundary conditions
+fprintf(fid,strcat(line4,'\n'));   % fourth line: upper boundary conditions
+
+fclose(fid);
+
+function run_fitting(hObject, eventdata, handles)
 global data;        % input files loaded to the program
 global fnames;      % index of the file names
 global results;     % output results obtained after the fitting
@@ -235,53 +366,7 @@ t.Position(3) = t.Extent(3);
 % (one can make an XY plot, ideally should be linear).
 
 
-%% AXES CREATION
-% --- Executes during object creation, after setting all properties.
-function axes1_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate axes1
-
-% --- Executes during object creation, after setting all properties.
-function axes2_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate axes2
-
-%% EDIT BOXES
-function edit_circuit_Callback(hObject, eventdata, handles)
-
-function edit_circuit_CreateFcn(hObject, eventdata, handles)
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit_initparams_Callback(hObject, eventdata, handles)
-
-function edit_initparams_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_LB_Callback(hObject, eventdata, handles)
-
-function edit_LB_CreateFcn(hObject, eventdata, handles)
-
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit_UB_Callback(hObject, eventdata, handles)
-
-function edit_UB_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-%% BUTTON: Save As...
-% --- Executes on button press in btn_saveas.
-function btn_saveas_Callback(hObject, eventdata, handles)
+function save_results()
 global filenames;
 global results;
 
@@ -290,34 +375,16 @@ if isempty(results)
     return;
 end
 
+h = waitbar(0,'Saving data... please wait');
+
 [outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
 disp('Info: Saving the results -please wait-');
 outfullfname = fullfile(outPathName,outFileName);
 xlswrite(outfullfname, [filenames results]);
 disp('Info: Results saved successfully!');
+waitbar(1);
+close(h);
 
-
-%% MENU Callbacks
-function menu_file_Callback(hObject, eventdata, handles)
-
-function circuits_menu_Callback(hObject, eventdata, handles)
-
-function menu_fitting_Callback(hObject, eventdata, handles)
-
-function menu_about_Callback(hObject, eventdata, handles)
-menu_about;
-
-function file_adddata_Callback(hObject, eventdata, handles)
-
-
-%% BUTTON: Load predefined circuit
-% --- Executes on button press in btn_loadcirc.
-function btn_loadcirc_Callback(hObject, eventdata, handles)
-% hObject    handle to btn_loadcirc (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-disp('Error: Function not implemented yet.');
-menu_loadcirc;
 
 
 %% LICENSE INFORMATION
@@ -334,3 +401,5 @@ menu_loadcirc;
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
