@@ -21,7 +21,7 @@ Run 'eistoolbox.m' to start the main program!
 
 At the moment, circuits can be written according to the Zfit specification:
 
--Elements can be connected in series as s(R1,R1) or in parallel as p(R1,R1), but only two elements are allowed in each. For connecting three elements in parallel, one has to write p(R1,p(R1,R1))
+-Elements can be connected in series as s(R1,R1) or in parallel as p(R1,R1) with as many elements as you want. Example: s(R1,R1,C1,C1,p(R1,C1,E2))
 
 -All elements must include the number of fitting parameters. A resistance has one fitting parameter and therefore it is R1. A CPE has two parameters and therefore is written as E2.
 
@@ -43,7 +43,7 @@ At the moment, circuits can be written according to the Zfit specification:
 
 ### Zfit
 
-The Zfit function is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
+The original Zfit function is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
 
 More fitting functions will be available in the future (such as Levenberg-Marquardt, Nelder-Mead, BFGS, Powell). If you have more algorithm suggestions, let me know.
 
