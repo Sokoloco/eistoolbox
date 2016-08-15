@@ -67,7 +67,7 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Fit using Nelder-Mead
 - [ ] Fit using BFGS
 - [ ] Fit using Powell
-- [ ] Simulate fitted data
+- [x] Simulate fitted data
 - [ ] Compute correlation coefficient between source data and simulated data
 - [ ] Open a new window to display the fitting results as a table, before saving them
 
