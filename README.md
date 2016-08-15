@@ -33,9 +33,11 @@ At the moment, circuits can be written according to the Zfit specification:
 
 
 
-## Screenshot
+## Screenshots
 
 ![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/blob/master/images/main_screenshot.png)
+
+![Results screen](https://github.com/jjmontero9/eistoolbox/blob/master/images/scr_results.png)
 
 ## External libraries used in this toolbox
 
