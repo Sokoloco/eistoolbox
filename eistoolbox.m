@@ -230,7 +230,7 @@ h = waitbar(0,'Performing fitting... please wait');
 
     for idx = 1:length(data)
         % ToDo: select the algorithm depending on the drop-down list!
-        [params,zbest] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
+        [params,zbest{idx}] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
         results(idx,:) = num2cell(params);
         if size(fnames,2) == 1 % only one file
             filenames{idx} = fnames{idx};
@@ -244,6 +244,14 @@ close(h);
 disp('Info: Fitting completed successfully');
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
+
+% Display results from zbest in second plot
+axes(handles.axes2);
+cla reset;
+hold on;
+for idx=1:length(data)
+    plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)));
+end
 
 % Display a table with the fitting results in a new figure
 f = figure;
