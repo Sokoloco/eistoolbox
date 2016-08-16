@@ -306,6 +306,7 @@ global data;        % input files loaded to the program
 global fnames;      % index of the file names
 global results;     % output results obtained after the fitting
 global filenames;   % formatted output filenames to be saved
+global zbest;       % variable to store simulated results
 
 if isempty(data)
     disp('Error: there is NO input data selected yet. Add some files first!');
@@ -339,10 +340,11 @@ if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of ini
 results = cell(length(data),length(initparams)); % preallocating for speed
 filenames = cell(length(data),1);    % preallocating for speed
 
+
 % perform the fitting
 disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting... please wait');
-
+% ToDo: Add cancel button
     for idx = 1:length(data)
         % ToDo: select the algorithm depending on the drop-down list!
         [params,zbest{idx}] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
@@ -352,7 +354,7 @@ h = waitbar(0,'Performing fitting... please wait');
         else % multiple files
             filenames(idx,1) = fnames{idx};
         end
-        waitbar(idx / length(data));
+        waitbar(idx / length(data), h, ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(filenames{idx},'_','\_')]);
     end
 close(h);
 
@@ -420,6 +422,23 @@ close(h);
 function calculate_correlations()
 % This function calculates the correlation coefficient between the input
 % curve and the fitted curve.
+global data;    % original data
+global zbest;   % fitted data
+
+for idx=1:length(data)
+    R1(idx) = corr(data{idx}(:,2),zbest{idx}(:,1));
+    R2(idx) = corr(data{idx}(:,3),zbest{idx}(:,2));
+end
+
+R1 %is the correlation coefficient of real(input) vs real(output)
+R2 %is the correlation coefficient of imag(input) vs imag(output)
+
+for idx=1:length(data)
+    R3(idx) = corr(data{idx}(:,2)+1i*data{idx}(:,3),zbest{idx}(:,1)+1i*zbest{idx}(:,1));
+end
+
+R3 %is the correlation coefficient of input(cmplex) vs output (cmplex)
+
 
 
 
