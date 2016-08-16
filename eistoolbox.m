@@ -1,6 +1,6 @@
 function varargout = eistoolbox(varargin)
-% eistoolbox -by Juan J. Montero-Rodriguez
 % Toolbox to fit Electrochemical Impedance Spectroscopy data to circuit models
+% eistoolbox -by Juan J. Montero-Rodriguez
 % 
 % Quick start guide:
 % 1. Click the "Add files..." button to load some CSV or DTA files
@@ -20,8 +20,10 @@ function varargout = eistoolbox(varargin)
 % 
 % ToDo:
 %   - Calculate correlation coefficients between input data and fitted data
+%   - Calculate individual parameter error percentages or error estimates
 %   - Implement iteration number control
 %   - Implement other algorithms
+%   - Plot also Bode for input data and for fitting results
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -180,8 +182,8 @@ function addfiles(hObject, eventdata, handles)
    
    disp('Info: Loading input data files -please wait-');
    
-    % Clear the 'data' variable, to avoid using old data already loaded
-    if exist('data','var') clearvars -global data; end
+    % Clear all variables, to avoid using old data already loaded
+    if exist('data','var') clearvars -global *; end
     set(handles.txt_savestatus,'string','No data to save');
     set(handles.txt_datafilecount,'string','0 data files loaded');
    
@@ -433,11 +435,76 @@ end
 R1 %is the correlation coefficient of real(input) vs real(output)
 R2 %is the correlation coefficient of imag(input) vs imag(output)
 
+% Beginning of Pearson Chi-Square Test
+% for goodness of fit of an observed distribution to a theoretical one
+% this test is wrongly implemented - WORK IN PROGRESS ---------------------
+
+observed = zbest;
+expected = data;
+
 for idx=1:length(data)
-    R3(idx) = corr(data{idx}(:,2)+1i*data{idx}(:,3),zbest{idx}(:,1)+1i*zbest{idx}(:,1));
+    chi2x{idx} = sum((observed{idx}(:,1)-expected{idx}(:,2)).^2 ./ expected{idx}(:,2));
+    px{idx} = 1 - chi2cdf(chi2x{idx},1);
+    chi2y{idx} = sum((observed{idx}(:,2)-expected{idx}(:,3)).^2 ./ expected{idx}(:,3));
+    py{idx} = 1 - chi2cdf(chi2y{idx},1);
+    
+    fitx(idx) = goodnessOfFit(observed{idx}(:,1), expected{idx}(:,2),'MSE');
+    fity(idx) = goodnessOfFit(observed{idx}(:,2), expected{idx}(:,3),'MSE');
 end
 
-R3 %is the correlation coefficient of input(cmplex) vs output (cmplex)
+chi2x
+chi2y
+px
+py
+fitx
+fity
+
+% -------------------------------------------------------------------------
+
+
+% Correlation (X,Y) plots, ideally should be straight lines
+figure();
+for idx=1:length(data)
+    plot(data{idx}(:,2),zbest{idx}(:,1));
+    hold on;
+    grid on;
+end
+title('Correlation plot (X,Y) for Real Part');
+xlabel('Re\{data\}');
+ylabel('Re\{model\}');
+
+figure();
+for idx=1:length(data)
+    plot(data{idx}(:,3),zbest{idx}(:,2));
+    hold on;
+    grid on;
+end
+title('Correlation plot (X,Y) for Imaginary Part');
+xlabel('Im\{data\}');
+ylabel('Im\{model\}');
+
+% Calculate here the linear regression coefficients
+
+
+
+% implement residual errors plot, check Orazem, Chapter 20
+
+
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% ToDo: Close here all the open figures
+
+% Clear all used variables
+clearvars -global *;
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
 
 
 
@@ -456,4 +523,3 @@ R3 %is the correlation coefficient of input(cmplex) vs output (cmplex)
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
