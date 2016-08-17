@@ -68,8 +68,9 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Fit using BFGS
 - [ ] Fit using Powell
 - [x] Simulate fitted data
+- [x] Open a new window to display the fitting results as a table, before saving them
 - [ ] Compute correlation coefficient between source data and simulated data
 - [ ] Compute the Kramers-Kronig test
-- [ ] Open a new window to display the fitting results as a table, before saving them
+
 
 If you have comments or suggestions, [send me an e-mail](mailto:juan.montero@tu-harburg.de)
