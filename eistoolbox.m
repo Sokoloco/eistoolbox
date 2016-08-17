@@ -423,67 +423,118 @@ close(h);
 
 function calculate_correlations()
 % This function calculates the correlation coefficient between the input
-% curve and the fitted curve.
+% curve (expected) and the fitted curve (observed).
 global data;    % original data
 global zbest;   % fitted data
 
 for idx=1:length(data)
-    R1(idx) = corr(data{idx}(:,2),zbest{idx}(:,1));
-    R2(idx) = corr(data{idx}(:,3),zbest{idx}(:,2));
+    expected_real{idx} = data{idx}(:,2);     % real part of measured data
+    expected_imag{idx} = data{idx}(:,3);     % imag part of measured data
+    observed_real{idx} = zbest{idx}(:,1);    % real part of fitted data
+    observed_imag{idx} = zbest{idx}(:,2);    % imag part of fitted data
+    expected_MAG{idx} = sqrt(expected_real{idx}.^2 + expected_imag{idx}.^2);    % magnitude of measured data
+    observed_MAG{idx} = sqrt(observed_real{idx}.^2 + observed_imag{idx}.^2);    % magnitude of fitted data
 end
 
-R1 %is the correlation coefficient of real(input) vs real(output)
-R2 %is the correlation coefficient of imag(input) vs imag(output)
 
 % Beginning of Pearson Chi-Square Test
 % for goodness of fit of an observed distribution to a theoretical one
 % this test is wrongly implemented - WORK IN PROGRESS ---------------------
 
-observed = zbest;
-expected = data;
-
 for idx=1:length(data)
-    chi2x{idx} = sum((observed{idx}(:,1)-expected{idx}(:,2)).^2 ./ expected{idx}(:,2));
-    px{idx} = 1 - chi2cdf(chi2x{idx},1);
-    chi2y{idx} = sum((observed{idx}(:,2)-expected{idx}(:,3)).^2 ./ expected{idx}(:,3));
-    py{idx} = 1 - chi2cdf(chi2y{idx},1);
+    % Calculate correlation (magnitude)
+    R1(idx) = corr(expected_MAG{idx},observed_MAG{idx});
     
-    fitx(idx) = goodnessOfFit(observed{idx}(:,1), expected{idx}(:,2),'MSE');
-    fity(idx) = goodnessOfFit(observed{idx}(:,2), expected{idx}(:,3),'MSE');
+    % Chi square test
+    chi2{idx} = sum((observed_MAG{idx}-expected_MAG{idx}).^2 ./ expected_MAG{idx});
+    p{idx} = 1 - chi2cdf(chi2{idx},1);
+    
+    % Goodness of fit by Mean Square Errors
+    fit(idx) = goodnessOfFit(observed_MAG{idx}, expected_MAG{idx},'MSE');
 end
 
-chi2x
-chi2y
-px
-py
-fitx
-fity
+R1 %is the correlation coefficient of magnitude
+
+chi2
+p
+fit
 
 % -------------------------------------------------------------------------
 
 
 % Correlation (X,Y) plots, ideally should be straight lines
 figure();
-for idx=1:length(data)
-    plot(data{idx}(:,2),zbest{idx}(:,1));
+for idx=1:length(expected_real)
+    plot(expected_real{idx},observed_real{idx});
     hold on;
     grid on;
 end
 title('Correlation plot (X,Y) for Real Part');
-xlabel('Re\{data\}');
-ylabel('Re\{model\}');
+xlabel('Measured (real)');
+ylabel('Fitted (real)');
 
 figure();
 for idx=1:length(data)
-    plot(data{idx}(:,3),zbest{idx}(:,2));
+    plot(expected_imag{idx},observed_imag{idx});
     hold on;
     grid on;
 end
 title('Correlation plot (X,Y) for Imaginary Part');
-xlabel('Im\{data\}');
-ylabel('Im\{model\}');
+xlabel('Measured (imag)');
+ylabel('Fitted (imag)');
 
-% Calculate here the linear regression coefficients
+% Correlation of magnitude
+figure();
+for idx=1:length(data)
+    plot(expected_MAG{idx},observed_MAG{idx});
+    hold on;
+    grid on;
+end
+title('Correlation plot (X,Y) for Magnitude');
+xlabel('Measured (mag)');
+ylabel('Fitted (mag)');
+
+% Calculate here the linear regression coefficients for real and imaginary
+% fit (observed) vs measured (expected)
+% analysis from http://de.mathworks.com/help/matlab/data_analysis/linear-regression.html
+for idx=1:length(expected_real)
+    % linear fit using polyfit
+    p_re{idx} = polyfit(expected_real{idx},observed_real{idx},1); %p1=slope, p2=intersect
+    % evaluate the line to get data points
+    yfit_re{idx} = polyval(p_re{idx},expected_real{idx});
+    % calculate the residual values
+    yresid_re{idx} = observed_real{idx} - yfit_re{idx};
+    % square the residuals and get the residual sum of squares
+    SSresid_re{idx} = sum(yresid_re{idx}.^2);
+    % compute the total sum of squares by multiplying  variance by n-1
+    SStotal_re{idx} = (length(observed_real{idx})-1) * var(observed_real{idx});
+    % compute R^2
+    rsq_re{idx} = 1 - SSresid_re{idx}/SStotal_re{idx};
+    % compute adjusted R^2 to account for degrees of freedom
+    rsq_adj_re{idx} = 1 - SSresid_re{idx}/SStotal_re{idx} * (length(observed_real{idx})-1)/(length(observed_real{idx})-length(p_re{idx}));
+    
+    % The same is done for the imaginary parts
+    % linear fit using polyfit
+    p_im{idx} = polyfit(expected_imag{idx},observed_imag{idx},1); %p1=slope, p2=intersect
+    % evaluate the line to get data points
+    yfit_im{idx} = polyval(p_im{idx},expected_imag{idx});
+    % calculate the residual values
+    yresid_im{idx} = observed_imag{idx} - yfit_im{idx};
+    % square the residuals and get the residual sum of squares
+    SSresid_im{idx} = sum(yresid_im{idx}.^2);
+    % compute the total sum of squares by multiplying  variance by n-1
+    SStotal_im{idx} = (length(observed_imag{idx})-1) * var(observed_imag{idx});
+    % compute R^2
+    rsq_im{idx} = 1 - SSresid_im{idx}/SStotal_im{idx};
+    % compute adjusted R^2 to account for degrees of freedom
+    rsq_adj_im{idx} = 1 - SSresid_im{idx}/SStotal_im{idx} * (length(observed_imag{idx})-1)/(length(observed_imag{idx})-length(p_im{idx}));
+end
+
+rsq_re
+rsq_adj_re
+
+rsq_im
+rsq_adj_im
 
 
 
@@ -492,7 +543,7 @@ ylabel('Im\{model\}');
 
 
 
-% --- Executes when user attempts to close figure1.
+% --- Executes when user attempts to close program.
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
