@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[10pt,a4paper,oneside]{book}
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{tgtermes}
@@ -6,15 +6,26 @@
 \usepackage{graphicx}
 \graphicspath{{../images/}}
 \usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 
 
 \begin{document}
 \setlength{\parindent}{0pt}
 
-\begin{center}
+\begin{titlepage}
+	
 	\textbf{eistoolbox manual v0.1}\\
 	written by Juan J. Montero-Rodriguez
-\end{center}
+	
+\end{titlepage}
+
+
+
+\tableofcontents
+
+\chapter{Introduction}
 
 \textbf{eistoolbox} is a toolbox for MATLAB\textregistered{} used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuits. 
 
@@ -46,8 +57,10 @@ In the future it will accept Levenberg-Marquard, Nelder-Mead, BFGS and Powell al
 
 It will also include the error percentages of every fitting parameter, as well as the Pearson coefficient and correlation plot of the fitting results.
 
-\newpage
-\section{Quick start guide}
+
+
+
+\chapter{Quick start guide}
 
 1. Add files using the "Add file..." button
 
@@ -59,16 +72,48 @@ It will also include the error percentages of every fitting parameter, as well a
 
 \includegraphics[width=15cm]{main_screenshot.png}
 
+\includegraphics[width=10cm]{scr_results.png}
 
 
-\newpage
-\section{Statistics}
+\chapter{Algorithms}
+
+\section{fminsearchbnd}
+
+Currently it supports only the fminsearchbnd function from Zfit.m
+
+
+
+
+\chapter{Statistics}
+
+The program computes the following statistical parameters:
+
+\section{Linear regressions}
+
+Real of fitted vs Real of measured
+
+Imag of fitted vs Imag of measured
+
+MAG of fitted vs MAG of measured
+
+\section{Chi-square goodness of fit}
+
+\[ \chi^2 = \sum_i^n{\dfrac{(Observed_i-Expected_i)^2}{Expected_i}} \]
+
+Observed= fitted data
+
+Expected= measured data
+
+\section{Error estimates for individual parameters}
+
+ToDo
+
 
 
 \newpage{}
-\section{Licenses for included software}
+\chapter{Licenses for included software}
 
-\subsection{Zfit}
+\section{Zfit}
 
 The original file was released in 2005 and it is available here:\\
 

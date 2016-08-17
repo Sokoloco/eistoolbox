@@ -437,8 +437,9 @@ for idx=1:length(data)
     R1(idx) = corr(expected_MAG{idx},observed_MAG{idx});
     
     % Chi square test
+    df = 1; % wrong!
     chi2{idx} = sum((observed_MAG{idx}-expected_MAG{idx}).^2 ./ expected_MAG{idx});
-    p{idx} = 1 - chi2cdf(chi2{idx},1);
+    p{idx} = 1 - chi2cdf(chi2{idx},df);
     
     % Goodness of fit by Mean Square Errors
     fit(idx) = goodnessOfFit(observed_MAG{idx}, expected_MAG{idx},'MSE');
