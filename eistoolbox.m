@@ -320,7 +320,6 @@ indexes = [];       % empty = all input data is used (OR use custom ranges)
 fitstring = 'fitNP'; % 'fitNP' non-proportional, OR '' proportional
 LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
 UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters
-plotstr = '';   % '' for silent computation
 
 % Check formatting of text boxes, error handling
 if isempty(circuit) disp('Error: Circuit string is empty'); return; end
@@ -344,7 +343,7 @@ h = waitbar(0,'Performing fitting... please wait');
 % ToDo: Add cancel button
     for idx = 1:length(data)
         % ToDo: select the algorithm depending on the drop-down list!
-        [params,zbest{idx}] = Zfit(data{idx},plotstr,circuit,initparams,indexes,fitstring,LB,UB);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB);
         results(idx,:) = num2cell(params);
         if size(fnames,2) == 1 % only one file
             filenames{idx} = fnames{idx};

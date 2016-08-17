@@ -1,5 +1,5 @@
 function [pbest,zbest,fval,exitflag,output]= ...
-    Zfit(data,plotstring,circuitstring,pbest,indexes,fitstring,LB,UB)
+    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -13,14 +13,7 @@ options=[];
 if isempty(indexes),indexes=1:length(freq);end,freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
 [pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,fitstring,options);
-
 zbest=computecircuit(pbest,circuitstring,freq);
-if ~strcmp(plotstring,'z')&&~strcmp(plotstring,'y')&&~strcmp(plotstring,'c')&&~strcmp(plotstring,'m')&&~isempty(plotstring)
-    error('The second input has to be one of these strings: ''z'', ''y'', ''c'', ''m'' or left empty: ''''')
-end
-if ~isempty(plotstring)
-plotz(freq,zbest,data,plotstring)
-end
 end % END of ZFIT =========================================================
 
 %% CURFIT
