@@ -5,7 +5,7 @@ function [pbest,zbest,fval,exitflag,output]= ...
 %
 % The original file is Copyright (c) 2005 Jean-Luc Dellis; can be found in:
 % http://de.mathworks.com/matlabcentral/fileexchange/19460-zfit
-% See the bottom of this file for the original license.
+
 
 %% MAIN FUNCTION
 freq=data(:,1);
@@ -120,31 +120,3 @@ function z=p(varargin)
     end
     z = 1 ./ z;
 end       
-
-%% LICENSE INFORMATION FOR THIS FILE: 'Zfit.m'
-% The original license for the Zfit.m function reads as follows:
-% 
-% Copyright (c) 2005, Jean-Luc Dellis
-% All rights reserved.
-% 
-% Redistribution and use in source and binary forms, with or without
-% modification, are permitted provided that the following conditions are
-% met:
-% 
-%     * Redistributions of source code must retain the above copyright
-%       notice, this list of conditions and the following disclaimer.
-%     * Redistributions in binary form must reproduce the above copyright
-%       notice, this list of conditions and the following disclaimer in
-%       the documentation and/or other materials provided with the distribution
-% 
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-% POSSIBILITY OF SUCH DAMAGE.

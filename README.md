@@ -47,9 +47,11 @@ At the moment, circuits can be written according to the Zfit specification:
 
 ## External libraries used in this toolbox
 
-### Zfit
+### Licenses for used libraries
 
-The original Zfit function is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
+fminsearchbnd by John D'Errico is found [here](http://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon).
+
+Zfit is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
 
 More fitting functions will be available in the future (such as Levenberg-Marquardt, Nelder-Mead, BFGS, Powell). If you have more algorithm suggestions, let me know.
 

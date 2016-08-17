@@ -1,14 +1,24 @@
-function [x,fval,exitflag,output]=fminsearchbnd(fun,x0,LB,UB,options,varargin)
-% fminsearchbnd: fminsearch, but with bound constraints by transformation
-% usage: fminsearchbnd(fun,x0,LB,UB,options,p1,p2,...)
+function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)
+% FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation
+% usage: x=FMINSEARCHBND(fun,x0)
+% usage: x=FMINSEARCHBND(fun,x0,LB)
+% usage: x=FMINSEARCHBND(fun,x0,LB,UB)
+% usage: x=FMINSEARCHBND(fun,x0,LB,UB,options)
+% usage: x=FMINSEARCHBND(fun,x0,LB,UB,options,p1,p2,...)
+% usage: [x,fval,exitflag,output]=FMINSEARCHBND(fun,x0,...)
 % 
 % arguments:
+%  fun, x0, options - see the help for FMINSEARCH
+%
 %  LB - lower bound vector or array, must be the same size as x0
 %
 %       If no lower bounds exist for one of the variables, then
 %       supply -inf for that variable.
 %
 %       If no lower bounds at all, then LB may be left empty.
+%
+%       Variables may be fixed in value by setting the corresponding
+%       lower and upper bounds to exactly the same value.
 %
 %  UB - upper bound vector or array, must be the same size as x0
 %
@@ -17,11 +27,13 @@ function [x,fval,exitflag,output]=fminsearchbnd(fun,x0,LB,UB,options,varargin)
 %
 %       If no upper bounds at all, then UB may be left empty.
 %
-%  See fminsearch for all other arguments and options.
-%  Note that TolX will apply to the transformed variables. All other
-%  fminsearch parameters are unaffected.
+%       Variables may be fixed in value by setting the corresponding
+%       lower and upper bounds to exactly the same value.
 %
 % Notes:
+%
+%  If options is supplied, then TolX will apply to the transformed
+%  variables. All other FMINSEARCH parameters should be unaffected.
 %
 %  Variables which are constrained by both a lower and an upper
 %  bound will use a sin transformation. Those constrained by
@@ -29,11 +41,19 @@ function [x,fval,exitflag,output]=fminsearchbnd(fun,x0,LB,UB,options,varargin)
 %  transformation, and unconstrained variables will be left alone.
 %
 %  Variables may be fixed by setting their respective bounds equal.
-%  In this case, the problem will be reduced in size for fminsearch.
+%  In this case, the problem will be reduced in size for FMINSEARCH.
 %
 %  The bounds are inclusive inequalities, which admit the
 %  boundary values themselves, but will not permit ANY function
-%  evaluations outside the bounds.
+%  evaluations outside the bounds. These constraints are strictly
+%  followed.
+%
+%  If your problem has an EXCLUSIVE (strict) constraint which will
+%  not admit evaluation at the bound itself, then you must provide
+%  a slightly offset bound. An example of this is a function which
+%  contains the log of one of its parameters. If you constrain the
+%  variable to have a lower bound of zero, then FMINSEARCHBND may
+%  try to evaluate the function exactly at zero.
 %
 %
 % Example usage:
@@ -46,6 +66,17 @@ function [x,fval,exitflag,output]=fminsearchbnd(fun,x0,LB,UB,options,varargin)
 % fminsearchbnd(rosen,[3 3],[2 2],[])     % constrained
 % ans =
 %    2.0000    4.0000
+%
+% See test_main.m for other examples of use.
+%
+%
+% See also: fminsearch, fminspleas
+%
+%
+% Author: John D'Errico
+% E-mail: woodchips@rochester.rr.com
+% Release: 4
+% Release date: 7/23/06
 
 % size checks
 xsize = size(x0);
@@ -78,6 +109,10 @@ params.LB = LB;
 params.UB = UB;
 params.fun = fun;
 params.n = n;
+% note that the number of parameters may actually vary if 
+% a user has chosen to fix one or more parameters
+params.xsize = xsize;
+params.OutputFcn = [];
 
 % 0 --> unconstrained variable
 % 1 --> lower bound only
@@ -133,7 +168,7 @@ for i = 1:n
         x0u(k) = 2*(x0(i) - LB(i))/(UB(i)-LB(i)) - 1;
         % shift by 2*pi to avoid problems at zero in fminsearch
         % otherwise, the initial simplex is vanishingly small
-        x0u(k) = 2*pi+asin(max(-1,min(1,x0u(i))));
+        x0u(k) = 2*pi+asin(max(-1,min(1,x0u(k))));
       end
       
       % increment k
@@ -174,12 +209,19 @@ if isempty(x0u)
   exitflag = 0;
   
   output.iterations = 0;
-  output.funcount = 1;
+  output.funcCount = 1;
   output.algorithm = 'fminsearch';
   output.message = 'All variables were held fixed by the applied bounds';
   
   % return with no call at all to fminsearch
   return
+end
+
+% Check for an outputfcn. If there is any, then substitute my
+% own wrapper function.
+if ~isempty(options.OutputFcn)
+  params.OutputFcn = options.OutputFcn;
+  options.OutputFcn = @outfun_wrapper;
 end
 
 % now we can call fminsearch, but with our own
@@ -189,8 +231,20 @@ end
 % undo the variable transformations into the original space
 x = xtransform(xu,params);
 
-% final reshape
+% final reshape to make sure the result has the proper shape
 x = reshape(x,xsize);
+
+% Use a nested function as the OutputFcn wrapper
+  function stop = outfun_wrapper(x,varargin);
+    % we need to transform x first
+    xtrans = xtransform(x,params);
+    
+    % then call the user supplied OutputFcn
+    stop = params.OutputFcn(xtrans,varargin{1:(end-1)});
+    
+  end
+
+end % mainline end
 
 % ======================================
 % ========= begin subfunctions =========
@@ -202,15 +256,16 @@ function fval = intrafun(x,params)
 xtrans = xtransform(x,params);
 
 % and call fun
-fval = feval(params.fun,xtrans,params.args{:});
-end                     % END of INTRAFUN
+fval = feval(params.fun,reshape(xtrans,params.xsize),params.args{:});
+
+end % sub function intrafun end
 
 % ======================================
 function xtrans = xtransform(x,params)
 % converts unconstrained variables into their original domains
 
-xtrans = zeros(1,params.n);
-% k allows soem variables to be fixed, thus dropped from the
+xtrans = zeros(params.xsize);
+% k allows some variables to be fixed, thus dropped from the
 % optimization.
 k=1;
 for i = 1:params.n
@@ -243,33 +298,10 @@ for i = 1:params.n
       k=k+1;
   end
 end
-end                     % END of XTRANSFORM
-end                     % END of FMINSEARCHBND
+
+end % sub function xtransform end
 
 
 
-% LICENSE INFORMATION FOR THIS FILE: 'fminsearchbnd.m' ====================
-% Copyright (c) 2005, Jean-Luc Dellis
-% All rights reserved. This file was part of 'Zfit.m'
-% 
-% Redistribution and use in source and binary forms, with or without
-% modification, are permitted provided that the following conditions are
-% met:
-% 
-%     * Redistributions of source code must retain the above copyright
-%       notice, this list of conditions and the following disclaimer.
-%     * Redistributions in binary form must reproduce the above copyright
-%       notice, this list of conditions and the following disclaimer in
-%       the documentation and/or other materials provided with the distribution
-% 
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-% POSSIBILITY OF SUCH DAMAGE.
+
+
