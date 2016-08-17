@@ -66,15 +66,15 @@ function figure1_CreateFcn(hObject, eventdata, handles)
     
 
 %% POPUP MENUS
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
+% --- Executes on selection change in algorithmmenu.
+function algorithmmenu_Callback(hObject, eventdata, handles)
 % ToDo: Create a variable with the content of the selected algorithm
 % This variable will choose which algorithm is used for fitting
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
+function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
-set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Levenberg-Marquardt','[ToDo] Nelder-Mead','[ToDo] BFGS','[ToDo] Powell'});
+set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Other algorithms'});
 
 
 
@@ -120,7 +120,6 @@ loadckt(hObject, eventdata, handles);
 
 function btn_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
-
 
 function btn_savecirc_Callback(hObject, eventdata, handles)
 saveckt(hObject, eventdata, handles)
@@ -332,6 +331,13 @@ if isempty(UB) fprintf('Error: Upper Bounds string is empty'); return; end
 if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR lower boundaries (',int2str(length(LB)),')')); return; end
 if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
 
+% check the selected algorithm
+algorithm = get(handles.algorithmmenu,'Value');
+% Remember from the definition:
+% 1 = fminsearchbnd
+% 2 = lsqnonlin
+
+
 % initializing variables for speed optimization!
 results = cell(length(data),length(initparams)); % preallocating for speed
 filenames = cell(length(data),1);    % preallocating for speed
@@ -345,7 +351,7 @@ h = waitbar(0,'Performing fitting... please wait');
         
         % First we do the fitting!
         % ToDo: select the algorithm depending on the drop-down list!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB,algorithm);
         
         % Calculation of the error estimates
         

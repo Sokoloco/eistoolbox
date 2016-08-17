@@ -1,5 +1,5 @@
 function [pbest,zbest,fval,exitflag,output]= ...
-    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB)
+    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB,algorithm)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -15,15 +15,24 @@ if isempty(indexes)
 end
 freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
-[pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,fitstring,options);
+[pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,fitstring,options,algorithm);
 zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
 
 %% CURFIT
-function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,fitstring,options)
+function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,fitstring,options,algorithm)
 % Minimization function calling fminsearch
 param=pinit;
-[p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+switch algorithm
+    case 1
+        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+    case 2
+        % call here the second algorithm
+        disp('Error: Algorithm is not defined. Fitting with fminsearchbnd');
+        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+    otherwise
+        error('Error: Algorithm is not defined. Stopping.');
+end
 		
     % DISTANCE is nested, so it knows handlecomputecircuit,circuitstring,freq,fitstring and zrzi
     function dist=distance(param)
@@ -85,27 +94,14 @@ function z=computecircuit(param,circuit,freq)
 
 end % END of COMPUTECIRCUIT
 
-% CIRCUIT ELEMENT FUNCTIONS
+%% CIRCUIT ELEMENT FUNCTIONS
 % Calculate the impedance response of a single element
-function z=R(p,f)% resistor
-z=p*ones(size(f));
-end
+function z=R(p,f);  z=p*ones(size(f));   end    % Resistor
+function z=C(p,f);  z=1./(1i*2*pi*f*p);  end    % Capacitor
+function z=L(p,f);  z=1i*2*pi*f*p;       end    % Inductor
+function z=E(p,f);  z=1./(p(1)*(1i*2*pi*f).^p(2)); end % CPE
 
-function z=C(p,f)% capacitor
-z=1i*2*pi*f*p;
-z=1./z;
-end
-
-function z=L(p,f)% inductor
-z=1i*2*pi*f*p;
-end
-
-function z=E(p,f)% CPE
-z=1./(p(1)*(1i*2*pi*f).^p(2));
-end
-
-% sub functions for adding multiple elements in parallel or series
-% modified 15.08.2016 - jjmontero9
+% Add multiple elements in series
 function z=s(varargin)
     z = 0;
     for idx = 1:nargin
@@ -113,6 +109,7 @@ function z=s(varargin)
     end
 end  
 
+% Add multiple elements in parallel
 function z=p(varargin)
     z = 0;
     for idx = 1:nargin
