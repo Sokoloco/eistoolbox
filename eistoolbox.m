@@ -53,11 +53,6 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% Clear all previously used variables (to avoid garbage data from a
-% previous execution). ToDo: do this at the exit of the program
-clearvars -global *;
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = eistoolbox_OutputFcn(hObject, eventdata, handles) 
 % Get default command line output from handles structure
@@ -125,7 +120,7 @@ loadckt(hObject, eventdata, handles);
 
 function btn_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
-calculate_correlations();
+
 
 function btn_savecirc_Callback(hObject, eventdata, handles)
 saveckt(hObject, eventdata, handles)
@@ -153,7 +148,7 @@ saveckt(hObject, eventdata, handles);
 
 function menu_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
-calculate_correlations();
+
 
 function menu_saveresults_Callback(hObject, eventdata, handles)
 save_results();
@@ -384,15 +379,12 @@ for idx=1:length(cnames)
     end
 end
 t = uitable(f,'data',[filenames results],'ColumnWidth',{80},'ColumnName',cnames);
-% ToDo: label the columns and rows including the following parameters in
-% the uitable command: (...'ColumnName',cnames,'RowName',rnames)
 
 % Adjust the size to match the table
 t.Position(3) = t.Extent(3);
 %t.Position(4) = t.Extent(4);
 
-% ToDo: Calculate correlation coefficient from the plotted curves vs input curves
-% (one can make an XY plot, ideally should be linear).
+calculate_correlations();
 
 
 function save_results()
@@ -454,10 +446,9 @@ for idx=1:length(data)
 end
 
 R1 %is the correlation coefficient of magnitude
-
-chi2
-p
-fit
+chi2 %is the chi square stats for magnitude
+p % is the pearson coefficient
+fit %is the goodness of fit by mean square error
 
 % -------------------------------------------------------------------------
 
@@ -528,6 +519,22 @@ for idx=1:length(expected_real)
     rsq_im{idx} = 1 - SSresid_im{idx}/SStotal_im{idx};
     % compute adjusted R^2 to account for degrees of freedom
     rsq_adj_im{idx} = 1 - SSresid_im{idx}/SStotal_im{idx} * (length(observed_imag{idx})-1)/(length(observed_imag{idx})-length(p_im{idx}));
+    
+    % The same is done for the magnitude
+    % linear fit using polyfit
+    p_mag{idx} = polyfit(expected_MAG{idx},observed_MAG{idx},1); %p1=slope, p2=intersect
+    % evaluate the line to get data points
+    yfit_mag{idx} = polyval(p_mag{idx},expected_MAG{idx});
+    % calculate the residual values
+    yresid_mag{idx} = observed_MAG{idx} - yfit_mag{idx};
+    % square the residuals and get the residual sum of squares
+    SSresid_mag{idx} = sum(yresid_mag{idx}.^2);
+    % compute the total sum of squares by multiplying  variance by n-1
+    SStotal_mag{idx} = (length(observed_MAG{idx})-1) * var(observed_MAG{idx});
+    % compute R^2
+    rsq_mag{idx} = 1 - SSresid_mag{idx}/SStotal_mag{idx};
+    % compute adjusted R^2 to account for degrees of freedom
+    rsq_adj_mag{idx} = 1 - SSresid_mag{idx}/SStotal_mag{idx} * (length(observed_MAG{idx})-1)/(length(observed_MAG{idx})-length(p_mag{idx}));
 end
 
 rsq_re
@@ -536,6 +543,8 @@ rsq_adj_re
 rsq_im
 rsq_adj_im
 
+rsq_mag
+rsq_adj_mag
 
 
 % implement residual errors plot, check Orazem, Chapter 20
