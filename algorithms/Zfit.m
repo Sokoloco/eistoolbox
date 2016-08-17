@@ -10,7 +10,10 @@ function [pbest,zbest,fval,exitflag,output]= ...
 %% MAIN FUNCTION
 freq=data(:,1);
 options=[];                                        
-if isempty(indexes),indexes=1:length(freq);end,freq=data(indexes,1); 
+if isempty(indexes)
+    indexes=1:length(freq);
+end
+freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
 [pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,fitstring,options);
 zbest=computecircuit(pbest,circuitstring,freq);
@@ -21,45 +24,69 @@ function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecom
 % Minimization function calling fminsearch
 param=pinit;
 [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
-		% DISTANCE is nested, so it knows handlecomputecircuit,circuitstring,freq,fitstring and zrzi
-            function dist=distance(param)
-            ymod=feval(handlecomputecircuit,param,circuitstring,freq);
-            if isequal('fitNP',fitstring)
-                dist=sum(sum((ymod-zrzi).^2));
-            else
-                dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
-            end
-            end         % END of DISTANCE
+		
+    % DISTANCE is nested, so it knows handlecomputecircuit,circuitstring,freq,fitstring and zrzi
+    function dist=distance(param)
+
+        % The next line simulates the circuit and extracts the impedance,
+        % by evaluating the circuit with the last OR supplied parameters.
+        % This line is equivalent to ymod=computecircuit(param,circuitstring,freq)
+        ymod=feval(handlecomputecircuit,param,circuitstring,freq);
+
+        % Then the cummulative distance between fitted and measured is
+        % calculated. This is the parameter that needs to be minimized.
+        if isequal('fitNP',fitstring)
+            dist=sum(sum((ymod-zrzi).^2));
+        else
+            dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
+        end
+
+    end         % END of DISTANCE
 end % END of CURFIT =======================================================
 
 %% COMPUTECIRCUIT
+% This function takes the 'circuitstring' and parses it to obtain the 
+% impedance of the circuit as a function of the frequency. z = f(freq).
+
+% This is done by identifying each element (R1, C1, etc) and computing the
+% impedance of each element separately (using the circuit element functions
+% below).
+
+% The impedance behavior of each element is stored in a column of z.
+
+% Finally the total impedance is calculated, table z is destroyed and the
+% impedance response of the circuit is presented at the output of the
+% function.
+
 function z=computecircuit(param,circuit,freq)
-% Computes the complex impedance Z 
-% process CIRCUIT to get the elements and their numeral inside CIRCUIT
-A=circuit~='p' & circuit~='s' & circuit~='(' & circuit~=')' & circuit~=',';
-element=circuit(A);
+    
+    % Computes the complex impedance Z of the circuit string
+    % process CIRCUIT to get the elements and their numeral inside CIRCUIT
+    A=circuit~='p' & circuit~='s' & circuit~='(' & circuit~=')' & circuit~=',';
+    element=circuit(A);
 
-k=0;
-% for each element
-for i=1:2:length(element-2)
-    k=k+1;
-    nlp=str2num(element(i+1));% idendify its numeral
-    localparam=param(1:nlp);% get its parameter values
-    param=param(nlp+1:end);% remove them from param
-    func=[element(i),'([',num2str(localparam),']',',freq)'];% buit an functionnal string
-    z(:,k)=eval(func);% compute its impedance for all the frequencies
-    % modify the initial circuit string to make it functionnal (when used
-    % with eval)
-    circuit=regexprep(circuit,element(i:i+1),['z(:,',num2str(k),')'],'once');
-end % ToDo: modify this to remove the numeral (a resistor is known to have only one value, a CPE has only two... etc)
-% The idea would be to be able to write s(R,R,R,R,...) or p(R,R,R,R,...) or
-% combinations with any number of parameters, and without the numerals.
+    k=0;
+    % for each element
+    for i=1:2:length(element-2)
+        k=k+1;
+        nlp=str2num(element(i+1));% idendify its numeral
+        localparam=param(1:nlp);% get its parameter values
+        param=param(nlp+1:end);% remove them from param
+        
+        % compute the impedance of the current element for all the frequencies
+        z(:,k)=eval([element(i),'([',num2str(localparam),']',',freq)']);
+        
+        % modify the initial circuit string (to use it later with eval)
+        circuit=regexprep(circuit,element(i:i+1),['z(:,',num2str(k),')'],'once');
+    end
+    
+    z=eval(circuit);        % compute the global impedance
+    z=[real(z),imag(z)];    % real and imaginary parts are separated to be processed
 
-z=eval(circuit);% compute the global impedance
-z=[real(z),imag(z)];% real and imaginary parts are separated to be processed
+end % END of COMPUTECIRCUIT
 
-end             % END of COMPUTECIRCUIT
-% sub functions for the pre-buit elements
+% CIRCUIT ELEMENT FUNCTIONS
+% Calculate the impedance response of a single element
 function z=R(p,f)% resistor
 z=p*ones(size(f));
 end

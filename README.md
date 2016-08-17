@@ -1,6 +1,12 @@
-# eistoolbox by Juan J. Montero-Rodriguez
+# eistoolbox
 
-MATLAB (R) Toolbox for fitting EIS data to circuit models
+eistoolbox is a toolbox for MATLAB(R) used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuit models.
+
+The goal is to calculate the optimal circuit elements using standard minimization functions, such as the complex nonlinear least-squares method.
+
+After obtaining the best fit, the toolbox also estimates the chi-square Goodness-of-Fit. This parameter describes how well the fitted data adjusts to the original measured data.
+
+The toolbox is currently under active development.
 
 ## Instructions
 

@@ -342,17 +342,30 @@ disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting... please wait');
 % ToDo: Add cancel button
     for idx = 1:length(data)
+        
+        % First we do the fitting!
         % ToDo: select the algorithm depending on the drop-down list!
         [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB);
+        
+        % Calculation of the error estimates
+        
+        
+        
+        % Copy here the results to the global var (for exporting them later)
         results(idx,:) = num2cell(params);
+        
+        % Copy the filenames (for exporting them later)
         if size(fnames,2) == 1 % only one file
             filenames{idx} = fnames{idx};
         else % multiple files
             filenames(idx,1) = fnames{idx};
         end
+        
+        % Update the waitbar with the next sample!
         waitbar(idx / length(data), h, ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(filenames{idx},'_','\_')]);
     end
 close(h);
+
 
 disp('Info: Fitting completed successfully');
 
