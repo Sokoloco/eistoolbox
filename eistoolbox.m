@@ -125,7 +125,7 @@ function btn_savecirc_Callback(hObject, eventdata, handles)
 saveckt(hObject, eventdata, handles)
 
 function btn_saveas_Callback(hObject, eventdata, handles)
-save_results();
+save_results(hObject, eventdata, handles);
 
 %% MENU Callbacks
 function menu_file_Callback(hObject, eventdata, handles)
@@ -150,7 +150,7 @@ run_fitting(hObject, eventdata, handles);
 
 
 function menu_saveresults_Callback(hObject, eventdata, handles)
-save_results();
+save_results(hObject, eventdata, handles);
 
 function menu_aboutdialog_Callback(hObject, eventdata, handles)
 menu_about();
@@ -175,15 +175,10 @@ function addfiles(hObject, eventdata, handles)
    end
    
    disp('Info: Loading input data files -please wait-');
-   
-    % Clear all variables, to avoid using old data already loaded
-    if exist('data','var') clearvars -global *; end
+    
     set(handles.txt_savestatus,'string','No data to save');
     set(handles.txt_datafilecount,'string','0 data files loaded');
    
-    global data;    % Variable to store the impedance data in the program
-    global fnames;  % Variable to store the filenames for excel readability
-
     h = waitbar(0,'Loading input data files... please wait');
     
     % Check if the user had selected one menu_file (char), or more than one (cell)
@@ -214,7 +209,7 @@ function addfiles(hObject, eventdata, handles)
             otherwise
                 disp('Warning: other file types not currently supported');
         end
-            fnames{idx} = cellstr(fileName(idx));
+            fnames(idx,1) = cellstr(fileName(idx));
             set(handles.txt_datafilecount,'string',strcat(num2str(length(fnames)),' data files loaded')); % display info in main GUI
             waitbar(idx / length(fileName));
         end
@@ -236,6 +231,8 @@ function addfiles(hObject, eventdata, handles)
     
     disp('Info: Input data files succesfully plotted');
     
+    setappdata(handles.figure1,'data',data);
+    setappdata(handles.figure1,'fnames',fnames);
     
     
 
@@ -297,12 +294,14 @@ fprintf(fid,strcat(line4,'\n'));   % fourth line: upper boundary conditions
 
 fclose(fid);
 
+
+
+
+
+
 function run_fitting(hObject, eventdata, handles)
-global data;        % input files loaded to the program
-global fnames;      % index of the file names
-global results;     % output results obtained after the fitting
-global filenames;   % formatted output filenames to be saved
-global zbest;       % variable to store simulated results
+data = getappdata(handles.figure1,'data');        % input files loaded to the program
+fnames = getappdata(handles.figure1,'fnames');    % index of the file names
 
 if isempty(data)
     disp('Error: there is NO input data selected yet. Add some files first!');
@@ -332,16 +331,12 @@ if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of ini
 if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
 
 
-
-
-
 % perform the fitting
 disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting... please wait');
 
 % initializing variables for speed optimization!
 results = cell(length(data),length(initparams)); % preallocating for speed
-filenames = cell(length(data),1);    % preallocating for speed
 
 % check the selected algorithm
 algorithm = get(handles.algorithmmenu,'Value');
@@ -361,22 +356,13 @@ algorithm = get(handles.algorithmmenu,'Value');
         % Copy here the results to the global var (for exporting them later)
         results(idx,:) = num2cell(params);
         
-        % Copy the filenames (for exporting them later)
-        if size(fnames,2) == 1 % only one file
-            filenames{idx} = fnames{idx};
-        else % multiple files
-            filenames(idx,1) = fnames{idx};
-        end
-        
         % Update the waitbar with the next sample!
-        waitbar(idx / length(data), h, ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(filenames{idx},'_','\_')]);
+        waitbar(idx / length(data), h, ['Fitting ' int2str(idx) ' of ' int2str(length(data)) ' | File: ' strrep(fnames(idx),'_','\_')]);
     end
 close(h);
 
-% Calculate the goodness of fit and overall correlations
-calculate_correlations(data,zbest);
-
-
+setappdata(handles.figure1,'results',results);
+setappdata(handles.figure1,'zbest',zbest);
 
 disp('Info: Fitting completed successfully');
 
@@ -401,18 +387,22 @@ for idx=1:length(cnames)
         cnames{idx}=strcat('Param',int2str(idx-1));
     end
 end
-t = uitable(fres,'data',[filenames results],'ColumnWidth',{80},'ColumnName',cnames);
+
+t = uitable(fres,'data',[fnames results],'ColumnWidth',{80},'ColumnName',cnames);
 
 % Adjust the size to match the table
 t.Position(3) = t.Extent(3);
 %t.Position(4) = t.Extent(4);
 
 
+% Calculate the goodness of fit and overall correlations
+calculate_correlations(data,zbest);
 
 
-function save_results()
-global filenames;
-global results;
+function save_results(hObject, eventdata, handles)
+fnames = getappdata(handles.figure1,'fnames');
+results = getappdata(handles.figure1,'results');
+
 
 if isempty(results) 
     disp('Error: there is NO output data to be saved yet. Fit some data first!');
@@ -430,7 +420,7 @@ h = waitbar(0,'Saving data... please wait');
 
 disp('Info: Saving the results -please wait-');
 outfullfname = fullfile(outPathName,outFileName);
-xlswrite(outfullfname, [filenames results]);
+xlswrite(outfullfname, [fnames results]);
 disp('Info: Results saved successfully!');
 waitbar(1);
 close(h);
@@ -447,8 +437,6 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % ToDo: Close here all the open figures
 
-% Clear all used variables
-clearvars -global *;
 
 % Hint: delete(hObject) closes the figure
 delete(hObject);
