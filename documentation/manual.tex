@@ -1,7 +1,8 @@
-\documentclass[10pt,a4paper,oneside]{book}
+\documentclass[10pt,a4paper]{memoir}
+
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm]{geometry}
 \usepackage[utf8]{inputenc}
-\usepackage{tgtermes}
+\usepackage{palatino}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \graphicspath{{../images/}}
@@ -14,18 +15,51 @@
 \begin{document}
 \setlength{\parindent}{0pt}
 
-\begin{titlepage}
+
+% Title page
+ \vspace*{3cm}
 	
-	\textbf{eistoolbox manual v0.1}\\
-	written by Juan J. Montero-Rodriguez
-	
-\end{titlepage}
+ \begin{center}
+ 	\HUGE eistoolbox \par
+ \end{center}
+ \begin{center}
+ 	\LARGE for \par
+ \end{center}
+ \begin{center}
+ 	\HUGE Mathworks\textsuperscript{\textregistered} MATLAB \par
+ \end{center}
+ 
+ \vspace*{2cm}
+ 
+\begin{center}
+	\Large A toolbox for batch fitting of Electrochemical Impedance Spectroscopy data to equivalent circuit models
+\end{center} 
+ 
+ \vspace*{2cm}
+ 
+ \begin{center}
+ 	\Huge User Guide \par
+ \end{center}
+ \begin{center}
+ 	\LARGE Juan J. Montero-Rodríguez \par
+ \end{center}
+ 
+ \vspace*{4cm}
+ 
+ \begin{center}
+ 	\Large Version 0.1-45
+ \end{center}
+
+\clearpage
+
 
 
 
 \tableofcontents
 
 \chapter{Introduction}
+
+Electrochemical Impedance Spectroscopy (EIS) is a laboratory technique consisting of acquiring the frequency response of
 
 \textbf{eistoolbox} is a toolbox for MATLAB\textregistered{} used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuits. 
 
@@ -48,16 +82,11 @@ The currently implemented elements are: resistors, capacitors, inductors and con
 The Warburg element can be implemented by using a CPE and setting the second parameter to 1/2.
 
 
-
-
-
 \section{Planned updates}
 
 In the future it will accept Levenberg-Marquard, Nelder-Mead, BFGS and Powell algorithms.
 
 It will also include the error percentages of every fitting parameter, as well as the Pearson coefficient and correlation plot of the fitting results.
-
-
 
 
 \chapter{Using the eistoolbox}
@@ -77,17 +106,11 @@ It will also include the error percentages of every fitting parameter, as well a
 \includegraphics[width=10cm]{scr_results.png}
 
 
-
-
-
-
 \chapter{Algorithms}
 
 \section{fminsearchbnd}
 
 Currently it supports only the fminsearchbnd function from Zfit.m
-
-
 
 
 \chapter{Statistics}
@@ -115,7 +138,6 @@ Expected= measured data
 ToDo
 
 
-
 \newpage{}
 \chapter{Licenses for included software}
 
@@ -125,6 +147,7 @@ The original file was released in 2005 and it is available here:\\
 
 \url{https://de.mathworks.com/matlabcentral/fileexchange/19460-zfit}
 
+\begin{small}
 \begin{verbatim}
 Copyright (c) 2005, Jean-Luc Dellis
 All rights reserved.
@@ -151,7 +174,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 \end{verbatim}
-
+\end{small}
 
 
 \end{document}
