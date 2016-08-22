@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{memoir}
+\documentclass[10pt,a4paper,oneside]{memoir}
 
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm]{geometry}
 \usepackage[utf8]{inputenc}
@@ -12,8 +12,10 @@
 \usepackage{amssymb}
 
 
+
 \begin{document}
 \setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
 
 
 % Title page
@@ -57,15 +59,51 @@
 
 \tableofcontents
 
-\chapter{Introduction}
 
-Electrochemical Impedance Spectroscopy (EIS) is a laboratory technique consisting of acquiring the frequency response of
+
+\chapter{Introduction}
 
 \textbf{eistoolbox} is a toolbox for MATLAB\textregistered{} used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuits. 
 
-Presently it is \textbf{alpha software}, and it will evolve over time.
+Currently it is \textbf{alpha software}, and it will evolve over time.
 
-\section{Current capabilities}
+\section{Impedance Spectroscopy}
+
+Electrochemical Impedance Spectroscopy (EIS) measures the complex impedance of a sample as a function of the frequency. The experimental results are stored in two possible formats: polar coordinates (magnitude and phase) or rectangular coordinates (real and imaginary).
+
+\begin{align} \label{impedance}
+	Z(f) = R + jX
+\end{align}
+
+where R is the resistance and X is the reactance of the sample.
+
+The real part of the impedance is proportional to the resistivity, and the imaginary part is proportional to the permittivity. Both parameters can be calculated directly from the measurements, considering the exact geometry of the electrodes and measurement setup. For parallel plate electrodes, the following equations apply:
+
+\begin{align}
+R = \dfrac{\rho L}{A} \label{resistance} \\
+C = \dfrac{\epsilon A}{D} \label{capacitance}
+\end{align}
+
+The capacitive reactance is given by
+
+\begin{align}
+X_C = \dfrac{1}{2\pi{}fC}	\label{reactivecapacitance}
+\end{align}
+
+Substituting \eqref{capacitance} and \eqref{reactivecapacitance} into \eqref{impedance} results in the following equation, which describes the impedance in terms of the resistivity and permittivity of the sample between parallel electrodes:
+
+\begin{align}
+Z(f) = \dfrac{\rho L}{A} + \dfrac{1}{2\pi{}f} \dfrac{D}{\epsilon A}
+\end{align}
+
+Impedance Spectroscopy is also referred as Dielectric Spectroscopy, because it gives information about the dielectric properties of the measured sample.
+
+\clearpage
+\section{Fitting to Equivalent Circuit Models}
+
+Experimental data is often fitted to equivalent circuit models. The models are designed to describe the interfaces, chemical processes and boundaries of the measured setup.
+
+\chapter{Current capabilities of this software}
 
 It can accept any number of input files, both in CSV and Gamry DTA formats.
 
