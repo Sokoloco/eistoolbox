@@ -79,13 +79,11 @@ set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Other algorithms'});
 
 
 %% AXES CREATION
-% --- Executes during object creation, after setting all properties.
 function axes1_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate axes1
+grid on;
 
-% --- Executes during object creation, after setting all properties.
 function axes2_CreateFcn(hObject, eventdata, handles)
-% Hint: place code in OpeningFcn to populate axes2
+grid on;
 
 %% EDIT BOXES
 function edit_circuit_Callback(hObject, eventdata, handles)
@@ -126,6 +124,26 @@ saveckt(hObject, eventdata, handles)
 
 function btn_saveas_Callback(hObject, eventdata, handles)
 save_results(hObject, eventdata, handles);
+
+
+function btn_nyq_Callback(hObject, eventdata, handles)
+% Plots current input data as Nyquist
+plotnyq(hObject, eventdata, handles);
+
+function btn_bod_Callback(hObject, eventdata, handles)
+% Plots current input data as Bode
+plotbod(hObject, eventdata, handles);
+
+
+function btn_nyq2_Callback(hObject, eventdata, handles)
+plotnyq2(hObject, eventdata, handles);
+
+function btn_bod2_Callback(hObject, eventdata, handles)
+plotbod2(hObject, eventdata, handles);
+
+function btn_adm_Callback(hObject, eventdata, handles)
+% Plots current input data as Admittance
+
 
 %% MENU Callbacks
 function menu_file_Callback(hObject, eventdata, handles)
@@ -218,8 +236,24 @@ function addfiles(hObject, eventdata, handles)
     close(h);
     
     disp('Info: Input data files succesfully loaded');
-    disp('Info: Plotting Nyquist response of input data files');
     
+    setappdata(handles.figure1,'data',data);
+    setappdata(handles.figure1,'fnames',fnames);
+    
+    plotnyq(hObject, eventdata, handles);
+    
+
+function plotnyq(hObject, eventdata, handles)
+% plots input data as Nyquist
+    data=getappdata(handles.figure1,'data');
+
+    if isempty(data)
+        disp('Error: there is NO input data selected yet. Add some files first!');
+        return;
+    end
+    
+    disp('Info: Plotting Nyquist response of input data files');
+
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla reset;  % Clears any old information already present in the diagram
@@ -228,14 +262,95 @@ function addfiles(hObject, eventdata, handles)
     for idx=1:length(data)
         plot(data{idx}(:,2),abs(data{idx}(:,3)));
     end
-    
+
     disp('Info: Input data files succesfully plotted');
     
-    setappdata(handles.figure1,'data',data);
-    setappdata(handles.figure1,'fnames',fnames);
-    
-    
+function plotbod(hObject, eventdata, handles)
+% plots input data as Bode
+    data=getappdata(handles.figure1,'data');
 
+    if isempty(data)
+        disp('Error: there is NO input data selected yet. Add some files first!');
+        return;
+    end
+    
+    disp('Info: Plotting Bode response of input data files');
+
+    % Now we plot all the acquired data from the files
+    axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
+    cla reset;  % Clears any old information already present in the diagram
+    set(gca,'xscale','log');    % change x axis to log
+    hold on;
+    grid on;
+    yyaxis left;    % for magnitude
+    for idx=1:length(data)
+        semilogx(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ),'Color',[0 0 0.6]);
+    end
+    ax=gca;
+    ax.YColor = [0 0 0.6];
+    yyaxis right;   % for phase
+    for idx=1:length(data)
+        semilogx(data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3) ),'Color',[0.6 0 0]);
+    end
+    ax=gca;
+    ax.YColor = [0.6 0 0];
+    disp('Info: Input data files succesfully plotted');
+
+function plotnyq2(hObject, eventdata, handles)
+% plots input data as Nyquist
+    zbest=getappdata(handles.figure1,'zbest');
+
+    if isempty(zbest)
+        disp('Error: there is NO fitted data selected yet. Fit some data first!');
+        return;
+    end
+    
+    disp('Info: Plotting Nyquist response of fitted data');
+
+    % Display results from zbest in second plot
+    axes(handles.axes2);
+    cla reset;
+    hold on;
+    grid on;
+    for idx=1:length(zbest)
+        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)));
+    end
+    
+    disp('Info: Fitted data succesfully plotted');
+
+function plotbod2(hObject, eventdata, handles)
+% plots input data as Bode
+    zbest=getappdata(handles.figure1,'zbest');  % fitting 
+    data= getappdata(handles.figure1,'data');   % frequencies
+
+    if isempty(zbest)
+        disp('Error: there is NO fitted data selected yet. Fit some data first!');
+        return;
+    end
+    
+    disp('Info: Plotting Bode response of fitted data');
+
+    % Display results from zbest in second plot
+    axes(handles.axes2);
+    cla reset;
+    set(gca,'xscale','log');    % change x axis to log
+    hold on;
+    grid on;
+    yyaxis left;    % for magnitude
+    for idx=1:length(data)
+        semilogx(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ),'Color',[0 0 0.6]);
+    end
+    ax=gca;
+    ax.YColor = [0 0 0.6];
+    yyaxis right;   % for phase
+    for idx=1:length(data)
+        semilogx(data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2) ),'Color',[0.6 0 0]);
+    end
+    ax=gca;
+    ax.YColor = [0.6 0 0];
+    
+    disp('Info: Fitted data succesfully plotted');
+    
 function loadckt(hObject, eventdata, handles)
 [fileName, filePath] = uigetfile( ...
     {'*.ckt','Circuit files (*.ckt)';       % File type definition: CKT
@@ -368,14 +483,7 @@ disp('Info: Fitting completed successfully');
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
 
-% Display results from zbest in second plot
-axes(handles.axes2);
-cla reset;
-hold on;
-grid on;
-for idx=1:length(data)
-    plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)));
-end
+plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
 % Display a table with the fitting results in a new figure
 fres = figure();
@@ -458,3 +566,4 @@ delete(hObject);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
