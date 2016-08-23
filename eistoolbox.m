@@ -13,8 +13,8 @@ function varargout = eistoolbox(varargin)
 %   * Read any number of .CSV or Gamry .DTA files
 %   * Load and save basic circuit models in .ckt text files
 %   * Fit any number of data files using the fminsearchbnd algorithm
-%   * Display the input files as a Nyquist plot
-%   * Display the fitting results as a Nyquist plot
+%   * Display the input files as Nyquist/Bode plots
+%   * Display the fitting results as Nyquist/Bode plots
 %   * Show a table with the fitted parameters via uitable
 %   * Export the results as a MS Excel spreadsheet
 % 
@@ -23,7 +23,6 @@ function varargout = eistoolbox(varargin)
 %   - Calculate individual parameter error percentages or error estimates
 %   - Implement iteration number control
 %   - Implement other algorithms
-%   - Plot also Bode for input data and for fitting results
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -282,18 +281,20 @@ function plotbod(hObject, eventdata, handles)
     set(gca,'xscale','log');    % change x axis to log
     hold on;
     grid on;
+    
+    shade = linspace(0.5,1,length(data));
     yyaxis left;    % for magnitude
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ),'Color',[0 0 0.6]);
+        semilogx(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ),'Color',[0 0 shade(idx)],'Marker','.');
     end
     ax=gca;
-    ax.YColor = [0 0 0.6];
+    ax.YColor = [0 0 1];
     yyaxis right;   % for phase
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3) ),'Color',[0.6 0 0]);
+        semilogx(data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3) ),'Color',[shade(idx) 0 0],'Marker','.');
     end
     ax=gca;
-    ax.YColor = [0.6 0 0];
+    ax.YColor = [1 0 0];
     disp('Info: Input data files succesfully plotted');
 
 function plotnyq2(hObject, eventdata, handles)
@@ -336,18 +337,20 @@ function plotbod2(hObject, eventdata, handles)
     set(gca,'xscale','log');    % change x axis to log
     hold on;
     grid on;
+    
+    shade = linspace(0.5,1,length(data));
     yyaxis left;    % for magnitude
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ),'Color',[0 0 0.6]);
+        semilogx(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ),'Color',[0 0 shade(idx)],'Marker','.');
     end
     ax=gca;
-    ax.YColor = [0 0 0.6];
+    ax.YColor = [0 0 1];
     yyaxis right;   % for phase
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2) ),'Color',[0.6 0 0]);
+        semilogx(data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2) ),'Color',[shade(idx) 0 0],'Marker','.');
     end
     ax=gca;
-    ax.YColor = [0.6 0 0];
+    ax.YColor = [1 0 0];
     
     disp('Info: Fitted data succesfully plotted');
     
