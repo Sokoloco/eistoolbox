@@ -282,19 +282,11 @@ function plotbod(hObject, eventdata, handles)
     hold on;
     grid on;
     
-    shade = linspace(0.5,1,length(data));
-    yyaxis left;    % for magnitude
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ),'Color',[0 0 shade(idx)],'Marker','.');
+        plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
+            data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3)), ... % phase
+            'semilogx'); 
     end
-    ax=gca;
-    ax.YColor = [0 0 1];
-    yyaxis right;   % for phase
-    for idx=1:length(data)
-        semilogx(data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3) ),'Color',[shade(idx) 0 0],'Marker','.');
-    end
-    ax=gca;
-    ax.YColor = [1 0 0];
     disp('Info: Input data files succesfully plotted');
 
 function plotnyq2(hObject, eventdata, handles)
@@ -338,20 +330,11 @@ function plotbod2(hObject, eventdata, handles)
     hold on;
     grid on;
     
-    shade = linspace(0.5,1,length(data));
-    yyaxis left;    % for magnitude
     for idx=1:length(data)
-        semilogx(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ),'Color',[0 0 shade(idx)],'Marker','.');
-    end
-    ax=gca;
-    ax.YColor = [0 0 1];
-    yyaxis right;   % for phase
-    for idx=1:length(data)
-        semilogx(data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2) ),'Color',[shade(idx) 0 0],'Marker','.');
-    end
-    ax=gca;
-    ax.YColor = [1 0 0];
-    
+        plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
+            data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2)), ... % phase
+            'semilogx'); 
+    end    
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
