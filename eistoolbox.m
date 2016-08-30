@@ -434,6 +434,7 @@ if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of ini
 
 
 % perform the fitting
+disp(datestr(clock));
 disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting... please wait');
 
@@ -467,6 +468,7 @@ close(h);
 setappdata(handles.figure1,'results',results);
 setappdata(handles.figure1,'zbest',zbest);
 
+disp(datestr(clock));
 disp('Info: Fitting completed successfully');
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
