@@ -275,6 +275,7 @@ function plotbod(hObject, eventdata, handles)
     
     disp('Info: Plotting Bode response of input data files');
 
+    
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla reset;  % Clears any old information already present in the diagram
@@ -285,7 +286,7 @@ function plotbod(hObject, eventdata, handles)
     for idx=1:length(data)
         plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
             data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3)), ... % phase
-            'semilogx'); 
+            'semilogx');
     end
     disp('Info: Input data files succesfully plotted');
 
@@ -334,7 +335,7 @@ function plotbod2(hObject, eventdata, handles)
         plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
             data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2)), ... % phase
             'semilogx'); 
-    end    
+    end
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
@@ -458,7 +459,8 @@ algorithm = get(handles.algorithmmenu,'Value');
         results(idx,:) = num2cell(params);
         
         % Update the waitbar with the next sample!
-        waitbar(idx / length(data), h, ['Fitting ' int2str(idx) ' of ' int2str(length(data)) ' | File: ' strrep(fnames(idx),'_','\_')]);
+        wtext = strjoin( ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(fnames(idx),'_','\_')] , '' );
+        waitbar(idx / length(data), h, wtext);
     end
 close(h);
 
