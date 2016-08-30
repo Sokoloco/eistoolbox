@@ -1,5 +1,5 @@
 function [pbest,zbest,fval,exitflag,output]= ...
-    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB,algorithm)
+    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB,algorithm,options)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -9,7 +9,6 @@ function [pbest,zbest,fval,exitflag,output]= ...
 
 %% MAIN FUNCTION
 freq=data(:,1);
-options=[];                                        
 if isempty(indexes)
     indexes=1:length(freq);
 end

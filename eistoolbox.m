@@ -410,8 +410,6 @@ if isempty(data)
     return;
 end
 
-disp('Warning: Iteration number feature is not yet implemented');
-
 % Read configuration parameters from the edit boxes -----------------------
     %  comment: eval is required to parse the strings and get the arrays!
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
@@ -447,10 +445,14 @@ algorithm = get(handles.algorithmmenu,'Value');
 % 1 = fminsearchbnd
 % 2 = lsqnonlin
 
+maxfunevals = str2num( get(handles.edit_iterations,'String') );
+maxiterats = maxfunevals;
+options = optimset('MaxFunEvals', maxfunevals, 'MaxIter',maxiterats);
+
     for idx = 1:length(data)
         
         % First we do the fitting!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB,algorithm);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB,algorithm,options);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
