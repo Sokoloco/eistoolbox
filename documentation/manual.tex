@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \graphicspath{{../images/}}
 \usepackage{hyperref}
+\urlstyle{same}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -91,10 +92,14 @@ Z(f) = \dfrac{\rho L}{A} + \dfrac{1}{2\pi{}f} \dfrac{D}{\epsilon A}
 
 Impedance Spectroscopy is also referred as Dielectric Spectroscopy, because it gives information about the dielectric properties of the measured sample.
 
-Experimental data is fitted to equivalent circuit models. The models are designed to describe the interfaces, chemical processes and boundaries of the measured setup.
+
 
 \clearpage
-\section{Equivalent Circuit Elements}
+\section{Equivalent Circuits}
+
+Experimental data is fitted to equivalent circuit models. The models are designed to describe the interfaces, chemical processes and boundaries of the measured setup.
+
+\subsection{Circuit Elements}
 
 The elements present in the software are described in Table \ref{circelements}:
 
@@ -112,14 +117,22 @@ The elements present in the software are described in Table \ref{circelements}:
 	\end{tabular}
 \end{table}
 
-Notes:
+The Warburg element can be obtained with a Constant-Phase Element by setting $p_2=0.5$
 
-\begin{itemize}
-	\item The Warburg element can be obtained with a Constant-Phase Element by setting $p_2=0.5$
-	\item The number next to the element letter is the number of free parameters for this element. For a capacitor (C1) the free parameter is the capacitance. For the constant-phase element (E2) the parameters are p1 and p2.
-\end{itemize}
 
-Circuits can be built using series and parallel combinations of the described elements, using the series and parallel operators s() and p(). These operators can contain any number of elements.
+\subsection{Circuit String Syntax}
+
+Circuits can be built using series and parallel combinations of the elements in Table \ref{circelements}, using the series and parallel operators s() and p(). These operators can contain any number of elements, separated by commas.
+
+The number next to the element letter is the number of free parameters for this element. For a capacitor (C1) the only free parameter is the capacitance. For the constant-phase element (E2) the free parameters are p1 and p2.
+
+\textbf{Common mistake:} Do not write the circuit elements as s(R1,R2,R3,C4...). The elements cannot be written as labels. Instead, write s(R1,R1,R1,C1...).
+
+\subsection{Circuit Files (.ckt)}
+
+The circuit string, initial parameters and boundary conditions can be stored and loaded from a circuit file with the .ckt extension. This file is read by MATLAB line-to-line.
+
+Check the folder 'examples\_circuits' for more examples.
 
 \begin{center}
 \fbox{ \parbox{14cm}{
@@ -141,7 +154,7 @@ Circuits can be built using series and parallel combinations of the described el
 		(8,0) to[short] (10,0);
 	\end{circuitikz}
 	
-	\textbf{Recommended circuit options:}
+	\textbf{Recommended circuit file:}
 	
 	s(R1,p(R1,C1),p(R1,C1),p(R1,C1))	\% circuit string
 	
@@ -155,9 +168,45 @@ Circuits can be built using series and parallel combinations of the described el
 }
 \end{center}
 
-The circuit model and parameters can be stored in a circuit file with the .ckt extension.
+\begin{center}
+	\fbox{ \parbox{14cm}{
+			\textbf{Example 2: Ladder circuit in the form: ((((R//C)+R)//C)+R)//C+R}
+			
+			\begin{circuitikz}
+				\draw 
+				(6,0) to[R=R3] (8,0)
+				(8,0) to[short] (8,2)
+				(6,0) to[short] (6,2)
+				(6,2) to[C=C3] (8,2)
+				(4,2) to[R=R2] (6,2)
+				(4,2) to[short] (4,4)
+				(4,4) to[C=C2] (6,4)
+				(6,4) to[short] (8,4)
+				(2,4) to[R=R1] (4,4)
+				(2,4) to[short] (2,6)
+				(2,6) to[C=C1] (4,6)
+				(4,6) to[short] (8,6)
+				(0,6) to[R=RS] (2,6)
+				(8,6) to[short] (8,0)
+				(8,6) to[short] (10,6)
+				;
+			\end{circuitikz}
+			
+			\textbf{Recommended circuit file:}
+			
+			s(p(s(p(s(p(R1,C1),R1),C1),R1),C1),R1)	\% circuit string
+			
+			[100,1e-6,100,1e-6,100,1e-6,100]	\% initial parameters... order: R3,C3,R2,C2,R1,C1,RS
+			
+			[0,0,0,0,0,0,0]						\% lower boundary conditions
+			
+			[inf,inf,inf,inf,inf,inf,inf]		 \% upper boundary conditions
+			
+		}
+	}
+\end{center}
 
-Check the folder 'examples\_circuits' for more examples.
+
 
 \chapter{Current capabilities of this software}
 
@@ -200,23 +249,52 @@ It will also include the error percentages of every fitting parameter, as well a
 \includegraphics[width=10cm]{scr_results.png}
 
 
-\chapter{Algorithms}
+\chapter{Fitting Algorithms}
 
-To find the optimal fitting parameters, this program:
-
-\begin{enumerate}
-\item Computes a simulated impedance curve using the \textbf{input parameters}.
-\item Calculates the difference between the simulated and the experimental data
-\item Adjusts the parameters to reduce the difference using an \textbf{optimization function}.
-\end{enumerate}
+The fitting algorithms of this toolbox reduce the following distance function:
 
 
+\begin{verbatim}
+function dist=distance(param)
+    ymod=feval(handlecomputecircuit,param,circuitstring,freq);
+    if isequal('fitNP',fitstring)
+        dist=sum(sum((ymod-zrzi).^2));
+    else
+        dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
+    end
+end
+\end{verbatim}
+
+
+For \textbf{non-proportional fitting} the algorithm minimizes the squared difference between fitted (observed) and measured (expected) data.
+
+\[ d = \sum(o-e)^2 \]
+
+For \textbf{proportional fitting} the algorithm calculates the squared difference between fitted (observed) and measured (expected) data, divided by the measured (expected) data, in a way similar to the Pearson's chi-square test:
+
+\[ d = \chi^2 = \sum \dfrac{(o-e)^2}{e} \]
+
+If the experimental impedance curve matches exactly the simulated curve, the distance function would have a value of zero.
+
+To minimize the distance function, the toolbox adjusts the input parameters and recalculates the simulated data in each iteration. This is done in the second line of the code from above.
 
 \section{fminsearchbnd}
 
-Currently it supports only the fminsearchbnd function from Zfit.m
+This function was written by John D'Errico and published on MathWorks MATLAB Central under an open-source license. The original file can be downloaded at \url{https://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon}.
 
-Definition: distance function
+The function is based on fminsearch and includes the possibility of using boundary conditions, such as the lower and upper limits for the individual circuit parameters.
+
+\section{Other algorithms}
+
+The following optimization algorithms are not yet implemented in this toolbox. These are some of the most used algorithms for fitting EIS data to equivalent circuit models.
+
+\begin{itemize}
+	\item Levenberg-Marquardt
+	\item Nelder-Mead
+	\item BFGS
+	\item Powell
+\end{itemize}
+
 
 
 \chapter{Statistics}
