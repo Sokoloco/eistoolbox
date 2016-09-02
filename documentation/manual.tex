@@ -208,33 +208,9 @@ Check the folder 'examples\_circuits' for more examples.
 
 
 
-\chapter{Current capabilities of this software}
-
-It can accept any number of input files, both in CSV and Gamry DTA formats.
-
-The CSV files should contain three columns with the impedance data, in the order: FREQ,REAL,IMAG. 
-
-The imaginary part can be positive or negative; the absolute value is taken inside the program before plotting.
-
-The fitting algorithm uses the "fminsearch" function, implemented using the Zfit library from Jean-Luc Dellis. 
-
-It accepts any type of circuit model, built with serial and parallel elements, in the Zfit circuit string format.
-
-The currently implemented elements are: resistors, capacitors, inductors and constant-phase elements (CPE). 
-
-The Warburg element can be implemented by using a CPE and setting the second parameter to 1/2.
 
 
-\section{Planned updates}
-
-In the future it will accept Levenberg-Marquard, Nelder-Mead, BFGS and Powell algorithms.
-
-It will also include the error percentages of every fitting parameter, as well as the Pearson coefficient and correlation plot of the fitting results.
-
-
-\chapter{Using the eistoolbox}
-
-\section{Quick start guide}
+\chapter{Quick Start Guide}
 
 1. Add files using the "Add file..." button
 
@@ -276,13 +252,9 @@ For \textbf{proportional fitting} the algorithm calculates the squared differenc
 
 If the experimental impedance curve matches exactly the simulated curve, the distance function would have a value of zero.
 
-To minimize the distance function, the toolbox adjusts the input parameters and recalculates the simulated data in each iteration. This is done in the second line of the code from above.
+To minimize the distance function, the toolbox uses the \textbf{fminsearchbnd} algorithm.
 
-\section{fminsearchbnd}
 
-This function was written by John D'Errico and published on MathWorks MATLAB Central under an open-source license. The original file can be downloaded at \url{https://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon}.
-
-The function is based on fminsearch and includes the possibility of using boundary conditions, such as the lower and upper limits for the individual circuit parameters.
 
 \section{Other algorithms}
 
@@ -299,15 +271,20 @@ The following optimization algorithms are not yet implemented in this toolbox. T
 
 \chapter{Statistics}
 
-The program computes the following statistical parameters:
+The overall quality of the fitting can be determined by comparing the original measured data file (expected values) to the simulated values using the fit results (observed values).
+
+Currently the software implements two methods for this comparison: linear regression and Pearson's chi-square test of goodness-of-fit.
+
 
 \section{Linear regressions}
 
-Real of fitted vs Real of measured
 
-Imag of fitted vs Imag of measured
 
-MAG of fitted vs MAG of measured
+\subsection{Real of fitted vs Real of measured}
+
+\subsection{Imag of fitted vs Imag of measured}
+
+\subsection{MAG of fitted vs MAG of measured}
 
 \section{Chi-square goodness of fit}
 
@@ -359,6 +336,13 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 \end{verbatim}
 \end{small}
+
+
+\section{fminsearchbnd}
+
+This function was written by John D'Errico and published on MathWorks MATLAB Central under an open-source license. The original file can be downloaded at \url{https://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon}.
+
+The function is based on fminsearch and includes the possibility of using boundary conditions, such as the lower and upper limits for the individual circuit parameters.
 
 
 \end{document}
