@@ -94,8 +94,49 @@ Impedance Spectroscopy is also referred as Dielectric Spectroscopy, because it g
 
 
 
-\clearpage
-\section{Equivalent Circuits}
+\chapter{Quick Start Guide}
+
+Steps for batch fitting impedance data curves:
+
+1. Add files using the "Add file..." button (supported .CSV or .DTA)
+
+2. Write the circuit string and fitting parameters (circuit string formatting, see Chapter 3)
+
+3. Click the "Fit" button
+
+4. Save the results using the "Save..." button
+
+\section{Graphical User Interface}
+
+\subsection{Main Window}
+
+\includegraphics[width=15cm]{main_screenshot.png}
+
+\subsection{Results Window}
+
+The output parameters after the fitting are displayed as a table, in the same order as they appear in the circuit string.
+
+\includegraphics[width=10cm]{scr_results.png}
+
+\subsection{Correlations Window}
+
+This window is useful to validate the fitting results. 
+
+There are three correlations implemented: real, imaginary and magnitude. 
+
+\begin{itemize}
+\item The real correlation coefficient (rsq\_real) is obtained by linear regression from the plot of the fitted vs. measured real part of the impedance. 
+\item The imaginary correlation coefficient (rsq\_imag) is obtained by linear regression from the plot of the fitted vs. measured imaginary part of the impedance.
+\item The magnitude correlation coefficient (rsq\_MAG) is obtained by linear regression from the plot of the fitted vs. measured magnitude of the impedance.	
+\end{itemize}
+
+The plots themselves are presented as individual figures. For a perfect fit, the three plots are straight lines where y(x)=x.
+
+Additionally, the fitting results are compared with the original data files by using the Pearson's Chi-square Test of Goodness-of-Fit. This information includes the following parameters: R, chi2, p, fit. These parameters are further explained in Chapter 5.
+
+\includegraphics[width=15cm]{correlations.png}
+
+\chapter{Equivalent Circuits}
 
 Experimental data is fitted to equivalent circuit models. The models are designed to describe the interfaces, chemical processes and boundaries of the measured setup.
 
@@ -210,19 +251,6 @@ Check the folder 'examples\_circuits' for more examples.
 
 
 
-\chapter{Quick Start Guide}
-
-1. Add files using the "Add file..." button
-
-2. Write the circuit string and fitting parameters (circuit string formatting)
-
-3. Click the "Fit" button
-
-4. Save the results using the "Save..." button
-
-\includegraphics[width=15cm]{main_screenshot.png}
-
-\includegraphics[width=10cm]{scr_results.png}
 
 
 \chapter{Fitting Algorithms}

@@ -17,12 +17,13 @@ function varargout = eistoolbox(varargin)
 %   * Display the fitting results as Nyquist/Bode plots
 %   * Show a table with the fitted parameters via uitable
 %   * Export the results as a MS Excel spreadsheet
+%   * Number of iterations can be defined by the user
 % 
 % ToDo:
 %   - Calculate correlation coefficients between input data and fitted data
 %   - Calculate individual parameter error percentages or error estimates
-%   - Implement iteration number control
 %   - Implement other algorithms
+%   - Add button for simulation of impedance data
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -171,6 +172,18 @@ save_results(hObject, eventdata, handles);
 
 function menu_aboutdialog_Callback(hObject, eventdata, handles)
 menu_about();
+
+
+% --- Executes when user attempts to close program.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% ToDo: Close here all the open figures
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -529,17 +542,6 @@ close(h);
 
 
 
-% --- Executes when user attempts to close program.
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% ToDo: Close here all the open figures
-
-
-% Hint: delete(hObject) closes the figure
-delete(hObject);
 
 
 
