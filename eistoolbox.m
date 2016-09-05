@@ -60,7 +60,7 @@ varargout{1} = handles.output;
 
 
 % --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
+function eismain_CreateFcn(hObject, eventdata, handles)
 
 
     
@@ -175,8 +175,8 @@ menu_about();
 
 
 % --- Executes when user attempts to close program.
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
+function eismain_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to eismain (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -249,15 +249,15 @@ function addfiles(hObject, eventdata, handles)
     
     disp('Info: Input data files succesfully loaded');
     
-    setappdata(handles.figure1,'data',data);
-    setappdata(handles.figure1,'fnames',fnames);
+    setappdata(handles.eismain,'data',data);
+    setappdata(handles.eismain,'fnames',fnames);
     
     plotnyq(hObject, eventdata, handles);
     
 
 function plotnyq(hObject, eventdata, handles)
 % plots input data as Nyquist
-    data=getappdata(handles.figure1,'data');
+    data=getappdata(handles.eismain,'data');
 
     if isempty(data)
         disp('Error: there is NO input data selected yet. Add some files first!');
@@ -279,7 +279,7 @@ function plotnyq(hObject, eventdata, handles)
     
 function plotbod(hObject, eventdata, handles)
 % plots input data as Bode
-    data=getappdata(handles.figure1,'data');
+    data=getappdata(handles.eismain,'data');
 
     if isempty(data)
         disp('Error: there is NO input data selected yet. Add some files first!');
@@ -305,7 +305,7 @@ function plotbod(hObject, eventdata, handles)
 
 function plotnyq2(hObject, eventdata, handles)
 % plots input data as Nyquist
-    zbest=getappdata(handles.figure1,'zbest');
+    zbest=getappdata(handles.eismain,'zbest');
 
     if isempty(zbest)
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
@@ -327,8 +327,8 @@ function plotnyq2(hObject, eventdata, handles)
 
 function plotbod2(hObject, eventdata, handles)
 % plots input data as Bode
-    zbest=getappdata(handles.figure1,'zbest');  % fitting 
-    data= getappdata(handles.figure1,'data');   % frequencies
+    zbest=getappdata(handles.eismain,'zbest');  % fitting 
+    data= getappdata(handles.eismain,'data');   % frequencies
 
     if isempty(zbest)
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
@@ -415,8 +415,8 @@ fclose(fid);
 
 
 function run_fitting(hObject, eventdata, handles)
-data = getappdata(handles.figure1,'data');        % input files loaded to the program
-fnames = getappdata(handles.figure1,'fnames');    % index of the file names
+data = getappdata(handles.eismain,'data');        % input files loaded to the program
+fnames = getappdata(handles.eismain,'fnames');    % index of the file names
 
 if isempty(data)
     disp('Error: there is NO input data selected yet. Add some files first!');
@@ -480,8 +480,8 @@ options = optimset('MaxFunEvals', maxfunevals, 'MaxIter',maxiterats);
     end
 close(h);
 
-setappdata(handles.figure1,'results',results);
-setappdata(handles.figure1,'zbest',zbest);
+setappdata(handles.eismain,'results',results);
+setappdata(handles.eismain,'zbest',zbest);
 
 disp(datestr(clock));
 disp('Info: Fitting completed successfully');
@@ -501,27 +501,29 @@ for idx=1:length(cnames)
     end
 end
 
+setappdata(handles.eismain,'param_cnames',cnames);
+
 t = uitable(fres,'data',[fnames results],'ColumnWidth',{80},'ColumnName',cnames);
 
 % Adjust the size to match the table
 t.Position(3) = t.Extent(3);
 %t.Position(4) = t.Extent(4);
 
-
 % Calculate the goodness of fit and overall correlations
-calculate_correlations(data,zbest);
+calculate_correlations(hObject, eventdata, handles);
 
 
 function save_results(hObject, eventdata, handles)
-fnames = getappdata(handles.figure1,'fnames');
-results = getappdata(handles.figure1,'results');
-
+fnames = getappdata(handles.eismain,'fnames');
+results = getappdata(handles.eismain,'results');
+corr_values = getappdata(handles.eismain,'corr_values');
+corr_cnames = getappdata(handles.eismain,'corr_cnames');
+param_cnames = getappdata(handles.eismain,'param_cnames');
 
 if isempty(results) 
     disp('Error: there is NO output data to be saved yet. Fit some data first!');
     return;
 end
-
 
 [outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
 if isequal(outFileName,0)
@@ -533,7 +535,7 @@ h = waitbar(0,'Saving data... please wait');
 
 disp('Info: Saving the results -please wait-');
 outfullfname = fullfile(outPathName,outFileName);
-xlswrite(outfullfname, [fnames results]);
+xlswrite(outfullfname, [param_cnames corr_cnames ; fnames results corr_values]);
 disp('Info: Results saved successfully!');
 waitbar(1);
 close(h);

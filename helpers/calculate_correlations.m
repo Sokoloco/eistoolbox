@@ -1,4 +1,6 @@
-function calculate_correlations(measured,simulated)
+function calculate_correlations(hObject, eventdata, handles)
+measured = getappdata(handles.eismain,'data');
+simulated= getappdata(handles.eismain,'zbest');
 % This function calculates the correlation coefficient between the input
 % curve (expected) and the fitted curve (observed).
 
@@ -134,3 +136,5 @@ t=findobj('Tag','tablecorr');
 set(t, 'Data', corrs,'ColumnWidth',{80},'ColumnName',cnames);
 % implement residual errors plot, check Orazem, Chapter 20
 
+setappdata(handles.eismain,'corr_values',corrs);
+setappdata(handles.eismain,'corr_cnames',cnames);
