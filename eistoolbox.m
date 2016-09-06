@@ -409,7 +409,8 @@ if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of ini
 if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
 
 % perform the fitting
-disp(datestr(clock));
+timenow = clock;
+%disp(datestr(clock));
 disp('Info: Starting fitting process... -please wait-');
 h = waitbar(0,'Performing fitting... please wait');
 
@@ -447,8 +448,10 @@ close(h);
 setappdata(handles.eismain,'results',results);
 setappdata(handles.eismain,'zbest',zbest);
 
-disp(datestr(clock));
 disp('Info: Fitting completed successfully');
+elapsedtime = clock-timenow;
+messg = sprintf('Info: Fitting time: %d minutes and %d seconds',elapsedtime(5),elapsedtime(6));
+disp(messg);
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
 
