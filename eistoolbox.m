@@ -456,6 +456,7 @@ plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
 % Display a table with the fitting results in a new figure
 fres = figure();
+set(fres,'Name','Fitting Results');
 cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
 for idx=1:length(cnames)
     if idx==1

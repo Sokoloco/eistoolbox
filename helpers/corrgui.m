@@ -20,10 +20,6 @@ function varargout = corrgui(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help corrgui
-
-% Last Modified by GUIDE v2.5 04-Sep-2016 15:07:20
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -43,24 +39,12 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
-% --- Executes just before corrgui is made visible.
 function corrgui_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to corrgui (see VARARGIN)
 
 % Choose default command line output for corrgui
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
-
-% UIWAIT makes corrgui wait for user response (see UIRESUME)
-% uiwait(handles.corrgui);
-
+guidata(hObject, handles);  % Update handles structure
 
 % --- Outputs from this function are returned to the command line.
 function varargout = corrgui_OutputFcn(hObject, eventdata, handles) 
@@ -71,3 +55,13 @@ function varargout = corrgui_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+
+% AXES CREATION -----------------------------------------------------------
+function axesreal_CreateFcn(hObject, eventdata, handles)
+grid on;
+
+function axesimag_CreateFcn(hObject, eventdata, handles)
+grid on;
+
+function axesmag_CreateFcn(hObject, eventdata, handles)
+grid on;

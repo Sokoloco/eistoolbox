@@ -43,6 +43,7 @@ end
 corrgui; % opens the correlation window
 axreal=findobj('Type','axes','Tag','axesreal');
 axes(axreal);
+cla;    % clear previous data
 
 % Correlation (X,Y) plots, ideally should be straight lines
 for idx=1:length(expected_real)
@@ -56,6 +57,8 @@ ylabel('Fitted (real)');
 
 aximag=findobj('Type','axes','Tag','axesimag');
 axes(aximag);
+cla;    % clear previous data
+
 for idx=1:length(measured)
     plot(expected_imag{idx},observed_imag{idx});
     hold on;
@@ -68,6 +71,8 @@ ylabel('Fitted (imag)');
 % Correlation of magnitude
 axmag=findobj('Type','axes','Tag','axesmag');
 axes(axmag);
+cla;    % clear previous data
+
 for idx=1:length(measured)
     plot(expected_MAG{idx},observed_MAG{idx});
     hold on;
