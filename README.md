@@ -37,13 +37,13 @@ At the moment, circuits can be written according to the Zfit specification:
 
 -Read the source of the file Zfit.m for full documentation about circuit string formatting.
 
-
-
 ## Screenshots
 
 ![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/blob/master/images/main_screenshot.png)
 
 ![Results screen](https://github.com/jjmontero9/eistoolbox/blob/master/images/scr_results.png)
+
+![Correlations screen](https://github.com/jjmontero9/eistoolbox/blob/master/images/correlations.png)
 
 ## External libraries used in this toolbox
 
@@ -63,21 +63,23 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 ## ToDo and development status
 
 - [x] Read Gamry DTA files
 - [x] Read CSV files in the format [FREQ,REAL,IMAG]
-- [x] Fit using fminsearch (thanks to Zfit from Jean-Luc Dellis!)
+- [x] Basic fitting engine (thanks to Zfit from Jean-Luc Dellis!)
+- [x] Fit using fminsearch (thanks to fminsearcbnd from John D'Errico)
 - [ ] Fit using Levenberg-Marquardt
 - [ ] Fit using Nelder-Mead
 - [ ] Fit using BFGS
 - [ ] Fit using Powell
 - [x] Simulate fitted data
+- [ ] Simulate circuit data without fitting
 - [x] Display input data as Bode/Nyquist
 - [x] Display output data as Bode/Nyquist
 - [x] Display fitting results as a table
-- [ ] Compute correlation coefficient between source data and simulated data (ongoing)
+- [x] Compute linear correlation coefficients between fitted vs. measured data
+- [ ] Compute Chi2 Goodness-of-Fit test (ongoing, inaccurate)
 - [ ] Compute the Kramers-Kronig test
 
 
