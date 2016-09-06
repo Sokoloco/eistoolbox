@@ -25,6 +25,7 @@ function varargout = eistoolbox(varargin)
 %   - Implement other algorithms
 %   - Add button for simulation of impedance data
 
+%% GUI Functions (specific to GUIDE)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -44,48 +45,48 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before eistoolbox is made visible.
 function eistoolbox_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for eistoolbox
 handles.output = hObject;
 
+% Add all subfolders to path! eistoolbox needs access to all subfolders
+p = mfilename('fullpath');  % get the path of the current script
+fp = genpath(fileparts(p));    % get all the subdirectories in this folder
+addpath(fp);    % add all subfolders to current path
+
 % Update handles structure
 guidata(hObject, handles);
 
-% --- Outputs from this function are returned to the command line.
 function varargout = eistoolbox_OutputFcn(hObject, eventdata, handles) 
-% Get default command line output from handles structure
-varargout{1} = handles.output;
+varargout{1} = handles.output;  % output handles to command line
 
-
-% --- Executes during object creation, after setting all properties.
 function eismain_CreateFcn(hObject, eventdata, handles)
 
+function eismain_CloseRequestFcn(hObject, eventdata, handles)
+% ToDo: close all open figures
+delete(hObject);    % closes the toolbox
 
-    
-
-%% POPUP MENUS
-% --- Executes on selection change in algorithmmenu.
+%% CALLBACKS
+% POPUP MENUS -------------------------------------------------------------
 function algorithmmenu_Callback(hObject, eventdata, handles)
-% ToDo: Create a variable with the content of the selected algorithm
-% This variable will choose which algorithm is used for fitting
 
-% --- Executes during object creation, after setting all properties.
 function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
-set(hObject,'String',{'Zfit (fminsearchbnd)','[ToDo] Other algorithms'});
+set(hObject,'String',{ ...
+    'fminsearchbnd Proportional', ...        % option 1 : fminsearchbnd ''
+    'fminsearchbnd Non-Proportional', ...    % option 2 : fminsearchbnd 'FitNP'
+    '[ToDo] Other algorithms' ...                   % option 3 : not defined yet
+    });
 
-
-
-%% AXES CREATION
+% AXES CREATION -----------------------------------------------------------
 function axes1_CreateFcn(hObject, eventdata, handles)
 grid on;
 
 function axes2_CreateFcn(hObject, eventdata, handles)
 grid on;
 
-%% EDIT BOXES
+% EDIT BOXES --------------------------------------------------------------
 function edit_circuit_Callback(hObject, eventdata, handles)
 
 function edit_circuit_CreateFcn(hObject, eventdata, handles)
@@ -106,10 +107,7 @@ function edit_iterations_Callback(hObject, eventdata, handles)
 
 function edit_iterations_CreateFcn(hObject, eventdata, handles)
 
-
-
-%% BUTTON Callbacks
-
+% BUTTONS -----------------------------------------------------------------
 function btn_addfiles_Callback(hObject, eventdata, handles)
 addfiles(hObject, eventdata, handles);
 
@@ -125,15 +123,11 @@ saveckt(hObject, eventdata, handles)
 function btn_saveas_Callback(hObject, eventdata, handles)
 save_results(hObject, eventdata, handles);
 
-
 function btn_nyq_Callback(hObject, eventdata, handles)
-% Plots current input data as Nyquist
 plotnyq(hObject, eventdata, handles);
 
 function btn_bod_Callback(hObject, eventdata, handles)
-% Plots current input data as Bode
 plotbod(hObject, eventdata, handles);
-
 
 function btn_nyq2_Callback(hObject, eventdata, handles)
 plotnyq2(hObject, eventdata, handles);
@@ -141,11 +135,7 @@ plotnyq2(hObject, eventdata, handles);
 function btn_bod2_Callback(hObject, eventdata, handles)
 plotbod2(hObject, eventdata, handles);
 
-function btn_adm_Callback(hObject, eventdata, handles)
-% Plots current input data as Admittance
-
-
-%% MENU Callbacks
+% MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
 
 function circuits_menu_Callback(hObject, eventdata, handles)
@@ -166,34 +156,19 @@ saveckt(hObject, eventdata, handles);
 function menu_fit_Callback(hObject, eventdata, handles)
 run_fitting(hObject, eventdata, handles);
 
-
 function menu_saveresults_Callback(hObject, eventdata, handles)
 save_results(hObject, eventdata, handles);
 
 function menu_aboutdialog_Callback(hObject, eventdata, handles)
 menu_about();
 
-
-% --- Executes when user attempts to close program.
-function eismain_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to eismain (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% ToDo: Close here all the open figures
-
-% Hint: delete(hObject) closes the figure
-delete(hObject);
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% INTERNAL FUNCTIONS %%
-
+%% INTERNAL FUNCTIONS
 function addfiles(hObject, eventdata, handles)
 
     % Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
     [fileName, filePath] = uigetfile( ...
-        {'*.csv','CSV Files (*.csv)';       % File type definition: CSV
+        {'*.csv;*.dta','Supported Files (*.csv, *.dta)';  % File type definition: supported
+        '*.csv','CSV Data Files (*.csv)';   % File type definition: CSV
         '*.dta','Gamry Data Files (*.dta)'; % File type definition: Gamry
          '*.*','All Files (*.*)'}, ...      % File type definition: others
        'Select the impedance files','Multiselect','on');
@@ -253,7 +228,6 @@ function addfiles(hObject, eventdata, handles)
     setappdata(handles.eismain,'fnames',fnames);
     
     plotnyq(hObject, eventdata, handles);
-    
 
 function plotnyq(hObject, eventdata, handles)
 % plots input data as Nyquist
@@ -378,9 +352,6 @@ set(handles.edit_UB,'String',line4);
 
 fclose(fid);
 
-
-
-
 function saveckt(hObject, eventdata, handles)
 [fileName, filePath] = uiputfile( ...
     {'*.ckt','Circuit files (*.ckt)';       % File type definition: CKT
@@ -409,11 +380,6 @@ fprintf(fid,strcat(line4,'\n'));   % fourth line: upper boundary conditions
 
 fclose(fid);
 
-
-
-
-
-
 function run_fitting(hObject, eventdata, handles)
 data = getappdata(handles.eismain,'data');        % input files loaded to the program
 fnames = getappdata(handles.eismain,'fnames');    % index of the file names
@@ -428,7 +394,7 @@ end
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
 initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
 indexes = [];       % empty = all input data is used (OR use custom ranges)
-fitstring = 'fitNP'; % 'fitNP' non-proportional, OR '' proportional
+
 LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
 UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters
 
@@ -438,11 +404,9 @@ if isempty(initparams) fprintf('Error: Init Params string is empty'); return; en
 if isempty(LB) fprintf('Error: Lower Bounds string is empty'); return; end
 if isempty(UB) fprintf('Error: Upper Bounds string is empty'); return; end
 
-% ToDo: check if the number of parameters is correct depending on the circuit string
 % Check if the dimensions are consistent
 if length(initparams) ~= length(LB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR lower boundaries (',int2str(length(LB)),')')); return; end
 if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of init params (',int2str(length(initparams)),') OR upper boundaries (',int2str(length(UB)),')')); return; end
-
 
 % perform the fitting
 disp(datestr(clock));
@@ -458,14 +422,14 @@ algorithm = get(handles.algorithmmenu,'Value');
 % 1 = fminsearchbnd
 % 2 = lsqnonlin
 
-maxfunevals = str2num( get(handles.edit_iterations,'String') );
+maxfunevals = str2double( get(handles.edit_iterations,'String') );
 maxiterats = maxfunevals;
 options = optimset('MaxFunEvals', maxfunevals, 'MaxIter',maxiterats);
 
     for idx = 1:length(data)
         
         % First we do the fitting!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,fitstring,LB,UB,algorithm,options);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,options);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
@@ -512,7 +476,6 @@ t.Position(3) = t.Extent(3);
 % Calculate the goodness of fit and overall correlations
 calculate_correlations(hObject, eventdata, handles);
 
-
 function save_results(hObject, eventdata, handles)
 fnames = getappdata(handles.eismain,'fnames');
 results = getappdata(handles.eismain,'results');
@@ -539,14 +502,6 @@ xlswrite(outfullfname, [param_cnames corr_cnames ; fnames results corr_values]);
 disp('Info: Results saved successfully!');
 waitbar(1);
 close(h);
-
-
-
-
-
-
-
-
 
 %% LICENSE INFORMATION
 % Copyright (C) 2016  Juan J. Montero-Rodriguez

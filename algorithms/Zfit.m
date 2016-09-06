@@ -1,11 +1,10 @@
 function [pbest,zbest,fval,exitflag,output]= ...
-    Zfit(data,circuitstring,pbest,indexes,fitstring,LB,UB,algorithm,options)
+    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,options)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
 % The original file is Copyright (c) 2005 Jean-Luc Dellis; can be found in:
 % http://de.mathworks.com/matlabcentral/fileexchange/19460-zfit
-
 
 %% MAIN FUNCTION
 freq=data(:,1);
@@ -14,19 +13,23 @@ if isempty(indexes)
 end
 freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
-[pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,fitstring,options,algorithm);
+[pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,options,algorithm);
 zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
 
 %% CURFIT
-function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,fitstring,options,algorithm)
+function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,options,algorithm)
 % Minimization function calling fminsearch
 param=pinit;
 switch algorithm
     case 1
+        fitstring = 'fitP'; % proportional fitting
         [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
     case 2
-        % call here the second algorithm
+        fitstring = 'fitNP'; % non-proportional fitting
+        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+    case 3
+        % call here other algorithms
         disp('Error: Algorithm is not defined. Fitting with fminsearchbnd');
         [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
     otherwise
