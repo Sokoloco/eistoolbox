@@ -40,10 +40,10 @@ function [zfitdata] = GamryRead(filename)
     idx = 1;
     while tline ~= -1
         data = strsplit(tline);         % separate it into columns
-        
-        freq(idx) = str2double(data(4)); % output variable: frequency
-        real(idx) = str2double(data(5)); % output variable: real(Z)
-        imag(idx) = str2double(data(6)); % output variable: imag(Z)
+
+        freq(idx) = str2double(strrep(data(4),',','.')); % output variable: frequency
+        real(idx) = str2double(strrep(data(5),',','.')); % output variable: real(Z)
+        imag(idx) = str2double(strrep(data(6),',','.')); % output variable: imag(Z)
         
         idx = idx + 1;
         tline = fgetl(fileID);          % get line with data
