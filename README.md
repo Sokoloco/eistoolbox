@@ -72,7 +72,7 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Fit using Levenberg-Marquardt
 - [ ] Fit using Nelder-Mead
 - [ ] Fit using BFGS
-- [x] Fit using Powell
+- [x] Fit using Powell (unconstrained, ignores boundary conditions, still buggy)
 - [x] Simulate fitted data
 - [ ] Simulate circuit data without fitting
 - [x] Display input data as Bode/Nyquist
