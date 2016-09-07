@@ -1,5 +1,5 @@
-function [pbest,zbest,fval,exitflag,output]= ...
-    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,options)
+function [pbest,zbest,fval]= ...
+    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,maxiter)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -13,25 +13,28 @@ if isempty(indexes)
 end
 freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
-[pbest,fval,exitflag,output]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,options,algorithm);
+[pbest,fval]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,algorithm,maxiter);
 zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
 
 %% CURFIT
-function [p,fval,exitflag,output]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,options,algorithm)
+function [p,fval]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,algorithm,maxiter)
 % Minimization function calling fminsearch
 param=pinit;
 switch algorithm
     case 1
         fitstring = 'fitP'; % proportional fitting
-        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+        options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
+        [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
     case 2
         fitstring = 'fitNP'; % non-proportional fitting
-        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
-    case 3
-        % call here other algorithms
-        disp('Error: Algorithm is not defined. Fitting with fminsearchbnd');
-        [p,fval,exitflag,output]=fminsearchbnd(@distance,param,LB,UB,options);
+        options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
+        [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
+    case 3  % powell algorithm Proportional
+        fitstring = 'fitNP';
+        tol = 1e-4; % tolerance
+        prob = -1;  % problem = minimize
+        [p,fval]=powell(@distance,param,[],[],LB,UB,prob,tol,maxiter);
     otherwise
         error('Error: Algorithm is not defined. Stopping.');
 end
@@ -85,6 +88,12 @@ function z=computecircuit(param,circuit,freq)
         param=param(nlp+1:end);% remove them from param
         
         % compute the impedance of the current element for all the frequencies
+        dimens = size(localparam);
+        
+        % powell returns vertical matrix; this would generate an error in
+        % the next eval line. The following line fix the Powell bug!
+        if dimens(1) > 1; localparam = localparam'; end
+        
         z(:,k)=eval([element(i),'([',num2str(localparam),']',',freq)']);
         
         % modify the initial circuit string (to use it later with eval)

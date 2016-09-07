@@ -1,0 +1,9 @@
+Zfit from Jean-Luc Dellis (updated 2010)
+	available at https://de.mathworks.com/matlabcentral/fileexchange/19460-zfit
+
+fminsearchbnd from John D'Errico (updated 2012)
+	available at https://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon
+	
+powell from Argimiro R. Secchi (2001)
+	available at https://de.mathworks.com/matlabcentral/fileexchange/15072-unconstrained-optimization-using-powell
+	

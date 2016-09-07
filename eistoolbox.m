@@ -74,9 +74,9 @@ function algorithmmenu_Callback(hObject, eventdata, handles)
 function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
 set(hObject,'String',{ ...
-    'fminsearchbnd Proportional', ...        % option 1 : fminsearchbnd ''
-    'fminsearchbnd Non-Proportional', ...    % option 2 : fminsearchbnd 'FitNP'
-    '[ToDo] Other algorithms' ...                   % option 3 : not defined yet
+    'fminsearchbnd Proportional', ...        % option 1 : fminsearchbnd 'fitP'  Proportional
+    'fminsearchbnd Non-Proportional', ...    % option 2 : fminsearchbnd 'fitNP' Non-proportional
+    'Powell' ...                             % option 3 : powell Proportional
     });
 
 % AXES CREATION -----------------------------------------------------------
@@ -420,17 +420,15 @@ results = cell(length(data),length(initparams)); % preallocating for speed
 % check the selected algorithm
 algorithm = get(handles.algorithmmenu,'Value');
 % Remember from the definition:
-% 1 = fminsearchbnd
-% 2 = lsqnonlin
-
-maxfunevals = str2double( get(handles.edit_iterations,'String') );
-maxiterats = maxfunevals;
-options = optimset('MaxFunEvals', maxfunevals, 'MaxIter',maxiterats);
+% 1 = fminsearchbnd Proportional
+% 2 = fminsearchbnd Non-Proportional
+% 3 = powell Proportional
+maxiter = str2double( get(handles.edit_iterations,'String') );
 
     for idx = 1:length(data)
         
         % First we do the fitting!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,options);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,maxiter);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
