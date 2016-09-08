@@ -57,9 +57,18 @@
 
 \chapter{Introduction}
 
-\textbf{eistoolbox} is a toolbox for MATLAB\textregistered{} used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuits. 
+\textbf{eistoolbox} is a toolbox for MATLAB\textregistered{} used for batch fitting Electrochemical Impedance Spectroscopy (EIS) data to equivalent circuits models.
 
-Currently it is \textbf{alpha software}, and it will evolve over time.
+In EIS the \textbf{impedance} of a sample is observed and recorded at different frequencies, and the impedance is stored as a Bode diagram, with magnitude and phase (polar format). Results can also be stored as real and imaginary parts (rectangular format) and plotted as a Nyquist diagram.
+
+This impedance is commonly fitted to circuit models, selected depending on the physical characteristics of the measured system. The result is a list of \textbf{circuit elements} such as resistors, capacitors and inductors, and a list of \textbf{parameter values}.
+
+The problem is how to calculate these parameters. This is often achieved using \textbf{nonlinear optimization}, and some of the most famous algorithms for fitting EIS data are based on the Complex Nonlinear Least Squares (CNLS) algorithm such as the Levenberg-Marquardt. However there are many algorithms for this end, and they are difficult to implement as they require advanced mathematics.
+
+The present \textbf{eistoolbox} is a collection of algorithms for nonlinear optimization, and a graphical user interface for batch fitting of multiple EIS curves.
+
+\chapter{Theory}
+
 
 \section{Impedance Spectroscopy}
 
@@ -91,6 +100,17 @@ Z(f) = \dfrac{\rho L}{A} + \dfrac{1}{2\pi{}f} \dfrac{D}{\epsilon A}
 \end{align}
 
 Impedance Spectroscopy is also referred as Dielectric Spectroscopy, because it gives information about the dielectric properties of the measured sample.
+
+\newpage
+\section{Kramers-Kronig Transforms}
+
+Experimental data can be validated using the Kramers-Kronig Transforms.
+
+
+\section{Fitting algorithms}
+
+\subsection{Levenberg-Marquardt}
+
 
 
 
@@ -135,6 +155,11 @@ The plots themselves are presented as individual figures. For a perfect fit, the
 Additionally, the fitting results are compared with the original data files by using the Pearson's Chi-square Test of Goodness-of-Fit. This information includes the following parameters: R, chi2, p, fit. These parameters are further explained in Chapter 5.
 
 \includegraphics[width=15cm]{correlations.png}
+
+
+
+
+
 
 \chapter{Equivalent Circuits}
 
@@ -255,8 +280,10 @@ Check the folder 'examples\_circuits' for more examples.
 
 \chapter{Fitting Algorithms}
 
-The fitting algorithms of this toolbox reduce the following distance function:
 
+
+
+The fitting algorithms of this toolbox reduce the following distance function:
 
 \begin{verbatim}
 function dist=distance(param)
@@ -269,6 +296,9 @@ function dist=distance(param)
 end
 \end{verbatim}
 
+\section{Weighting}
+
+The weighting type describes how the variables are compared. Currently this toolbox implements \textbf{non-proportional} and \textbf{proportional} fitting.
 
 For \textbf{non-proportional fitting} the algorithm minimizes the squared difference between fitted (observed) and measured (expected) data.
 
@@ -280,9 +310,15 @@ For \textbf{proportional fitting} the algorithm calculates the squared differenc
 
 If the experimental impedance curve matches exactly the simulated curve, the distance function would have a value of zero.
 
+\section{Implemented algorithms}
+
+\subsection{fminsearchbnd}
+
 To minimize the distance function, the toolbox uses the \textbf{fminsearchbnd} algorithm.
 
+\subsection{Powell}
 
+Describe the implementation here.
 
 \section{Other algorithms}
 
@@ -292,7 +328,6 @@ The following optimization algorithms are not yet implemented in this toolbox. T
 	\item Levenberg-Marquardt
 	\item Nelder-Mead
 	\item BFGS
-	\item Powell
 \end{itemize}
 
 
@@ -314,13 +349,19 @@ Currently the software implements two methods for this comparison: linear regres
 
 \subsection{MAG of fitted vs MAG of measured}
 
-\section{Chi-square goodness of fit}
+\section{Goodness of fit}
+
+\subsection{Chi-square}
 
 \[ \chi^2 = \sum_i^n{\dfrac{(Observed_i-Expected_i)^2}{Expected_i}} \]
 
 Observed= fitted data
 
 Expected= measured data
+
+\subsection{Test F}
+
+ToDo. Check Electrochemical Impedance Spectroscopy and its Applications by Adnrzej Lasia.
 
 \section{Error estimates for individual parameters}
 
