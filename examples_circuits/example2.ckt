@@ -1,0 +1,4 @@
+s(p(s(p(s(p(R1,C1),R1),C1),R1),C1),R1) % circuit string
+[100,1e-6,100,1e-6,100,1e-6,100] % initial parameters... order: R3,C3,R2,C2,R1,C1,RS
+[0,0,0,0,0,0,0] % lower boundary conditions
+[inf,inf,inf,inf,inf,inf,inf] % upper boundary conditions
