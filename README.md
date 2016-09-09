@@ -72,11 +72,12 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Fit using Levenberg-Marquardt
 - [ ] Fit using Nelder-Mead
 - [ ] Fit using BFGS
-- [x] Fit using Powell (unconstrained, ignores boundary conditions, still buggy)
+- [ ] Fit using Powell
 - [x] Simulate fitted data
 - [ ] Simulate circuit data without fitting
 - [x] Display input data as Bode/Nyquist
 - [x] Display output data as Bode/Nyquist
+- [ ] Add button for saving each plot individually 
 - [x] Display fitting results as a table
 - [x] Compute linear correlation coefficients between fitted vs. measured data
 - [ ] Compute Chi2 Goodness-of-Fit test (ongoing, inaccurate)

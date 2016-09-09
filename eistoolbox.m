@@ -8,22 +8,7 @@ function varargout = eistoolbox(varargin)
 % 3. Select the desired algorithm to perform the fitting
 % 4. Click the "Fit" button to perform the computations
 % 5. Save the results to a .xls file to obtain the fitted parameters!
-% 
-% Achieved
-%   * Read any number of .CSV or Gamry .DTA files
-%   * Load and save basic circuit models in .ckt text files
-%   * Fit any number of data files using the fminsearchbnd algorithm
-%   * Display the input files as Nyquist/Bode plots
-%   * Display the fitting results as Nyquist/Bode plots
-%   * Show a table with the fitted parameters via uitable
-%   * Export the results as a MS Excel spreadsheet
-%   * Number of iterations can be defined by the user
-% 
-% ToDo:
-%   - Calculate correlation coefficients between input data and fitted data
-%   - Calculate individual parameter error percentages or error estimates
-%   - Implement other algorithms
-%   - Add button for simulation of impedance data
+%
 
 %% GUI Functions (specific to GUIDE)
 % Begin initialization code - DO NOT EDIT
@@ -75,8 +60,8 @@ function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
 set(hObject,'String',{ ...
     'fminsearchbnd Proportional', ...        % option 1 : fminsearchbnd 'fitP'  Proportional
-    'fminsearchbnd Non-Proportional', ...    % option 2 : fminsearchbnd 'fitNP' Non-proportional
-    'Powell' ...                             % option 3 : powell Proportional
+    'fminsearchbnd Non-Proportional' ...    % option 2 : fminsearchbnd 'fitNP' Non-proportional
+    %'Powell' ...                             % option 3 : powell Proportional
     });
 
 % AXES CREATION -----------------------------------------------------------
@@ -243,6 +228,8 @@ function plotnyq(hObject, eventdata, handles)
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla reset;  % Clears any old information already present in the diagram
+    set(gca,'FontSize',7);
+    set(gca,'xscale','linear');    % change x axis to linear
     hold on;
     grid on;
     for idx=1:length(data)
@@ -267,14 +254,17 @@ function plotbod(hObject, eventdata, handles)
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
-    hold on;
-    grid on;
     
     for idx=1:length(data)
-        plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
+        ax = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
             data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3)), ... % phase
             'semilogx');
     end
+    
+    set(ax(1),'FontSize',7);
+    grid on;
+    set(ax(2),'FontSize',7,'XTick',[]);
+    
     disp('Info: Input data files succesfully plotted');
 
 function plotnyq2(hObject, eventdata, handles)
@@ -290,7 +280,9 @@ function plotnyq2(hObject, eventdata, handles)
 
     % Display results from zbest in second plot
     axes(handles.axes2);
-    cla reset;
+    cla reset;  % Clears any old information already present in the diagram
+    set(gca,'FontSize',7);
+    set(gca,'xscale','linear');    % change x axis to linear
     hold on;
     grid on;
     for idx=1:length(zbest)
@@ -313,16 +305,19 @@ function plotbod2(hObject, eventdata, handles)
 
     % Display results from zbest in second plot
     axes(handles.axes2);
-    cla reset;
+    cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
-    hold on;
-    grid on;
     
     for idx=1:length(data)
-        plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
+        ax = plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
             data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2)), ... % phase
             'semilogx'); 
     end
+    
+    set(ax(1),'FontSize',7);
+    grid on;
+    set(ax(2),'FontSize',7,'XTick',[]);
+
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
@@ -422,7 +417,6 @@ algorithm = get(handles.algorithmmenu,'Value');
 % Remember from the definition:
 % 1 = fminsearchbnd Proportional
 % 2 = fminsearchbnd Non-Proportional
-% 3 = powell Proportional
 maxiter = str2double( get(handles.edit_iterations,'String') );
 
     for idx = 1:length(data)

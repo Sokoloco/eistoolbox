@@ -30,11 +30,6 @@ switch algorithm
         fitstring = 'fitNP'; % non-proportional fitting
         options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
         [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
-    case 3  % powell algorithm Proportional
-        fitstring = 'fitNP';
-        tol = 1e-4; % tolerance
-        prob = -1;  % problem = minimize
-        [p,fval]=powell(@distance,param,[],[],LB,UB,prob,tol,maxiter);
     otherwise
         error('Error: Algorithm is not defined. Stopping.');
 end
@@ -89,10 +84,6 @@ function z=computecircuit(param,circuit,freq)
         
         % compute the impedance of the current element for all the frequencies
         dimens = size(localparam);
-        
-        % powell returns vertical matrix; this would generate an error in
-        % the next eval line. The following line fix the Powell bug!
-        if dimens(1) > 1; localparam = localparam'; end
         
         z(:,k)=eval([element(i),'([',num2str(localparam),']',',freq)']);
         
