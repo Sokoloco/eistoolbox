@@ -22,15 +22,6 @@ function [p,fval]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,U
 % Minimization function calling fminsearch
 param=pinit;
 
-switch weighting
-    case 1
-        fitstring = 'fitP'; % proportional fitting
-    case 2
-        fitstring = 'fitNP'; % non-proportional fitting
-    otherwise
-        error('Error: Weighting type is not defined. Stopping.')
-end
-
 switch algorithm
     case 1  % fminsearchbnd
         options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
@@ -49,11 +40,11 @@ end
 
         % Then the cummulative distance between fitted and measured is
         % calculated. This is the parameter that needs to be minimized.
-        switch fitstring
-            case 'fitNP'
+        switch weighting
+            case 1 % 'fitP' proportional
+                dist=sum(sum(((ymod-zrzi)./zrzi).^2));
+            case 2 % 'fitNP' non-proportional
                 dist=sum(sum((ymod-zrzi).^2));
-            case 'fitP'
-                dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
             otherwise
                 dist=0;
         end
