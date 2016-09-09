@@ -252,18 +252,24 @@ function plotbod(hObject, eventdata, handles)
     
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
-    cla reset;  % Clears any old information already present in the diagram
+    cla;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
+    hold on;
     
     for idx=1:length(data)
-        ax = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3)), ... % phase
+        [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
+            data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3))*180/pi, ... % phase
             'semilogx');
+        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
+        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        hLine1.LineStyle = '-';
+        hLine1.Color = [0 0 0.7];
+        hLine2.LineStyle = '--';
+        hLine2.Color = [0.7 0 0];
+        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
     
-    set(ax(1),'FontSize',7);
     grid on;
-    set(ax(2),'FontSize',7,'XTick',[]);
     
     disp('Info: Input data files succesfully plotted');
 
@@ -307,16 +313,22 @@ function plotbod2(hObject, eventdata, handles)
     axes(handles.axes2);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
+    hold on;
     
     for idx=1:length(data)
-        ax = plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2)), ... % phase
+       [ax,hLine1,hLine2] =  plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
+            data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2))*180/pi, ... % phase
             'semilogx'); 
+        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
+        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        hLine1.LineStyle = '-';
+        hLine1.Color = [0 0 0.7];
+        hLine2.LineStyle = '--';
+        hLine2.Color = [0.7 0 0];
+        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
-    
-    set(ax(1),'FontSize',7);
+
     grid on;
-    set(ax(2),'FontSize',7,'XTick',[]);
 
     disp('Info: Fitted data succesfully plotted');
     
