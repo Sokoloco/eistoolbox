@@ -59,9 +59,16 @@ function algorithmmenu_Callback(hObject, eventdata, handles)
 function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
 set(hObject,'String',{ ...
-    'fminsearchbnd Proportional', ...        % option 1 : fminsearchbnd 'fitP'  Proportional
-    'fminsearchbnd Non-Proportional' ...    % option 2 : fminsearchbnd 'fitNP' Non-proportional
-    %'Powell' ...                             % option 3 : powell Proportional
+    'fminsearchbnd' ...    % option 1 : fminsearchbnd
+    });
+
+function weightingmenu_Callback(hObject, eventdata, handles)
+
+function weightingmenu_CreateFcn(hObject, eventdata, handles)
+% Set here the labels for the weighting functions
+set(hObject,'String',{ ...
+    'Proportional', ...     % option 1 : 'fitP'  Proportional
+    'Non-Proportional' ...  % option 2 : 'fitNP' Non-proportional
     });
 
 % AXES CREATION -----------------------------------------------------------
@@ -424,17 +431,15 @@ h = waitbar(0,'Performing fitting... please wait');
 % initializing variables for speed optimization!
 results = cell(length(data),length(initparams)); % preallocating for speed
 
-% check the selected algorithm
+% check the selected algorithm, weighting and max iterations
 algorithm = get(handles.algorithmmenu,'Value');
-% Remember from the definition:
-% 1 = fminsearchbnd Proportional
-% 2 = fminsearchbnd Non-Proportional
+weighting = get(handles.weightingmenu,'Value');
 maxiter = str2double( get(handles.edit_iterations,'String') );
 
     for idx = 1:length(data)
         
         % First we do the fitting!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,maxiter);
+        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,weighting,maxiter);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
@@ -523,4 +528,3 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-

@@ -1,5 +1,5 @@
 function [pbest,zbest,fval]= ...
-    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,maxiter)
+    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,weighting,maxiter)
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -13,27 +13,32 @@ if isempty(indexes)
 end
 freq=data(indexes,1); 
 zrzi=[data(indexes,2),data(indexes,3)];
-[pbest,fval]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,algorithm,maxiter);
+[pbest,fval]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,algorithm,weighting,maxiter);
 zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
 
 %% CURFIT
-function [p,fval]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,algorithm,maxiter)
+function [p,fval]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,algorithm,weighting,maxiter)
 % Minimization function calling fminsearch
 param=pinit;
-switch algorithm
+
+switch weighting
     case 1
         fitstring = 'fitP'; % proportional fitting
-        options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
-        [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
     case 2
         fitstring = 'fitNP'; % non-proportional fitting
+    otherwise
+        error('Error: Weighting type is not defined. Stopping.')
+end
+
+switch algorithm
+    case 1  % fminsearchbnd
         options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
         [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
     otherwise
         error('Error: Algorithm is not defined. Stopping.');
 end
-		
+
     % DISTANCE is nested, so it knows handlecomputecircuit,circuitstring,freq,fitstring and zrzi
     function dist=distance(param)
 
@@ -44,10 +49,13 @@ end
 
         % Then the cummulative distance between fitted and measured is
         % calculated. This is the parameter that needs to be minimized.
-        if isequal('fitNP',fitstring)
-            dist=sum(sum((ymod-zrzi).^2));
-        else
-            dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
+        switch fitstring
+            case 'fitNP'
+                dist=sum(sum((ymod-zrzi).^2));
+            case 'fitP'
+                dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
+            otherwise
+                dist=0;
         end
 
     end         % END of DISTANCE
