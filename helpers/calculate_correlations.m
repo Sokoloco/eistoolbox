@@ -54,6 +54,7 @@ end
 title('Correlation plot (X,Y) for Real Part');
 xlabel('Measured (real)');
 ylabel('Fitted (real)');
+set(gca,'FontSize',7);
 
 aximag=findobj('Type','axes','Tag','axesimag');
 axes(aximag);
@@ -67,6 +68,7 @@ end
 title('Correlation plot (X,Y) for Imaginary Part');
 xlabel('Measured (imag)');
 ylabel('Fitted (imag)');
+set(gca,'FontSize',7);
 
 % Correlation of magnitude
 axmag=findobj('Type','axes','Tag','axesmag');
@@ -81,6 +83,7 @@ end
 title('Correlation plot (X,Y) for Magnitude');
 xlabel('Measured (mag)');
 ylabel('Fitted (mag)');
+set(gca,'FontSize',7);
 
 % Calculate here the linear regression coefficients for real and imaginary
 % fit (observed) vs measured (expected)

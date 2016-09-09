@@ -1,6 +1,8 @@
 Zfit from Jean-Luc Dellis (updated 2010)
 	available at https://de.mathworks.com/matlabcentral/fileexchange/19460-zfit
+    used for fitting_engine.m
 
 fminsearchbnd from John D'Errico (updated 2012)
 	available at https://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon
+    used without modifications as fminsearchbnd.m
 	

@@ -196,14 +196,22 @@ The number next to the element letter is the number of free parameters for this 
 
 \subsection{Circuit Files (.ckt)}
 
-The circuit string, initial parameters and boundary conditions can be stored and loaded from a circuit file with the .ckt extension. This file is read by MATLAB line-to-line.
+The circuit string, initial parameters and boundary conditions can be stored and loaded from a circuit file with the .ckt extension. This file is read by MATLAB line-to-line. The file should include only four lines with the following content:
+
+Line 1: circuit string
+
+Line 2: initial parameters, sorted in the same order as they appear in the circuit string
+
+Line 3: lower boundary conditions (LB)
+
+Line 4: upper boundary conditions (UB)
 
 Check the folder 'examples\_circuits' for more examples.
 
 \begin{center}
 \fbox{ \parbox{14cm}{
 	\textbf{Example 1: Voigt model in the form R+R//C+R//C+R//C}
-		
+	
 	\begin{circuitikz}
 		\draw 
 		(0,0) to[R=$R_S$] (2,0)
@@ -220,16 +228,23 @@ Check the folder 'examples\_circuits' for more examples.
 		(8,0) to[short] (10,0);
 	\end{circuitikz}
 	
-	\textbf{Recommended circuit file:}
+	\vspace{5mm}
+	\textbf{Recommended circuit file}
 	
-	s(R1,p(R1,C1),p(R1,C1),p(R1,C1))	\% circuit string
+	s(R1,p(R1,C1),p(R1,C1),p(R1,C1))
 	
-	[100,100,1e-6,100,1e-6,100,1e-6]	\% initial parameters
+	[100,100,1e-6,100,1e-6,100,1e-6]
 	
-	[0,0,0,0,0,0,0]						\% lower boundary conditions
+	[0,0,0,0,0,0,0]
 	
-	[inf,inf,inf,inf,inf,inf,inf]		 \% upper boundary conditions
+	[inf,inf,inf,inf,inf,inf,inf]
 	
+	\vspace{5mm}
+	\textbf{Notes}
+	
+	The elements appear in the circuit string in the following order: RS,R1,C1,R2,C2,R3,C3
+	
+	The initial parameters, LB and UB have the exact same order
 	}
 }
 \end{center}
@@ -258,30 +273,31 @@ Check the folder 'examples\_circuits' for more examples.
 				;
 			\end{circuitikz}
 			
-			\textbf{Recommended circuit file:}
+			\vspace{5mm}
+			\textbf{Recommended circuit file}
 			
-			s(p(s(p(s(p(R1,C1),R1),C1),R1),C1),R1)	\% circuit string
+			s(p(s(p(s(p(R1,C1),R1),C1),R1),C1),R1)
 			
-			[100,1e-6,100,1e-6,100,1e-6,100]	\% initial parameters... order: R3,C3,R2,C2,R1,C1,RS
+			[100,1e-6,100,1e-6,100,1e-6,100]
 			
-			[0,0,0,0,0,0,0]						\% lower boundary conditions
+			[0,0,0,0,0,0,0]
 			
-			[inf,inf,inf,inf,inf,inf,inf]		 \% upper boundary conditions
+			[inf,inf,inf,inf,inf,inf,inf]
+			
+			
+			\vspace{5mm}
+			\textbf{Notes}
+			
+			The elements appear in the circuit string in the following order: R3,C3,R2,C2,R1,C1,RS
+			
+			The initial parameters, LB and UB have the exact same order
 			
 		}
 	}
 \end{center}
 
 
-
-
-
-
-
 \chapter{Fitting Algorithms}
-
-
-
 
 The fitting algorithms of this toolbox reduce the following distance function:
 

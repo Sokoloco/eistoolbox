@@ -127,6 +127,7 @@ plotnyq2(hObject, eventdata, handles);
 function btn_bod2_Callback(hObject, eventdata, handles)
 plotbod2(hObject, eventdata, handles);
 
+
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
 
@@ -239,8 +240,10 @@ function plotnyq(hObject, eventdata, handles)
     set(gca,'xscale','linear');    % change x axis to linear
     hold on;
     grid on;
+
+    cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-        plot(data{idx}(:,2),abs(data{idx}(:,3)));
+        plot(data{idx}(:,2),abs(data{idx}(:,3)),'color',cm(idx,:));
     end
 
     disp('Info: Input data files succesfully plotted');
@@ -256,13 +259,13 @@ function plotbod(hObject, eventdata, handles)
     
     disp('Info: Plotting Bode response of input data files');
 
-    
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
     cla;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
     
+    cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
         [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
             data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3))*180/pi, ... % phase
@@ -270,9 +273,9 @@ function plotbod(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         hLine1.LineStyle = '-';
-        hLine1.Color = [0 0 0.7];
+        hLine1.Color = cm(idx,:);
         hLine2.LineStyle = '--';
-        hLine2.Color = [0.7 0 0];
+        hLine2.Color = cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
     
@@ -298,8 +301,10 @@ function plotnyq2(hObject, eventdata, handles)
     set(gca,'xscale','linear');    % change x axis to linear
     hold on;
     grid on;
+    
+    cm=colormap(hsv(length(zbest))); % define a colormap
     for idx=1:length(zbest)
-        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)));
+        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)),'color',cm(idx,:));
     end
     
     disp('Info: Fitted data succesfully plotted');
@@ -321,7 +326,8 @@ function plotbod2(hObject, eventdata, handles)
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
-    
+   
+    cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
        [ax,hLine1,hLine2] =  plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
             data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2))*180/pi, ... % phase
@@ -329,14 +335,14 @@ function plotbod2(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         hLine1.LineStyle = '-';
-        hLine1.Color = [0 0 0.7];
+        hLine1.Color = cm(idx,:);
         hLine2.LineStyle = '--';
-        hLine2.Color = [0.7 0 0];
+        hLine2.Color = cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
 
     grid on;
-
+    
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
@@ -407,7 +413,6 @@ end
     %  comment: eval is required to parse the strings and get the arrays!
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
 initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
-indexes = [];       % empty = all input data is used (OR use custom ranges)
 
 LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
 UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters
@@ -439,7 +444,7 @@ maxiter = str2double( get(handles.edit_iterations,'String') );
     for idx = 1:length(data)
         
         % First we do the fitting!
-        [params,zbest{idx}] = Zfit(data{idx},circuit,initparams,indexes,LB,UB,algorithm,weighting,maxiter);
+        [params,zbest{idx}] = fitting_engine(data{idx},circuit,initparams,LB,UB,algorithm,weighting,maxiter);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
@@ -466,7 +471,7 @@ plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
 % Display a table with the fitting results in a new figure
 fres = figure();
-set(fres,'Name','Fitting Results');
+set(fres,'Name',['Fitting Results for circuit Z = ',circuit]);
 cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
 for idx=1:length(cnames)
     if idx==1
@@ -478,11 +483,16 @@ end
 
 setappdata(handles.eismain,'param_cnames',cnames);
 
+
 t = uitable(fres,'data',[fnames results],'ColumnWidth',{80},'ColumnName',cnames);
+set(t,'Position',[ 0 0 800 600]);
+fig = gcf;
 
 % Adjust the size to match the table
-t.Position(3) = t.Extent(3);
-%t.Position(4) = t.Extent(4);
+fig.Position = [20 100 800 600];
+set(fig,'Resize','off');
+
+
 
 % Calculate the goodness of fit and overall correlations
 calculate_correlations(hObject, eventdata, handles);

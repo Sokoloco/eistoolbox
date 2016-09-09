@@ -1,5 +1,13 @@
-function [pbest,zbest,fval]= ...
-    Zfit(data,circuitstring,pbest,indexes,LB,UB,algorithm,weighting,maxiter)
+function [pbest,zbest,fval]= fitting_engine( ...
+    data, ...           % input data
+    circuitstring, ...  % circuit model (string representation)
+    pbest, ...          % initial parameters
+    LB, ...             % lower boundary conditions for parameters
+    UB, ...             % upper boundary conditions for parameters
+    algorithm, ...      % algorithm number
+    weighting, ...      % weighting type number
+    maxiter ...         % max number of iterations
+    )
 % This file is modified from the original 'Zfit.m' library, to include only
 % the sections and options used in 'eistoolbox.m'. Date: 15.08.2016
 %
@@ -7,12 +15,8 @@ function [pbest,zbest,fval]= ...
 % http://de.mathworks.com/matlabcentral/fileexchange/19460-zfit
 
 %% MAIN FUNCTION
-freq=data(:,1);
-if isempty(indexes)
-    indexes=1:length(freq);
-end
-freq=data(indexes,1); 
-zrzi=[data(indexes,2),data(indexes,3)];
+freq=data(:,1); 
+zrzi=[data(:,2),data(:,3)];
 [pbest,fval]=curfit(pbest,circuitstring,freq,zrzi,@computecircuit,LB,UB,algorithm,weighting,maxiter);
 zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
