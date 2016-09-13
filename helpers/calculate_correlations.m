@@ -47,7 +47,10 @@ cla;    % clear previous data
 
 % Correlation (X,Y) plots, ideally should be straight lines
 for idx=1:length(expected_real)
-    plot(expected_real{idx},observed_real{idx},'color',cm(idx,:));
+    plot(expected_real{idx},observed_real{idx},...
+        'color',0.8*cm(idx,:),...
+        'marker','.',...
+        'markersize',12);
     hold on;
     grid on;
 end
@@ -61,7 +64,10 @@ axes(aximag);
 cla;    % clear previous data
 
 for idx=1:length(measured)
-    plot(expected_imag{idx},observed_imag{idx},'color',cm(idx,:));
+    plot(expected_imag{idx},observed_imag{idx},...
+        'color',0.8*cm(idx,:),...
+        'marker','.',...
+        'markersize',12);
     hold on;
     grid on;
 end
@@ -76,7 +82,10 @@ axes(axmag);
 cla;    % clear previous data
 
 for idx=1:length(measured)
-    plot(expected_MAG{idx},observed_MAG{idx},'color',cm(idx,:));
+    plot(expected_MAG{idx},observed_MAG{idx},...
+        'color',0.8*cm(idx,:),...
+        'marker','.',...
+        'markersize',12);
     hold on;
     grid on;
 end

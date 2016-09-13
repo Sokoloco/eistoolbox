@@ -243,7 +243,10 @@ function plotnyq(hObject, eventdata, handles)
 
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-        plot(data{idx}(:,2),abs(data{idx}(:,3)),'color',cm(idx,:));
+        plot(data{idx}(:,2),abs(data{idx}(:,3)),...
+            'color',0.8*cm(idx,:),...
+            'marker','.',...
+            'markersize',12);
     end
 
     disp('Info: Input data files succesfully plotted');
@@ -272,10 +275,14 @@ function plotbod(hObject, eventdata, handles)
             'semilogx');
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        hLine1.LineStyle = '-';
-        hLine1.Color = cm(idx,:);
-        hLine2.LineStyle = '--';
-        hLine2.Color = cm(idx,:);
+        hLine1.LineStyle = ':';
+        hLine1.Marker = '.';
+        hLine1.MarkerSize = 12;
+        hLine1.Color = 0.8*cm(idx,:);
+        hLine2.LineStyle = ':';
+        hLine2.Marker = 'x';
+        hLine2.MarkerSize = 5;
+        hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
     
@@ -304,7 +311,10 @@ function plotnyq2(hObject, eventdata, handles)
     
     cm=colormap(hsv(length(zbest))); % define a colormap
     for idx=1:length(zbest)
-        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)),'color',cm(idx,:));
+        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)),...
+            'color',0.8*cm(idx,:),...
+            'marker','.',...
+            'markersize',12);
     end
     
     disp('Info: Fitted data succesfully plotted');
@@ -334,10 +344,14 @@ function plotbod2(hObject, eventdata, handles)
             'semilogx'); 
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        hLine1.LineStyle = '-';
-        hLine1.Color = cm(idx,:);
-        hLine2.LineStyle = '--';
-        hLine2.Color = cm(idx,:);
+        hLine1.LineStyle = ':';
+        hLine1.Marker = '.';
+        hLine1.MarkerSize = 12;
+        hLine1.Color = 0.8*cm(idx,:);
+        hLine2.LineStyle = ':';
+        hLine2.Marker = 'x';
+        hLine2.MarkerSize = 5;
+        hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
 
