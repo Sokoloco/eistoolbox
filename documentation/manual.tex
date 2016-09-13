@@ -297,45 +297,36 @@ Check the folder 'examples\_circuits' for more examples.
 \end{center}
 
 
-\chapter{Fitting Algorithms}
+\chapter{Algorithms}
 
-The fitting algorithms of this toolbox reduce the following distance function:
+This chapter includes the mathematical description of all the algorithms implemented in the program.
 
-\begin{verbatim}
-function dist=distance(param)
-    ymod=feval(handlecomputecircuit,param,circuitstring,freq);
-    if isequal('fitNP',fitstring)
-        dist=sum(sum((ymod-zrzi).^2));
-    else
-        dist=sum(sum(((ymod-zrzi)./zrzi).^2));  
-    end
-end
-\end{verbatim}
+\section{Weighting types}
 
-\section{Weighting}
+The fitting algorithms of this toolbox reduce the following distance function (Andrzej Lasia 2014).
 
-The weighting type describes how the variables are compared. Currently this toolbox implements \textbf{non-proportional} and \textbf{proportional} fitting.
+\begin{align} \label{distancefun}
+dist = S = \sum_{i=1}^{n} \left( w'_i [Z'_i - Z'_{i,calc}]^2 + w''_i [Z''_i - Z''_{i,calc}]^2 \right)
+\end{align}
 
-For \textbf{non-proportional fitting} the algorithm minimizes the squared difference between fitted (observed) and measured (expected) data.
+The parameters $w'_i$ and $w''_i$ are the weighting values, computed by one of the following methods:
 
-\[ d = \sum(o-e)^2 \]
+\begin{tabular}{ll}
+	Unit weighting 			& $w'_i = w''_i = 1$ \\
+	Modulus weighting 		& $w'_i = w''_i = 1/|Z|^2$ \\
+	Proportional weighting 	& $w'_i = 1/(Z')^2$ and $w''_i = 1/(Z'')^2$ \\
+	Statistical weighting 	& $w'_i = 1/(\sigma'_i)^2$ and $w''_i = 1/(\sigma''_i)^2$ \\
+\end{tabular}
 
-For \textbf{proportional fitting} the algorithm calculates the squared difference between fitted (observed) and measured (expected) data, divided by the measured (expected) data, in a way similar to the Pearson's chi-square test:
 
-\[ d = \chi^2 = \sum \dfrac{(o-e)^2}{e} \]
-
-If the experimental impedance curve matches exactly the simulated curve, the distance function would have a value of zero.
-
-\section{Implemented algorithms}
+\newpage
+\section{Minimization algorithms}
 
 \subsection{fminsearchbnd}
 
 To minimize the distance function, the toolbox uses the \textbf{fminsearchbnd} algorithm.
 
-
-\section{Other algorithms}
-
-The following optimization algorithms are not yet implemented in this toolbox. These are some of the most used algorithms for fitting EIS data to equivalent circuit models.
+This algorithm is called in MATLAB to minimize the distance function of Eq. (\ref{distancefun}).
 
 \begin{itemize}
 	\item Levenberg-Marquardt
@@ -345,41 +336,56 @@ The following optimization algorithms are not yet implemented in this toolbox. T
 \end{itemize}
 
 
-
-\chapter{Statistics}
+\newpage
+\section{Statistics}
 
 The overall quality of the fitting can be determined by comparing the original measured data file (expected values) to the simulated values using the fit results (observed values).
 
 Currently the software implements two methods for this comparison: linear regression and Pearson's chi-square test of goodness-of-fit.
 
+\subsection{Linear regressions}
 
-\section{Linear regressions}
+Real of fitted vs Real of measured
 
+Imag of fitted vs Imag of measured
 
-
-\subsection{Real of fitted vs Real of measured}
-
-\subsection{Imag of fitted vs Imag of measured}
-
-\subsection{MAG of fitted vs MAG of measured}
-
-\section{Goodness of fit}
+MAG of fitted vs MAG of measured
 
 \subsection{Chi-square}
 
-\[ \chi^2 = \sum_i^n{\dfrac{(Observed_i-Expected_i)^2}{Expected_i}} \]
+The Chi-square parameter is calculated with the following equation (Andrzej Lasia 2014).
 
-Observed= fitted data
+\[ \chi^2 = \sum_{i=1}^{n}{\left( \left[ \dfrac{Z'_i - Z'_{i,calc}}{\sigma'_i} \right]^2 + \left[ \dfrac{Z''_i - Z''_{i,calc}}{\sigma''_i} \right]^2 \right)} \]
 
-Expected= measured data
+This parameter depends on the number of points.
+
+Usually it is divided by the number of degrees of freedom $\nu = 2N - m$
+
+\[ \chi^2_v = \dfrac{chi^2}{\nu} = \dfrac{chi^2}{2N - m} \]
+
+N is the number of frequencies: there are 2N measured impedance points (N real and N imaginary)
+
+m is the number of adjustable parameters in the model
+
 
 \subsection{Test F}
 
-ToDo. Check Electrochemical Impedance Spectroscopy and its Applications by Adnrzej Lasia.
+For comparing two different variances (Lasia 2014)
+
+\[ F = \dfrac{\sigma_1^2}{\sigma_2^2} \]
+
+\subsection{T-test}
+
+For importance of regression parameters (Lasia 2014)
+
+\[ t = p/s_p \]
+
+where $p$ is the value of the parameter and $s_p$ its standard deviation
+
 
 \section{Error estimates for individual parameters}
 
-ToDo
+ToDo: This is not yet implemented. It depends on the optimizer functions.
 
 
 \newpage{}
