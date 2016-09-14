@@ -17,21 +17,18 @@ end
 % Beginning of Pearson Chi-Square Test
 % for goodness of fit of an observed distribution to a theoretical one
 % this test is wrongly implemented - WORK IN PROGRESS ---------------------
+initparams = getappdata(handles.eismain,'initparams');
 
 for idx=1:length(measured)
-    % Calculate correlation (magnitude)
-    R1{idx} = corr(expected_MAG{idx},observed_MAG{idx});
-    
     % Chi square test
-    df = 1; % wrong!
-    chi2{idx} = sum((observed_MAG{idx}-expected_MAG{idx}).^2 ./ expected_MAG{idx});
+    df = 2*length(expected_real{idx}) - length(initparams); % 2N - m
+    chi2{idx} = sum((observed_MAG{idx}-expected_MAG{idx}).^2 ./ expected_MAG{idx}); % x^2 = (o-e)^2 / e
     p{idx} = 1 - chi2cdf(chi2{idx},df);
     
     % Goodness of fit by Mean Square Errors
     fit{idx} = goodnessOfFit(observed_MAG{idx}, expected_MAG{idx},'MSE');
 end
 
-% R1 is the correlation coefficient of magnitude
 % chi2 is the chi square stats for magnitude
 % p is the pearson coefficient
 % fit is the goodness of fit by mean square error
@@ -146,8 +143,8 @@ for idx=1:length(expected_real)
     rsq_adj_mag{idx} = 1 - SSresid_mag{idx}/SStotal_mag{idx} * (length(observed_MAG{idx})-1)/(length(observed_MAG{idx})-length(p_mag{idx}));
 end
 
-corrs= transpose([rsq_re; rsq_adj_re; rsq_im; rsq_adj_im; rsq_mag; rsq_adj_mag; R1; chi2; p; fit]);
-cnames={'real_R^2','real_R^2(adj)','imag_R^2','imag_R^2(adj)','MAG_R^2','MAG_R^2(adj)','R1','chi2','p','fit'};
+corrs= transpose([rsq_re; rsq_adj_re; rsq_im; rsq_adj_im; rsq_mag; rsq_adj_mag; chi2; p; fit]);
+cnames={'real_R^2','real_R^2(adj)','imag_R^2','imag_R^2(adj)','MAG_R^2','MAG_R^2(adj)','chi2','p','MSE'};
 
 t=findobj('Tag','tablecorr');
 set(t, 'Data', corrs,'ColumnWidth',{80},'ColumnName',cnames);

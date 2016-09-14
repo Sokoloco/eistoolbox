@@ -67,20 +67,22 @@ You should have received a copy of the GNU General Public License along with thi
 
 - [x] Read Gamry DTA files
 - [x] Read CSV files in the format [FREQ,REAL,IMAG]
-- [x] Basic fitting engine (thanks to Zfit from Jean-Luc Dellis!)
-- [x] Fit using fminsearch (thanks to fminsearcbnd from John D'Errico)
-- [ ] Fit using Levenberg-Marquardt
-- [ ] Fit using Nelder-Mead
-- [ ] Fit using BFGS
-- [ ] Fit using Powell
+- [x] Fitting engine (thanks to Zfit from Jean-Luc Dellis!)
+- [x] Weighting functions: Proportional, Unit and Modulus
+- [x] Algorithms: fminsearchbnd (thanks to John D'Errico)
+- [ ] Algorithms: Levenberg-Marquardt
+- [ ] Algorithms: Nelder-Mead
+- [ ] Algorithms: BFGS
+- [ ] Algorithms: Powell
+- [ ] Other algorithms
 - [x] Simulate fitted data
 - [ ] Simulate circuit data without fitting
-- [x] Display input data as Bode/Nyquist
-- [x] Display output data as Bode/Nyquist
+- [x] Display data as Bode/Nyquist
+- [ ] Display data as Real-Imag plot
 - [ ] Add button for saving each plot individually 
 - [x] Display fitting results as a table
 - [x] Compute linear correlation coefficients between fitted vs. measured data
-- [ ] Compute Chi2 Goodness-of-Fit test (ongoing, inaccurate)
+- [x] Compute Chi2 Goodness-of-Fit test
 - [ ] Compute the Kramers-Kronig test
 
 

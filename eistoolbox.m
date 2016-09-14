@@ -428,6 +428,7 @@ end
     %  comment: eval is required to parse the strings and get the arrays!
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
 initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
+setappdata(handles.eismain,'initparams',initparams);    % store them for later use on calculate_correlations.m
 
 LB = eval(get(handles.edit_LB,'String'));  % lower boundary for all parameters
 UB = eval(get(handles.edit_UB,'String'));  % upper boundary for all parameters

@@ -22,9 +22,7 @@ zbest=computecircuit(pbest,circuitstring,freq);
 end % END of ZFIT =========================================================
 
 %% CURFIT
-function [p,fval]=curfit(pinit,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,algorithm,weighting,maxiter)
-% Minimization function calling fminsearch
-param=pinit;
+function [p,fval]=curfit(param,circuitstring,freq,zrzi,handlecomputecircuit,LB,UB,algorithm,weighting,maxiter)
 
 switch algorithm
     case 1  % fminsearchbnd
@@ -37,13 +35,10 @@ end
     % DISTANCE is nested, so it knows handlecomputecircuit,circuitstring,freq,fitstring and zrzi
     function dist=distance(param)
 
-        % The next line simulates the circuit and extracts the impedance,
-        % by evaluating the circuit with the last OR supplied parameters.
-        % This line is equivalent to ymod=computecircuit(param,circuitstring,freq)
+        % Calculate the fitted impedance Zi,calc as:
         ymod=feval(handlecomputecircuit,param,circuitstring,freq);
 
-        % Then the cummulative distance between fitted and measured is
-        % calculated. This is the parameter that needs to be minimized.
+        % The weighting type determines the coefficients:
         switch weighting
             case 1 % proportional
                 wreal = 1 ./ zrzi(:,1).^2;
@@ -61,6 +56,7 @@ end
                 wimag = 1;
         end
         
+        % Then the distance between fitted and measured is calculated:
         dist = sum( sum( wreal .* (zrzi(:,1) - ymod(:,1)).^2 + wimag .* (zrzi(:,2) - ymod(:,2)).^2 ) );
 
     end         % END of DISTANCE
@@ -91,13 +87,11 @@ function z=computecircuit(param,circuit,freq)
     % for each element
     for i=1:2:length(element-2)
         k=k+1;
-        nlp=str2num(element(i+1));% idendify its numeral
+        nlp=str2double(element(i+1));% idendify its numeral
         localparam=param(1:nlp);% get its parameter values
         param=param(nlp+1:end);% remove them from param
         
         % compute the impedance of the current element for all the frequencies
-        dimens = size(localparam);
-        
         z(:,k)=eval([element(i),'([',num2str(localparam),']',',freq)']);
         
         % modify the initial circuit string (to use it later with eval)
