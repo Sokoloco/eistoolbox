@@ -67,8 +67,9 @@ function weightingmenu_Callback(hObject, eventdata, handles)
 function weightingmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the weighting functions
 set(hObject,'String',{ ...
-    'Proportional', ...     % option 1 : 'fitP'  Proportional
-    'Non-Proportional' ...  % option 2 : 'fitNP' Non-proportional
+    'Proportional', ...
+    'Unit', ...
+    'Modulus'
     });
 
 % AXES CREATION -----------------------------------------------------------

@@ -45,13 +45,23 @@ end
         % Then the cummulative distance between fitted and measured is
         % calculated. This is the parameter that needs to be minimized.
         switch weighting
-            case 1 % 'fitP' proportional
-                dist=sum(sum(((ymod-zrzi)./zrzi).^2));
-            case 2 % 'fitNP' non-proportional
-                dist=sum(sum((ymod-zrzi).^2));
+            case 1 % proportional
+                wreal = 1 ./ zrzi(:,1).^2;
+                wimag = 1 ./ zrzi(:,2).^2;
+            case 2 % unit
+                wreal = 1;
+                wimag = 1;
+            case 3 % modulus
+                wreal = 1 ./ (zrzi(:,1).^2+zrzi(:,2).^2);
+                wimag = 1 ./ (zrzi(:,1).^2+zrzi(:,2).^2);
+            case 4 % statistical
+                % not implemented yet...
             otherwise
-                dist=0;
+                wreal = 1;
+                wimag = 1;
         end
+        
+        dist = sum( sum( wreal .* (zrzi(:,1) - ymod(:,1)).^2 + wimag .* (zrzi(:,2) - ymod(:,2)).^2 ) );
 
     end         % END of DISTANCE
 end % END of CURFIT =======================================================
