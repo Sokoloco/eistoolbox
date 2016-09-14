@@ -128,6 +128,11 @@ plotnyq2(hObject, eventdata, handles);
 function btn_bod2_Callback(hObject, eventdata, handles)
 plotbod2(hObject, eventdata, handles);
 
+function btn_reim1_Callback(hObject, eventdata, handles)
+plotreim1(hObject, eventdata, handles);
+
+function btn_reim2_Callback(hObject, eventdata, handles)
+plotreim2(hObject, eventdata, handles);
 
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
@@ -352,6 +357,84 @@ function plotbod2(hObject, eventdata, handles)
         hLine2.LineStyle = ':';
         hLine2.Marker = 'x';
         hLine2.MarkerSize = 5;
+        hLine2.Color = 0.8*cm(idx,:);
+        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+    end
+
+    grid on;
+    
+    disp('Info: Fitted data succesfully plotted');
+    
+
+function plotreim1(hObject, eventdata, handles)
+    data= getappdata(handles.eismain,'data');   % measured data
+    
+    if isempty(data)
+        disp('Error: there is NO input data selected yet. Add some data first!');
+        return;
+    end
+    
+    disp('Info: Plotting Bode response of input data files');
+
+    % Now we plot all the acquired data from the files
+    axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
+    cla;  % Clears any old information already present in the diagram
+    set(gca,'xscale','log');    % change x axis to log
+    hold on;
+    
+    cm=colormap(hsv(length(data))); % define a colormap
+    for idx=1:length(data)
+        [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),data{idx}(:,2), ... %magnitude
+            data{idx}(:,1),data{idx}(:,3), ... % phase
+            'semilogx');
+        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
+        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        hLine1.LineStyle = ':';
+        hLine1.Marker = '.';
+        hLine1.MarkerSize = 12;
+        hLine1.Color = 0.8*cm(idx,:);
+        hLine2.LineStyle = ':';
+        hLine2.Marker = 'o';
+        hLine2.MarkerSize = 4;
+        hLine2.Color = 0.8*cm(idx,:);
+        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+    end
+    
+    grid on;
+    
+    disp('Info: Input data files succesfully plotted');
+    
+function plotreim2(hObject, eventdata, handles)
+    zbest=getappdata(handles.eismain,'zbest');  % fitting data
+    data= getappdata(handles.eismain,'data');   % frequencies
+    
+    if isempty(zbest)
+        disp('Error: there is NO fitted data selected yet. Fit some data first!');
+        return;
+    end
+    
+    disp('Info: Plotting Bode response of fitted data');
+
+    % Display results from zbest in second plot
+    axes(handles.axes2);
+    cla reset;  % Clears any old information already present in the diagram
+    set(gca,'xscale','log');    % change x axis to log
+    hold on;
+   
+    cm=colormap(hsv(length(data))); % define a colormap
+    for idx=1:length(data)
+       [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),zbest{idx}(:,1), ... % real
+            data{idx}(:,1),zbest{idx}(:,2) , ... % imag
+            'semilogx'); 
+        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
+        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        hLine1.LineStyle = ':';
+        hLine1.Marker = '.';
+        hLine1.MarkerSize = 12;
+        hLine1.Color = 0.8*cm(idx,:);
+        hLine2.LineStyle = ':';
+        hLine2.Marker = 'o';
+        hLine2.MarkerSize = 4;
         hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end

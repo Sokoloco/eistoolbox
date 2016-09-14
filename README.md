@@ -77,8 +77,7 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Other algorithms
 - [x] Simulate fitted data
 - [ ] Simulate circuit data without fitting
-- [x] Display data as Bode/Nyquist
-- [ ] Display data as Real-Imag plot
+- [x] Display data as Bode/Nyquist/Real-Imag plots
 - [ ] Add button for saving each plot individually 
 - [x] Display fitting results as a table
 - [x] Compute linear correlation coefficients between fitted vs. measured data
