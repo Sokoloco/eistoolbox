@@ -254,7 +254,7 @@ function plotnyq(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-
+    axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Input data files succesfully plotted');
     
 function plotbod(hObject, eventdata, handles)
@@ -270,7 +270,7 @@ function plotbod(hObject, eventdata, handles)
 
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
-    cla;  % Clears any old information already present in the diagram
+    cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
     
@@ -281,6 +281,8 @@ function plotbod(hObject, eventdata, handles)
             'semilogx');
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        set(ax(1),'yscale','log');    % change y axis to log
+        axis tight; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
@@ -322,7 +324,7 @@ function plotnyq2(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-    
+    axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Fitted data succesfully plotted');
 
 function plotbod2(hObject, eventdata, handles)
@@ -350,6 +352,8 @@ function plotbod2(hObject, eventdata, handles)
             'semilogx'); 
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        set(ax(1),'yscale','log');    % change y axis to log
+        axis tight; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
@@ -378,24 +382,26 @@ function plotreim1(hObject, eventdata, handles)
 
     % Now we plot all the acquired data from the files
     axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
-    cla;  % Clears any old information already present in the diagram
+    cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
     
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
         [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),data{idx}(:,2), ... %magnitude
-            data{idx}(:,1),data{idx}(:,3), ... % phase
+            data{idx}(:,1),(data{idx}(:,3)), ... % phase
             'semilogx');
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        set(ax(1),'yscale','log');    % change y axis to log
+        axis tight; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
         hLine1.Color = 0.8*cm(idx,:);
         hLine2.LineStyle = ':';
         hLine2.Marker = 'o';
-        hLine2.MarkerSize = 4;
+        hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
@@ -428,13 +434,15 @@ function plotreim2(hObject, eventdata, handles)
             'semilogx'); 
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
+        set(ax(1),'yscale','log');    % change y axis to log
+        axis tight; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
         hLine1.Color = 0.8*cm(idx,:);
         hLine2.LineStyle = ':';
         hLine2.Marker = 'o';
-        hLine2.MarkerSize = 4;
+        hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
