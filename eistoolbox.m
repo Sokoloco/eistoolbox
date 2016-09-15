@@ -254,7 +254,7 @@ function plotnyq(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-    axis tight; % adjusts axis limits to the data already loaded
+    axis fill; % adjusts axis limits to the data already loaded
     disp('Info: Input data files succesfully plotted');
     
 function plotbod(hObject, eventdata, handles)
@@ -282,7 +282,7 @@ function plotbod(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
-        axis tight; % adjusts axis limits to the data already loaded
+        axis fill; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
@@ -324,7 +324,7 @@ function plotnyq2(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-    axis tight; % adjusts axis limits to the data already loaded
+    axis fill; % adjusts axis limits to the data already loaded
     disp('Info: Fitted data succesfully plotted');
 
 function plotbod2(hObject, eventdata, handles)
@@ -353,7 +353,7 @@ function plotbod2(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
-        axis tight; % adjusts axis limits to the data already loaded
+        axis fill; % adjusts axis limits to the data already loaded
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
@@ -394,7 +394,9 @@ function plotreim1(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
-        axis tight; % adjusts axis limits to the data already loaded
+        set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
+        set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
+        set(ax(1),'YLim',[min(data{idx}(:,2)), max(data{idx}(:,2))]);
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
@@ -435,7 +437,9 @@ function plotreim2(hObject, eventdata, handles)
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
-        axis tight; % adjusts axis limits to the data already loaded
+        set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
+        set(ax(1),'YLim',[min(zbest{idx}(:,1)), max(zbest{idx}(:,1))]);
+        set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
         hLine1.LineStyle = ':';
         hLine1.Marker = '.';
         hLine1.MarkerSize = 12;
