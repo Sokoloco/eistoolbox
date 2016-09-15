@@ -23,10 +23,12 @@ for idx=1:length(measured)
     % Chi square test
     df = 2*length(expected_real{idx}) - length(initparams); % 2N - m
     chi2{idx} = sum((observed_MAG{idx}-expected_MAG{idx}).^2 ./ expected_MAG{idx}); % x^2 = (o-e)^2 / e
-    p{idx} = 1 - chi2cdf(chi2{idx},df);
+    p{idx} = 1; % ToDo: rewrite this function to avoid statistics toolbox
+    %p{idx} = 1 - chi2cdf(chi2{idx},df);
     
     % Goodness of fit by Mean Square Errors
-    fit{idx} = goodnessOfFit(observed_MAG{idx}, expected_MAG{idx},'MSE');
+    fit{idx} = 0; % ToDo: rewrite this function to avoid statistics toolbox
+    %fit{idx} = goodnessOfFit(observed_MAG{idx}, expected_MAG{idx},'MSE');
 end
 
 % chi2 is the chi square stats for magnitude
