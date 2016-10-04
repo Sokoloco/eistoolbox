@@ -277,7 +277,7 @@ function plotbod(hObject, eventdata, handles)
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
         [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(data{idx}(:,2) ./ data{idx}(:,3))*180/pi, ... % phase
+            data{idx}(:,1),atan(data{idx}(:,3) ./ data{idx}(:,2))*180/pi, ... % phase
             'semilogx');
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
@@ -348,7 +348,7 @@ function plotbod2(hObject, eventdata, handles)
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
        [ax,hLine1,hLine2] =  plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(zbest{idx}(:,1) ./ zbest{idx}(:,2))*180/pi, ... % phase
+            data{idx}(:,1),atan(zbest{idx}(:,2) ./ zbest{idx}(:,1))*180/pi, ... % phase
             'semilogx'); 
         set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
