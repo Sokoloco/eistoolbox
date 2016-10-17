@@ -254,7 +254,7 @@ function plotnyq(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-    axis fill; % adjusts axis limits to the data already loaded
+    axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Input data files succesfully plotted');
     
 function plotbod(hObject, eventdata, handles)
@@ -295,6 +295,7 @@ function plotbod(hObject, eventdata, handles)
     end
     
     grid on;
+    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
     
     disp('Info: Input data files succesfully plotted');
 
@@ -324,7 +325,7 @@ function plotnyq2(hObject, eventdata, handles)
             'marker','.',...
             'markersize',12);
     end
-    axis fill; % adjusts axis limits to the data already loaded
+    axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Fitted data succesfully plotted');
 
 function plotbod2(hObject, eventdata, handles)
@@ -366,7 +367,7 @@ function plotbod2(hObject, eventdata, handles)
     end
 
     grid on;
-    
+    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
     disp('Info: Fitted data succesfully plotted');
     
 
@@ -409,7 +410,7 @@ function plotreim1(hObject, eventdata, handles)
     end
     
     grid on;
-    
+    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
     disp('Info: Input data files succesfully plotted');
     
 function plotreim2(hObject, eventdata, handles)
@@ -452,7 +453,7 @@ function plotreim2(hObject, eventdata, handles)
     end
 
     grid on;
-    
+    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
