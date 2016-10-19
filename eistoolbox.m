@@ -134,6 +134,33 @@ plotreim1(hObject, eventdata, handles);
 function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
 
+function save1_Callback(hObject, eventdata, handles)
+% ToDo: this only copies the 1st axis because of problems with copyobj
+% ToDo: this does not copy the axes tick marks
+% One could modify the plotting functions to accept a "save" parameter
+% If the parameter is enabled, calling the plotting function would create a
+% new figure and plot the exact same data on the new figure, then save the
+% figure and close it after exporting
+nf = figure(1);
+set(nf,'Units','centimeters','Position',[0 0 8 6]);
+nh = copyobj(handles.axes1, nf);
+set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
+saveas(nf, 'axes1.pdf', 'pdf');
+close(nf);
+
+function save2_Callback(hObject, eventdata, handles)
+% ToDo: this only copies the 1st axis because of problems with copyobj
+% One could modify the plotting functions to accept a "save" parameter
+% If the parameter is enabled, calling the plotting function would create a
+% new figure and plot the exact same data on the new figure, then save the
+% figure and close it after exporting
+nf = figure(1);
+set(nf,'Units','centimeters','Position',[0 0 8 6]);
+nh = copyobj(handles.axes2, nf);
+set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
+saveas(nf, 'axes2.pdf', 'pdf');
+close(nf);
+
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
 
@@ -650,3 +677,4 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
