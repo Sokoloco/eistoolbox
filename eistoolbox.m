@@ -141,11 +141,20 @@ function save1_Callback(hObject, eventdata, handles)
 % If the parameter is enabled, calling the plotting function would create a
 % new figure and plot the exact same data on the new figure, then save the
 % figure and close it after exporting
+% Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
+[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
+if isequal(fileName,0)
+   disp('Info: No file was selected');
+   return;  % terminate the callback here
+end
+
+fullfname = fullfile(filePath,fileName);
+
 nf = figure(1);
 set(nf,'Units','centimeters','Position',[0 0 8 6]);
 nh = copyobj(handles.axes1, nf);
 set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
-saveas(nf, 'axes1.pdf', 'pdf');
+saveas(nf, fullfname, 'pdf');
 close(nf);
 
 function save2_Callback(hObject, eventdata, handles)
@@ -154,11 +163,20 @@ function save2_Callback(hObject, eventdata, handles)
 % If the parameter is enabled, calling the plotting function would create a
 % new figure and plot the exact same data on the new figure, then save the
 % figure and close it after exporting
+
+[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
+if isequal(fileName,0)
+   disp('Info: No file was selected');
+   return;  % terminate the callback here
+end
+
+fullfname = fullfile(filePath,fileName);
+
 nf = figure(1);
 set(nf,'Units','centimeters','Position',[0 0 8 6]);
 nh = copyobj(handles.axes2, nf);
 set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
-saveas(nf, 'axes2.pdf', 'pdf');
+saveas(nf, fullfname, 'pdf');
 close(nf);
 
 % MENUS -------------------------------------------------------------------
