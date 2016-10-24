@@ -277,7 +277,7 @@ function plotnyq(hObject, eventdata, handles)
         plot(data{idx}(:,2),abs(data{idx}(:,3)),...
             'color',0.8*cm(idx,:),...
             'marker','.',...
-            'markersize',12);
+            'markersize',5);
     end
     axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Input data files succesfully plotted');
@@ -308,13 +308,13 @@ function plotbod(hObject, eventdata, handles)
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
         axis fill; % adjusts axis limits to the data already loaded
-        hLine1.LineStyle = ':';
+        hLine1.LineStyle = '-';
         hLine1.Marker = '.';
-        hLine1.MarkerSize = 12;
+        hLine1.MarkerSize = 5;
         hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = ':';
+        hLine2.LineStyle = '-';
         hLine2.Marker = 'x';
-        hLine2.MarkerSize = 5;
+        hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
@@ -348,7 +348,7 @@ function plotnyq2(hObject, eventdata, handles)
         plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)),...
             'color',0.8*cm(idx,:),...
             'marker','.',...
-            'markersize',12);
+            'markersize',5);
     end
     axis tight; % adjusts axis limits to the data already loaded
     disp('Info: Fitted data succesfully plotted');
@@ -380,13 +380,13 @@ function plotbod2(hObject, eventdata, handles)
         set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
         set(ax(1),'yscale','log');    % change y axis to log
         axis fill; % adjusts axis limits to the data already loaded
-        hLine1.LineStyle = ':';
+        hLine1.LineStyle = '-';
         hLine1.Marker = '.';
-        hLine1.MarkerSize = 12;
+        hLine1.MarkerSize = 5;
         hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = ':';
+        hLine2.LineStyle = '-';
         hLine2.Marker = 'x';
-        hLine2.MarkerSize = 5;
+        hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
         if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
     end
@@ -423,11 +423,11 @@ function plotreim1(hObject, eventdata, handles)
         set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
         set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
         set(ax(1),'YLim',[min(data{idx}(:,2)), max(data{idx}(:,2))]);
-        hLine1.LineStyle = ':';
+        hLine1.LineStyle = '-';
         hLine1.Marker = '.';
-        hLine1.MarkerSize = 12;
+        hLine1.MarkerSize = 5;
         hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = ':';
+        hLine2.LineStyle = '-';
         hLine2.Marker = 'o';
         hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
@@ -466,11 +466,11 @@ function plotreim2(hObject, eventdata, handles)
         set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
         set(ax(1),'YLim',[min(zbest{idx}(:,1)), max(zbest{idx}(:,1))]);
         set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
-        hLine1.LineStyle = ':';
+        hLine1.LineStyle = '-';
         hLine1.Marker = '.';
-        hLine1.MarkerSize = 12;
+        hLine1.MarkerSize = 5;
         hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = ':';
+        hLine2.LineStyle = '-';
         hLine2.Marker = 'o';
         hLine2.MarkerSize = 3;
         hLine2.Color = 0.8*cm(idx,:);
