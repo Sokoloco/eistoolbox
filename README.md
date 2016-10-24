@@ -47,6 +47,8 @@ At the moment, circuits can be written according to the Zfit specification:
 
 ## External libraries used in this toolbox
 
+export_fig by Yair Altman is found [here](https://github.com/altmany/export_fig)
+
 fminsearchbnd by John D'Errico is found [here](http://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon).
 
 Zfit is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).

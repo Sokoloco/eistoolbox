@@ -135,35 +135,21 @@ function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
 
 function save1_Callback(hObject, eventdata, handles)
-% ToDo: this only copies the 1st axis because of problems with copyobj
-% ToDo: this does not copy the axes tick marks
-% One could modify the plotting functions to accept a "save" parameter
-% If the parameter is enabled, calling the plotting function would create a
-% new figure and plot the exact same data on the new figure, then save the
-% figure and close it after exporting
-% Ask for data: Open the menu_file dialog 'uigetfile' with Multiselect 'on'
-[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
+% ToDo: this does not work well for plotyy second axis
+[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'; 
+    '*.png','Portable Networks Graphic (*.png)';
+    '*.jpg','JPEG (*.jpg)'});
 if isequal(fileName,0)
    disp('Info: No file was selected');
    return;  % terminate the callback here
 end
 
 fullfname = fullfile(filePath,fileName);
+export_fig(handles.axes1, fullfname);
 
-nf = figure(1);
-set(nf,'Units','centimeters','Position',[0 0 8 6]);
-nh = copyobj(handles.axes1, nf);
-set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
-saveas(nf, fullfname, 'pdf');
-close(nf);
 
 function save2_Callback(hObject, eventdata, handles)
-% ToDo: this only copies the 1st axis because of problems with copyobj
-% One could modify the plotting functions to accept a "save" parameter
-% If the parameter is enabled, calling the plotting function would create a
-% new figure and plot the exact same data on the new figure, then save the
-% figure and close it after exporting
-
+% ToDo: this does not work well for plotyy second axis
 [fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
 if isequal(fileName,0)
    disp('Info: No file was selected');
@@ -171,13 +157,7 @@ if isequal(fileName,0)
 end
 
 fullfname = fullfile(filePath,fileName);
-
-nf = figure(1);
-set(nf,'Units','centimeters','Position',[0 0 8 6]);
-nh = copyobj(handles.axes2, nf);
-set( nh, 'Units', 'centimeters', 'Position', [0 0 8 6] );
-saveas(nf, fullfname, 'pdf');
-close(nf);
+export_fig(handles.axes2, fullfname);
 
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
