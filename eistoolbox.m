@@ -263,7 +263,7 @@ function plotnyq(hObject, eventdata, handles)
 
     % Now we plot all the acquired data from the files
     figure(1);
-    cla reset;  % Clears any old information already present in the diagram
+    clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
     hold on;
@@ -277,6 +277,9 @@ function plotnyq(hObject, eventdata, handles)
             'markersize',5);
     end
     axis tight; % adjusts axis limits to the data already loaded
+    title('Nyquist plot');
+    xlabel('Impedance Real [\Omega]');
+    ylabel('Impedance Imag [\Omega]');
     disp('Info: Input data files succesfully plotted');
     
 function plotbod(hObject, eventdata, handles)
@@ -292,32 +295,32 @@ function plotbod(hObject, eventdata, handles)
 
     % Now we plot all the acquired data from the files
     figure(1);
-    cla reset;  % Clears any old information already present in the diagram
-    set(gca,'xscale','log');    % change x axis to log
-    hold on;
+    clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-        [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(data{idx}(:,3) ./ data{idx}(:,2))*180/pi, ... % phase
-            'semilogx');
-        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
-        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        set(ax(1),'yscale','log');    % change y axis to log
-        axis fill; % adjusts axis limits to the data already loaded
-        hLine1.LineStyle = '-';
-        hLine1.Marker = '.';
-        hLine1.MarkerSize = 5;
-        hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = '-';
-        hLine2.Marker = 'x';
-        hLine2.MarkerSize = 3;
-        hLine2.Color = 0.8*cm(idx,:);
-        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+        ax(1) = subplot(2,1,1);
+        loglog(data{idx}(:,1),sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2 ),...
+            'LineStyle','-','Marker','.','MarkerSize',5,'Color',0.8*cm(idx,:)); % magnitude
+        hold on;
+        grid on;
+        title('Magnitude');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance [\Omega]');
+        ax(2) = subplot(2,1,2);
+        semilogx(data{idx}(:,1),atan(data{idx}(:,3) ./ data{idx}(:,2))*180/pi,...
+            'LineStyle','-','Marker','x','MarkerSize',3,'Color',0.8*cm(idx,:)); %phase
+        hold on;
+        grid on;
+        title('Phase');
+        xlabel('Frequency [Hz]');
+        ylabel('Phase [Degrees]');
+        set(ax(1),'FontSize',7);
+        set(ax(2),'FontSize',7);
     end
     
-    grid on;
-    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
+    axis(ax(1),'tight');    % rescale axis to fit data
+    axis(ax(2),'tight');
     
     disp('Info: Input data files succesfully plotted');
 
@@ -334,7 +337,7 @@ function plotnyq2(hObject, eventdata, handles)
 
     % Display results from zbest in second plot
     figure(2);
-    cla reset;  % Clears any old information already present in the diagram
+    clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
     hold on;
@@ -348,6 +351,9 @@ function plotnyq2(hObject, eventdata, handles)
             'markersize',5);
     end
     axis tight; % adjusts axis limits to the data already loaded
+    title('Nyquist plot');
+    xlabel('Impedance Real [\Omega]');
+    ylabel('Impedance Imag [\Omega]');
     disp('Info: Fitted data succesfully plotted');
 
 function plotbod2(hObject, eventdata, handles)
@@ -364,32 +370,33 @@ function plotbod2(hObject, eventdata, handles)
 
     % Display results from zbest in second plot
     figure(2);
-    cla reset;  % Clears any old information already present in the diagram
-    set(gca,'xscale','log');    % change x axis to log
-    hold on;
-   
+    clf;  % Clears any old information already present in the diagram
+    
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-       [ax,hLine1,hLine2] =  plotyy(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ), ... %magnitude
-            data{idx}(:,1),atan(zbest{idx}(:,2) ./ zbest{idx}(:,1))*180/pi, ... % phase
-            'semilogx'); 
-        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
-        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        set(ax(1),'yscale','log');    % change y axis to log
-        axis fill; % adjusts axis limits to the data already loaded
-        hLine1.LineStyle = '-';
-        hLine1.Marker = '.';
-        hLine1.MarkerSize = 5;
-        hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = '-';
-        hLine2.Marker = 'x';
-        hLine2.MarkerSize = 3;
-        hLine2.Color = 0.8*cm(idx,:);
-        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+        ax(1) = subplot(2,1,1);
+        loglog(data{idx}(:,1),sqrt(zbest{idx}(:,1).^2 + abs(zbest{idx}(:,2)).^2 ),...
+            'LineStyle','-','Marker','.','MarkerSize',5,'Color',0.8*cm(idx,:)); % magnitude
+        hold on;
+        grid on;
+        title('Magnitude');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance [\Omega]');
+        ax(2) = subplot(2,1,2);
+        semilogx(data{idx}(:,1),atan(zbest{idx}(:,2) ./ zbest{idx}(:,1))*180/pi,...
+            'LineStyle','-','Marker','x','MarkerSize',3,'Color',0.8*cm(idx,:)); %phase
+        hold on;
+        grid on;
+        title('Phase');
+        xlabel('Frequency [Hz]');
+        ylabel('Phase [Degrees]');
+        set(ax(1),'FontSize',7);
+        set(ax(2),'FontSize',7);
     end
-
-    grid on;
-    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
+    
+    axis(ax(1),'tight');    % rescale axis to fit data
+    axis(ax(2),'tight');
+    
     disp('Info: Fitted data succesfully plotted');
     
 
@@ -405,34 +412,32 @@ function plotreim1(hObject, eventdata, handles)
 
     % Now we plot all the acquired data from the files
     figure(1);
-    cla reset;  % Clears any old information already present in the diagram
-    set(gca,'xscale','log');    % change x axis to log
-    hold on;
+    clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-        [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),data{idx}(:,2), ... %magnitude
-            data{idx}(:,1),(data{idx}(:,3)), ... % phase
-            'semilogx');
-        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
-        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        set(ax(1),'yscale','log');    % change y axis to log
-        set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
-        set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
-        set(ax(1),'YLim',[min(data{idx}(:,2)), max(data{idx}(:,2))]);
-        hLine1.LineStyle = '-';
-        hLine1.Marker = '.';
-        hLine1.MarkerSize = 5;
-        hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = '-';
-        hLine2.Marker = 'o';
-        hLine2.MarkerSize = 3;
-        hLine2.Color = 0.8*cm(idx,:);
-        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+        ax(1) = subplot(2,1,1);
+        loglog(data{idx}(:,1),data{idx}(:,2),...
+            'LineStyle','-','Marker','.','MarkerSize',5,'Color',0.8*cm(idx,:)); %real
+        hold on;
+        grid on;
+        title('Real');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance real [\Omega]');
+        ax(2) = subplot(2,1,2);
+        loglog(data{idx}(:,1),abs(data{idx}(:,3)),...
+            'LineStyle','-','Marker','o','MarkerSize',3,'Color',0.8*cm(idx,:))% imag
+        hold on;
+        grid on;
+        title('Imaginary');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance imag [\Omega]');
     end
-    
-    grid on;
-    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
+
+    set(ax(1),'FontSize',7);
+    set(ax(2),'FontSize',7);
+    axis(ax(1),'tight');    % rescale axis to fit data
+    axis(ax(2),'tight');    % rescale axis to fit data
     disp('Info: Input data files succesfully plotted');
     
 function plotreim2(hObject, eventdata, handles)
@@ -448,34 +453,33 @@ function plotreim2(hObject, eventdata, handles)
 
     % Display results from zbest in second plot
     figure(2);
-    cla reset;  % Clears any old information already present in the diagram
-    set(gca,'xscale','log');    % change x axis to log
-    hold on;
-   
+    clf;  % Clears any old information already present in the diagram
+    clf;  % Clears any old information already present in the diagram
+    
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-       [ax,hLine1,hLine2] = plotyy(data{idx}(:,1),zbest{idx}(:,1), ... % real
-            data{idx}(:,1),zbest{idx}(:,2) , ... % imag
-            'semilogx'); 
-        set(ax(1),'FontSize',7,'YColor',[0 0 0.7]);
-        set(ax(2),'FontSize',7,'YColor',[0.7 0 0]);
-        set(ax(1),'yscale','log');    % change y axis to log
-        set(ax(1),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
-        set(ax(1),'YLim',[min(zbest{idx}(:,1)), max(zbest{idx}(:,1))]);
-        set(ax(2),'XLim',[min(data{idx}(:,1)), max(data{idx}(:,1))]);
-        hLine1.LineStyle = '-';
-        hLine1.Marker = '.';
-        hLine1.MarkerSize = 5;
-        hLine1.Color = 0.8*cm(idx,:);
-        hLine2.LineStyle = '-';
-        hLine2.Marker = 'o';
-        hLine2.MarkerSize = 3;
-        hLine2.Color = 0.8*cm(idx,:);
-        if idx > 1; set(ax(2),'YTick',[]); end % prevents marker overlapping
+        ax(1) = subplot(2,1,1);
+        loglog(data{idx}(:,1),zbest{idx}(:,1),...
+            'LineStyle','-','Marker','.','MarkerSize',5,'Color',0.8*cm(idx,:)); %real
+        hold on;
+        grid on;
+        title('Real');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance real [\Omega]');
+        ax(2) = subplot(2,1,2);
+        loglog(data{idx}(:,1),abs(zbest{idx}(:,2)),...
+            'LineStyle','-','Marker','o','MarkerSize',3,'Color',0.8*cm(idx,:))% imag
+        hold on;
+        grid on;
+        title('Imaginary');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance imag [\Omega]');
     end
 
-    grid on;
-    axis([ax(1) ax(2)],'tight');    % rescale axis to fit data
+    set(ax(1),'FontSize',7);
+    set(ax(2),'FontSize',7);
+    axis(ax(1),'tight');    % rescale axis to fit data
+    axis(ax(2),'tight');    % rescale axis to fit data
     disp('Info: Fitted data succesfully plotted');
     
 function loadckt(hObject, eventdata, handles)
