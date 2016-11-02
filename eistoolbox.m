@@ -262,7 +262,8 @@ function plotnyq(hObject, eventdata, handles)
     disp('Info: Plotting Nyquist response of input data files');
 
     % Now we plot all the acquired data from the files
-    figure(1);
+    f1 = figure(1);
+    set(f1,'Name','Measured Data');
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -294,7 +295,8 @@ function plotbod(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of input data files');
 
     % Now we plot all the acquired data from the files
-    figure(1);
+    f1 = figure(1);
+    set(f1,'Name','Measured Data');
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -336,7 +338,8 @@ function plotnyq2(hObject, eventdata, handles)
     disp('Info: Plotting Nyquist response of fitted data');
 
     % Display results from zbest in second plot
-    figure(2);
+    f2 = figure(2);
+    set(f2,'Name','Fitted Data');
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -369,7 +372,8 @@ function plotbod2(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of fitted data');
 
     % Display results from zbest in second plot
-    figure(2);
+    f2 = figure(2);
+    set(f2,'Name','Fitted Data');
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -411,7 +415,8 @@ function plotreim1(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of input data files');
 
     % Now we plot all the acquired data from the files
-    figure(1);
+    f1 = figure(1);
+    set(f1,'Name','Measured Data');
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -452,7 +457,8 @@ function plotreim2(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of fitted data');
 
     % Display results from zbest in second plot
-    figure(2);
+    f2 = figure(2);
+    set(f2,'Name','Fitted Data');
     clf;  % Clears any old information already present in the diagram
     clf;  % Clears any old information already present in the diagram
     
