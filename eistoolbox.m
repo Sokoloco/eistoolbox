@@ -72,13 +72,6 @@ set(hObject,'String',{ ...
     'Modulus'
     });
 
-% AXES CREATION -----------------------------------------------------------
-function axes1_CreateFcn(hObject, eventdata, handles)
-grid on;
-
-function axes2_CreateFcn(hObject, eventdata, handles)
-grid on;
-
 % EDIT BOXES --------------------------------------------------------------
 function edit_circuit_Callback(hObject, eventdata, handles)
 
@@ -145,7 +138,9 @@ if isequal(fileName,0)
 end
 
 fullfname = fullfile(filePath,fileName);
-export_fig(handles.axes1, fullfname);
+%ToDo: check if Figure 1 exists, if not, show a message
+ch = figure(1);
+export_fig(ch, fullfname);
 
 
 function save2_Callback(hObject, eventdata, handles)
@@ -157,7 +152,9 @@ if isequal(fileName,0)
 end
 
 fullfname = fullfile(filePath,fileName);
-export_fig(handles.axes2, fullfname);
+%ToDo: check if Figure 2 exists, if not, show a message
+ch = figure(2);
+export_fig(ch, fullfname);
 
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
@@ -265,7 +262,7 @@ function plotnyq(hObject, eventdata, handles)
     disp('Info: Plotting Nyquist response of input data files');
 
     % Now we plot all the acquired data from the files
-    axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
+    figure(1);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -294,7 +291,7 @@ function plotbod(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of input data files');
 
     % Now we plot all the acquired data from the files
-    axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
+    figure(1);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
@@ -336,7 +333,7 @@ function plotnyq2(hObject, eventdata, handles)
     disp('Info: Plotting Nyquist response of fitted data');
 
     % Display results from zbest in second plot
-    axes(handles.axes2);
+    figure(2);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -366,7 +363,7 @@ function plotbod2(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of fitted data');
 
     % Display results from zbest in second plot
-    axes(handles.axes2);
+    figure(2);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
@@ -407,7 +404,7 @@ function plotreim1(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of input data files');
 
     % Now we plot all the acquired data from the files
-    axes(handles.axes1); % Select the axes 1 for plotting input data (Nyquist)
+    figure(1);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
@@ -450,7 +447,7 @@ function plotreim2(hObject, eventdata, handles)
     disp('Info: Plotting Bode response of fitted data');
 
     % Display results from zbest in second plot
-    axes(handles.axes2);
+    figure(2);
     cla reset;  % Clears any old information already present in the diagram
     set(gca,'xscale','log');    % change x axis to log
     hold on;
@@ -607,7 +604,7 @@ set(handles.txt_savestatus,'string','Fitting results ready, please save');
 plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
 % Display a table with the fitting results in a new figure
-fres = figure();
+fres = figure(3);
 set(fres,'Name',['Fitting Results for circuit Z = ',circuit]);
 cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
 for idx=1:length(cnames)
