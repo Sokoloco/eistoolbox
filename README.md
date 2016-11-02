@@ -65,26 +65,29 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-## ToDo and development status
+## Capabilities already implemented
 
-- [x] Read Gamry DTA files
+- [x] Read Gamry DTA files from Gamry Framework
 - [x] Read CSV files in the format [FREQ,REAL,IMAG]
 - [x] Fitting engine (thanks to Zfit from Jean-Luc Dellis!)
 - [x] Weighting functions: Proportional, Unit and Modulus
 - [x] Algorithms: fminsearchbnd (thanks to John D'Errico)
+- [x] Simulate fitted data
+- [x] Display data as Bode/Nyquist/Real-Imag plots
+- [x] Add button for saving each plot individually (thanks to export_fig from Yair Altman) 
+- [x] Display fitting results as a table
+- [x] Compute linear correlation coefficients between fitted vs. measured data
+- [x] Compute Chi2 Goodness-of-Fit test
+- [x] Save fitting results and statistics as XLS spreadsheet
+
+## Planned for future releases
+
 - [ ] Algorithms: Levenberg-Marquardt
 - [ ] Algorithms: Nelder-Mead
 - [ ] Algorithms: BFGS
 - [ ] Algorithms: Powell
-- [ ] Other algorithms
-- [x] Simulate fitted data
+- [ ] Algorithms: Other algorithms
 - [ ] Simulate circuit data without fitting
-- [x] Display data as Bode/Nyquist/Real-Imag plots
-- [ ] Add button for saving each plot individually 
-- [x] Display fitting results as a table
-- [x] Compute linear correlation coefficients between fitted vs. measured data
-- [x] Compute Chi2 Goodness-of-Fit test
 - [ ] Compute the Kramers-Kronig test
-
 
 If you have comments or suggestions, [send me an e-mail](mailto:juan.montero@tu-harburg.de)

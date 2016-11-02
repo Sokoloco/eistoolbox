@@ -5,9 +5,9 @@ function varargout = eistoolbox(varargin)
 % Quick start guide:
 % 1. Click the "Add files..." button to load some CSV or DTA files
 % 2. Write a circuit model using the format from Zfit (or load a predefined one)
-% 3. Select the desired algorithm to perform the fitting
+% 3. Select the desired algorithm and weighting type to perform the fitting
 % 4. Click the "Fit" button to perform the computations
-% 5. Save the results to a .xls file to obtain the fitted parameters!
+% 5. Save the results to a .xls file to store the fitted parameters!
 %
 
 %% GUI Functions (specific to GUIDE)
