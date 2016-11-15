@@ -59,7 +59,10 @@ function algorithmmenu_Callback(hObject, eventdata, handles)
 function algorithmmenu_CreateFcn(hObject, eventdata, handles)
 % Set here the labels for the algorithms
 set(hObject,'String',{ ...
-    'fminsearchbnd' ...    % option 1 : fminsearchbnd
+    'Nelder-Mead (default)', ...        % option 1 : fminsearchcon()    Nelder-Mead 
+    'Genetic Algorithm', ...            % option 2 : ga()               Genetic Algorithm
+    'Simulated Annealing', ...          % option 3 : simulannealbnd()   Simulated Annealing
+    'Constrained minimization' ...      % option 4 : fmincon()          Constrained minimization
     });
 
 function weightingmenu_Callback(hObject, eventdata, handles)
@@ -126,6 +129,9 @@ plotreim1(hObject, eventdata, handles);
 
 function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
+
+function btn_simulatecirc_Callback(hObject, eventdata, handles)
+simcircuit(hObject, eventdata, handles);
 
 function save1_Callback(hObject, eventdata, handles)
 % ToDo: this does not work well for plotyy second axis
@@ -543,6 +549,45 @@ fprintf(fid,strcat(line4,'\n'));   % fourth line: upper boundary conditions
 
 fclose(fid);
 
+function simcircuit(hObject, eventdata, handles)
+data = getappdata(handles.eismain,'data');        % input files loaded to the program
+
+if isempty(data)
+    disp('Error: You need to load at least one data file (with the frequencies for simulation in the first column). Add some files first!');
+    return;
+end
+% Read configuration parameters from the edit boxes -----------------------
+% comment: eval is required to parse the strings and get the arrays!
+circuitstring = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
+initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
+
+% Check formatting of text boxes, error handling
+if isempty(circuitstring) disp('Error: Circuit string is empty'); return; end
+if isempty(initparams) fprintf('Error: Init Params string is empty'); return; end
+
+zsim = computecircuit(initparams,circuitstring,data{1}(:,1));
+
+figure(4);
+ax(1) = subplot(2,1,1);
+loglog(data{1}(:,1),zsim(:,1),'color','black');
+title('Simulated Magnitude');
+xlabel('Frequency [Hz]');
+ylabel('Impedance [\Omega]');
+grid on;
+ax(2) = subplot(2,1,2);
+semilogx(data{1}(:,1),zsim(:,2),'color','black');
+title('Simulated Phase');
+xlabel('Frequency [Hz]');
+ylabel('Phase [degrees]');
+grid on;
+
+set(ax(1),'FontSize',7);
+set(ax(2),'FontSize',7);
+axis(ax(1),'tight');    % rescale axis to fit data
+axis(ax(2),'tight');    % rescale axis to fit data
+
+
+
 function run_fitting(hObject, eventdata, handles)
 data = getappdata(handles.eismain,'data');        % input files loaded to the program
 fnames = getappdata(handles.eismain,'fnames');    % index of the file names
@@ -553,7 +598,7 @@ if isempty(data)
 end
 
 % Read configuration parameters from the edit boxes -----------------------
-    %  comment: eval is required to parse the strings and get the arrays!
+% comment: eval is required to parse the strings and get the arrays!
 circuit = get(handles.edit_circuit,'String'); % equivalent circuit to be fitted
 initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
 setappdata(handles.eismain,'initparams',initparams);    % store them for later use on calculate_correlations.m
@@ -682,4 +727,5 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
