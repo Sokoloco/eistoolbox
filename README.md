@@ -39,11 +39,11 @@ At the moment, circuits can be written according to the Zfit specification:
 
 ## Screenshots
 
-![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/blob/master/images/main_screenshot.png)
+![Main window of eistoolbox](https://github.com/jjmontero9/eistoolbox/blob/v0.2/images/main_screenshot.png)
 
-![Results screen](https://github.com/jjmontero9/eistoolbox/blob/master/images/scr_results.png)
+![Results screen](https://github.com/jjmontero9/eistoolbox/blob/v0.2/images/scr_results.png)
 
-![Correlations screen](https://github.com/jjmontero9/eistoolbox/blob/master/images/correlations.png)
+![Correlations screen](https://github.com/jjmontero9/eistoolbox/blob/v0.2/images/correlations.png)
 
 ## External libraries used in this toolbox
 
@@ -72,13 +72,17 @@ You should have received a copy of the GNU General Public License along with thi
 - [x] Fitting engine (thanks to Zfit from Jean-Luc Dellis!)
 - [x] Weighting functions: Proportional, Unit and Modulus
 - [x] Algorithms: fminsearchbnd (thanks to John D'Errico)
-- [x] Simulate fitted data
-- [x] Display data as Bode/Nyquist/Real-Imag plots
+- [x] Algorithms: genetic algorithm (experimental!)
+- [x] Algorithms: simulated annealing (experimental!)
+- [x] Algorithms: fmincon (experimental!)
+- [x] Plot input data as Bode/Nyquist/ReIm plots
+- [x] Plot fitted data as Bode/Nyquist/ReIm plots
+- [x] Simulate circuits without fitting (using initial parameter values)
 - [x] Add button for saving each plot individually (thanks to export_fig from Yair Altman) 
 - [x] Display fitting results as a table
 - [x] Compute linear correlation coefficients between fitted vs. measured data
 - [x] Compute Chi2 Goodness-of-Fit test
-- [x] Save fitting results and statistics as XLS spreadsheet
+- [x] Save fitting results and statistics as XLS spreadsheet (csvwrite does not work on Linux!)
 
 ## Planned for future releases
 
@@ -87,7 +91,6 @@ You should have received a copy of the GNU General Public License along with thi
 - [ ] Algorithms: BFGS
 - [ ] Algorithms: Powell
 - [ ] Algorithms: Other algorithms
-- [ ] Simulate circuit data without fitting
 - [ ] Compute the Kramers-Kronig test
 
 If you have comments or suggestions, [send me an e-mail](mailto:juan.montero@tu-harburg.de)
