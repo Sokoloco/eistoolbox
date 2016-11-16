@@ -233,7 +233,7 @@ function addfiles(hObject, eventdata, handles)
    
    disp('Info: Loading input data files -please wait-');
     
-    set(handles.txt_savestatus,'string','No data to save');
+    set(handles.txt_savestatus,'string','Input data loaded');
     set(handles.txt_datafilecount,'string','0 data files loaded');
    
     h = waitbar(0,'Loading input data files... please wait');
@@ -287,6 +287,7 @@ function plotnyq(hObject, eventdata, handles)
 
     if isempty(data)
         disp('Error: there is NO input data selected yet. Add some files first!');
+        set(handles.txt_savestatus,'string','Error: NO input data');
         return;
     end
     
@@ -320,6 +321,7 @@ function plotbod(hObject, eventdata, handles)
 
     if isempty(data)
         disp('Error: there is NO input data selected yet. Add some files first!');
+        set(handles.txt_savestatus,'string','Error: NO input data');
         return;
     end
     
@@ -356,12 +358,14 @@ function plotbod(hObject, eventdata, handles)
     axis(ax(2),'tight');
     
     disp('Info: Input data files succesfully plotted');
+    set(handles.txt_savestatus,'string','Input data plotted');
 
 function plotnyq2(hObject, eventdata, handles)
 % plots input data as Nyquist
     zbest=getappdata(handles.eismain,'zbest');
 
     if isempty(zbest)
+        set(handles.txt_savestatus,'string','Error: NO fitted data');
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
         return;
     end
@@ -396,6 +400,7 @@ function plotbod2(hObject, eventdata, handles)
     data= getappdata(handles.eismain,'data');   % frequencies
 
     if isempty(zbest)
+        set(handles.txt_savestatus,'string','Error: NO fitted data');
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
         return;
     end
@@ -439,6 +444,7 @@ function plotreim1(hObject, eventdata, handles)
     data= getappdata(handles.eismain,'data');   % measured data
     
     if isempty(data)
+        set(handles.txt_savestatus,'string','Error: NO fitted data');
         disp('Error: there is NO input data selected yet. Add some data first!');
         return;
     end
@@ -481,6 +487,7 @@ function plotreim2(hObject, eventdata, handles)
     data= getappdata(handles.eismain,'data');   % frequencies
     
     if isempty(zbest)
+        set(handles.txt_savestatus,'string','Error: NO fitted data');
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
         return;
     end
@@ -527,6 +534,7 @@ function loadckt(hObject, eventdata, handles)
 
 % What happens if no file was selected? (i.e. cancel button)
 if isequal(fileName,0)
+    set(handles.txt_savestatus,'string','Error: NO file selected');
    disp('Info: No file was selected');
    return;  % terminate the callback here
 end
@@ -554,6 +562,7 @@ function saveckt(hObject, eventdata, handles)
 
 % What happens if no file was selected? (i.e. cancel button)
 if isequal(fileName,0)
+    set(handles.txt_savestatus,'string','Error: NO file selected');
    disp('Info: No file was selected');
    return;  % terminate the callback here
 end
@@ -578,6 +587,7 @@ function simcircuit(hObject, eventdata, handles)
 data = getappdata(handles.eismain,'data');        % input files loaded to the program
 
 if isempty(data)
+    set(handles.txt_savestatus,'string','Error: Missing input file with freq');
     disp('Error: You need to load at least one data file (with the frequencies for simulation in the first column). Add some files first!');
     return;
 end
@@ -587,8 +597,8 @@ circuitstring = get(handles.edit_circuit,'String'); % equivalent circuit to be f
 initparams = eval(get(handles.edit_initparams,'String')); % initial values for the circuit elemts
 
 % Check formatting of text boxes, error handling
-if isempty(circuitstring) disp('Error: Circuit string is empty'); return; end
-if isempty(initparams) fprintf('Error: Init Params string is empty'); return; end
+if isempty(circuitstring); disp('Error: Circuit string is empty'); return; end
+if isempty(initparams); fprintf('Error: Init Params string is empty'); return; end
 
 zsim = computecircuit(initparams,circuitstring,data{1}(:,1));
 
@@ -618,6 +628,7 @@ data = getappdata(handles.eismain,'data');        % input files loaded to the pr
 fnames = getappdata(handles.eismain,'fnames');    % index of the file names
 
 if isempty(data)
+    set(handles.txt_savestatus,'string','Error: NO input data');
     disp('Error: there is NO input data selected yet. Add some files first!');
     return;
 end
@@ -645,6 +656,7 @@ if length(initparams) ~= length(UB); disp(strcat('Error: check dimensions of ini
 tic();
 %disp(datestr(clock));
 disp('Info: Starting fitting process... -please wait-');
+set(handles.txt_savestatus,'string','-FITTING- please wait');
 h = waitbar(0,'Performing fitting... please wait');
 
 % initializing variables for speed optimization!
@@ -677,9 +689,11 @@ setappdata(handles.eismain,'results',results);
 setappdata(handles.eismain,'zbest',zbest);
 
 disp('Info: Fitting completed successfully');
-toc();
+fittime = toc();
 
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
+set(handles.txt_savestatus,'string',['Fit done. Time: ' num2str(fittime) ' seconds.']);
+
 
 plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
@@ -732,9 +746,12 @@ end
 h = waitbar(0,'Saving data... please wait');
 
 disp('Info: Saving the results -please wait-');
+set(handles.txt_savestatus,'string','-SAVING- please wait');
+
 outfullfname = fullfile(outPathName,outFileName);
 xlswrite(outfullfname, [param_cnames corr_cnames ; fnames results corr_values]);
 disp('Info: Results saved successfully!');
+set(handles.txt_savestatus,'string','Results saved as XLS');
 waitbar(1);
 close(h);
 
