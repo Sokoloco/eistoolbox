@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,oneside]{book}
+\documentclass[9pt,a4paper,oneside]{book}
 
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm]{geometry}
 \usepackage[utf8]{inputenc}
@@ -13,47 +13,81 @@
 \usepackage{amssymb}
 \usepackage{circuitikz}
 
+
+% ************** Fancy Headers ************** 
+\usepackage{fancyhdr}
+
+% pagestyle definition: plain
+\fancypagestyle{plain}{
+	\fancyhf{}
+	\fancyhead[L]{}
+	\fancyhead[R]{\thepage}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+
+% pagestyle definition: mmatter
+\fancypagestyle{mmatter}{
+	\fancyhf{}
+	\fancyhead[L]{\leftmark}
+	\fancyhead[R]{\thepage}
+	\renewcommand{\headrulewidth}{0.5pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+
+
 \begin{document}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 
+
+\frontmatter
+
 % Title page
- \vspace*{3cm}
-	
- \begin{center}
- 	\Huge eistoolbox \par
- \end{center}
- \begin{center}
- 	\LARGE for \par
- \end{center}
- \begin{center}
- 	\Huge MathWorks\textsuperscript{\textregistered} MATLAB \par
- \end{center}
- 
- \vspace*{2cm}
- 
+\begin{titlepage}
+
+\vspace*{3cm}
+
+\begin{center}
+	\Huge eistoolbox \par
+\end{center}
+\begin{center}
+	\LARGE for \par
+\end{center}
+\begin{center}
+	\Huge MathWorks\textsuperscript{\textregistered} MATLAB \par
+\end{center}
+
+\vspace*{2cm}
+
 \begin{center}
 	\Large A toolbox for batch fitting of Electrochemical Impedance Spectroscopy data to equivalent circuit models
 \end{center} 
- 
- \vspace*{2cm}
- 
- \begin{center}
- 	\Huge User Guide \par
- \end{center}
- \begin{center}
- 	\LARGE Juan J. Montero-Rodríguez \par
- \end{center}
- 
- \vspace*{4cm}
- 
- \begin{center}
- 	\Large Version 0.1-93
- \end{center}
+
+\vspace*{2cm}
+
+\begin{center}
+	\Huge User Guide \par
+\end{center}
+\begin{center}
+	\LARGE Juan J. Montero-Rodríguez \par
+\end{center}
+
+\vspace*{4cm}
+
+\begin{center}
+	\Large Version 0.2-104
+\end{center}
+
+\end{titlepage}
 
 \clearpage
 
 \tableofcontents
+
+
+\mainmatter
+\pagestyle{mmatter}
 
 \chapter{Introduction}
 
@@ -101,18 +135,16 @@ Z(f) = \dfrac{\rho L}{A} + \dfrac{1}{2\pi{}f} \dfrac{D}{\epsilon A}
 
 Impedance Spectroscopy is also referred as Dielectric Spectroscopy, because it gives information about the dielectric properties of the measured sample.
 
-\newpage
-\section{Kramers-Kronig Transforms}
-
-Experimental data can be validated using the Kramers-Kronig Transforms.
-
-
-\section{Fitting algorithms}
-
-\subsection{Levenberg-Marquardt}
-
-
-
+%\newpage
+%\section{Kramers-Kronig Transforms}
+%
+%Experimental data can be validated using the Kramers-Kronig Transforms.
+%
+%
+%\section{Fitting algorithms}
+%
+%\subsection{Levenberg-Marquardt}
+%
 
 \chapter{Quick Start Guide}
 
@@ -130,7 +162,7 @@ Steps for batch fitting impedance data curves:
 
 \subsection{Main Window}
 
-\includegraphics[width=15cm]{main_screenshot.png}
+\includegraphics[width=6cm]{main_screenshot.png}
 
 \subsection{Results Window}
 
@@ -315,26 +347,39 @@ The parameters $w'_i$ and $w''_i$ are the weighting values, computed by one of t
 	Unit weighting 			& $w'_i = w''_i = 1$ \\
 	Modulus weighting 		& $w'_i = w''_i = 1/|Z|^2$ \\
 	Proportional weighting 	& $w'_i = 1/(Z')^2$ and $w''_i = 1/(Z'')^2$ \\
-	Statistical weighting 	& $w'_i = 1/(\sigma'_i)^2$ and $w''_i = 1/(\sigma''_i)^2$ \\
+	Statistical weighting 	& $w'_i = 1/(\sigma'_i)^2$ and $w''_i = 1/(\sigma''_i)^2$ (not implemented yet)\\
 \end{tabular}
 
 
 \newpage
 \section{Minimization algorithms}
 
-\subsection{fminsearchbnd}
+\subsection{Nelder-Mead (Simplex)}
 
-To minimize the distance function, the toolbox uses the \textbf{fminsearchbnd} algorithm.
+The toolbox uses the \textbf{fminsearchbnd} algorithm from John D'Errico.
 
-This algorithm is called in MATLAB to minimize the distance function of Eq. (\ref{distancefun}).
+\subsection{Genetic Algorithm}
+
+ga()
+
+\subsection{Simulated Annealing}
+
+simannealbnd()
+
+\subsection{Constrained Minimization}
+
+fmincon()
+
+\subsection{Other Algorithms}
+
+Not implemented yet
 
 \begin{itemize}
 	\item Levenberg-Marquardt
 	\item Nelder-Mead
 	\item BFGS
-    \item Powell
+	\item Powell
 \end{itemize}
-
 
 \newpage
 \section{Statistics}
@@ -372,11 +417,15 @@ m is the number of adjustable parameters in the model
 
 For comparing two different variances (Lasia 2014)
 
+Not implemented yet.
+
 \[ F = \dfrac{\sigma_1^2}{\sigma_2^2} \]
 
 \subsection{T-test}
 
 For importance of regression parameters (Lasia 2014)
+
+Not implemented yet.
 
 \[ t = p/s_p \]
 
@@ -386,6 +435,14 @@ where $p$ is the value of the parameter and $s_p$ its standard deviation
 \section{Error estimates for individual parameters}
 
 ToDo: This is not yet implemented. It depends on the optimizer functions.
+
+\chapter{Error messages}
+
+\begin{tabular}{lll}
+	Error code 	& Error & Details \\
+	001			& No data loaded	& There is no input data yet. Add some impedance files in the format FREQ,REAL,IMAG. \\
+	002			& Invalid circuit	& The given circuit is not valid. Write using p(), s() and R1,C1,E2 (see chapter 4)\\
+\end{tabular}
 
 
 \newpage{}
