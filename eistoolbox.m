@@ -133,8 +133,34 @@ plotreim2(hObject, eventdata, handles);
 function btn_simulatecirc_Callback(hObject, eventdata, handles)
 simcircuit(hObject, eventdata, handles);
 
+function btn_exportfitted_Callback(hObject, eventdata, handles)
+data = getappdata(handles.eismain,'data');
+zbest = getappdata(handles.eismain,'zbest');
+
+if isempty(data) 
+    disp('Error: there is NO input data to be saved yet. Add some files first!');
+    return;
+end
+
+if isempty(zbest) 
+    disp('Error: there is NO output data to be saved yet. Fit some data first!');
+    return;
+end
+
+% ask for a folder
+filePath = uigetdir();
+if isequal(filePath,0)
+   disp('Info: No folder was selected');
+   return;  % terminate the callback here
+end
+
+% export all fitted curves to the selected folder 
+% (as CSV with FREQ,ZREAL,ZIMAG)
+for idx=1:length(zbest)
+    csvwrite([filePath '/Fitted_' num2str(idx) '.csv'],[data{1}(:,1) zbest{idx}]);
+end
+
 function save1_Callback(hObject, eventdata, handles)
-% ToDo: this does not work well for plotyy second axis
 [fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'; 
     '*.png','Portable Networks Graphic (*.png)';
     '*.jpg','JPEG (*.jpg)'});
@@ -150,7 +176,6 @@ export_fig(ch, fullfname);
 
 
 function save2_Callback(hObject, eventdata, handles)
-% ToDo: this does not work well for plotyy second axis
 [fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
 if isequal(fileName,0)
    disp('Info: No file was selected');
@@ -727,5 +752,4 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 

@@ -4,7 +4,7 @@
 % Tested with Gamry 1000 Interface data files (.DTA) from Gamry Framework
 % 
 % Requires the following libraries to be in the MATLAB path:
-%   - Zfit.m by Jean Luc Dellis
+%   - Zfit.m by Jean Luc Dellis (the original file! download it from matlab central)
 %   - GamryRead.m from Juan Montero
 % 
 % 
