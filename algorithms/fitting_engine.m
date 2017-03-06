@@ -38,6 +38,15 @@ switch algorithm
     case 4  % fmincon
         options = optimoptions('fmincon','Algorithm','interior-point','MaxIterations',maxiter,'MaxFunctionEvaluations',maxiter);
         [p,fval]=fmincon(@distance,param,[],[],[],[],LB,UB,[],options);
+	case 5	% iFit - levm
+		try
+            options = fminlm('defaults');
+            options.MaxFunEvals = maxiter;
+            options.MaxIterations = maxiter;
+            [p,fval]=fminlm(@distance,param,options,LB,UB);
+        catch
+            error('iFit library was not detected. Extract the iFit library (from http://ifit.mccode.org/) in the root directory of the eistoolbox.');
+        end
     otherwise
         error('Error: Algorithm is not defined. Stopping.');
 end

@@ -62,7 +62,8 @@ set(hObject,'String',{ ...
     'Nelder-Mead (default)', ...        % option 1 : fminsearchcon()    Nelder-Mead 
     'Genetic Algorithm', ...            % option 2 : ga()               Genetic Algorithm
     'Simulated Annealing', ...          % option 3 : simulannealbnd()   Simulated Annealing
-    'Constrained minimization' ...      % option 4 : fmincon()          Constrained minimization
+    'Constrained minimization', ...     % option 4 : fmincon()          Constrained minimization
+    'iFit - fminlm' ...
     });
 
 function weightingmenu_Callback(hObject, eventdata, handles)
