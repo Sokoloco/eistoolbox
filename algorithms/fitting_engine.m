@@ -30,7 +30,7 @@ switch algorithm
         options = optimset('MaxFunEvals', maxiter, 'MaxIter',maxiter);
         [p,fval]=fminsearchbnd(@distance,param,LB,UB,options);
     case 2  % genetic algorithm
-        options = optimoptions('ga','MaxGenerations', maxiter,'InitialPopulationMatrix',param);
+        options = gaoptimset('Generations', maxiter);
         [p,fval]=ga(@distance,length(param),[],[],[],[],LB,UB,[],options);
     case 3  % simulated annealing
         options = optimoptions('simulannealbnd','MaxIterations',maxiter);
