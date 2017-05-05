@@ -97,6 +97,11 @@ function edit_iterations_Callback(hObject, eventdata, handles)
 
 function edit_iterations_CreateFcn(hObject, eventdata, handles)
 
+function ncores_Callback(hObject, eventdata, handles)
+
+function ncores_CreateFcn(hObject, eventdata, handles)
+
+
 % BUTTONS -----------------------------------------------------------------
 function btn_addfiles_Callback(hObject, eventdata, handles)
 addfiles(hObject, eventdata, handles);
@@ -667,16 +672,16 @@ results = cell(length(data),length(initparams)); % preallocating for speed
 algorithm = get(handles.algorithmmenu,'Value');
 weighting = get(handles.weightingmenu,'Value');
 maxiter = str2double( get(handles.edit_iterations,'String') );
+ncores = str2double( get(handles.ncores,'String'));
 
+if ncores == 1
     for idx = 1:length(data)
-        
         % First we do the fitting!
         [params,zbest{idx}] = fitting_engine(data{idx},circuit,initparams,LB,UB,algorithm,weighting,maxiter);
         
         % Calculation of the error estimates of individual parameters
         % ToDo... this depends on the algorithms
-        
-        
+
         % Copy here the results to the global var (for exporting them later)
         results(idx,:) = num2cell(params);
         
@@ -684,7 +689,27 @@ maxiter = str2double( get(handles.edit_iterations,'String') );
         wtext = strjoin( ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(fnames(idx),'_','\_')] , '' );
         waitbar(idx / length(data), h, wtext);
     end
-close(h);
+    close(h);
+else
+    pool = parpool(ncores);
+    parfor idx = 1:length(data)
+        % First we do the fitting!
+        [params,zbest{idx}] = fitting_engine(data{idx},circuit,initparams,LB,UB,algorithm,weighting,maxiter);
+        
+        % Calculation of the error estimates of individual parameters
+        % ToDo... this depends on the algorithms
+
+        % Copy here the results to the global var (for exporting them later)
+        results(idx,:) = num2cell(params);
+        
+        % Update the waitbar with the next sample!
+        % ToDo: this does not work with parfor!!
+        %wtext = strjoin( ['Fitting ',int2str(idx),' of ',int2str(length(data)),' | File: ',strrep(fnames(idx),'_','\_')] , '' );
+        %waitbar(idx / length(data), h, wtext);
+    end
+    close(h);
+    delete(pool);
+end
 
 setappdata(handles.eismain,'results',results);
 setappdata(handles.eismain,'zbest',zbest);
@@ -770,4 +795,5 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
