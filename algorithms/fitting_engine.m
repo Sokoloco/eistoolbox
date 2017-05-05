@@ -36,7 +36,7 @@ switch algorithm
         options = saoptimset('MaxIter',maxiter,'MaxFunEvals', maxiter);
         [p,fval]=simulannealbnd(@distance,param,LB,UB,options);
     case 4  % fmincon
-        options = optimoptions('fmincon','Algorithm','interior-point','MaxIterations',maxiter,'MaxFunctionEvaluations',maxiter);
+        options = optimoptions('fmincon','Algorithm','interior-point','MaxIter',maxiter,'MaxFunEvals',maxiter);
         [p,fval]=fmincon(@distance,param,[],[],[],[],LB,UB,[],options);
 	case 5	% iFit - levm
 		try
