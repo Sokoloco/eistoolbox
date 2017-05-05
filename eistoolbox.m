@@ -763,7 +763,8 @@ if isempty(results)
     return;
 end
 
-[outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)'});
+[outFileName,outPathName] = uiputfile({'*.xls','Excel Spreadsheet (*.xls)';
+                                       '*.csv','Comma separated values (*.csv)'});
 if isequal(outFileName,0)
    disp('Info: No file was selected');
    return;  % terminate the callback here
@@ -774,12 +775,23 @@ h = waitbar(0,'Saving data... please wait');
 disp('Info: Saving the results -please wait-');
 set(handles.txt_savestatus,'string','-SAVING- please wait');
 
-outfullfname = fullfile(outPathName,outFileName);
-xlswrite(outfullfname, [param_cnames corr_cnames ; fnames results corr_values]);
+outfullfname = char(fullfile(outPathName,outFileName));
+[path,name,ext] = fileparts(outfullfname);
+switch upper(ext)   % convert extension to uppercase
+    case '.XLS'
+        xlswrite(outfullfname, [param_cnames corr_cnames ; fnames results corr_values]);
+    case '.CSV'
+        T = table([param_cnames corr_cnames ; fnames results corr_values]);
+        writetable(T,outfullfname);
+    otherwise
+        disp('Warning: other file types not currently supported');
+end
+
 disp('Info: Results saved successfully!');
 set(handles.txt_savestatus,'string','Results saved as XLS');
 waitbar(1);
 close(h);
+
 
 %% LICENSE INFORMATION
 % Copyright (C) 2016  Juan J. Montero-Rodriguez
