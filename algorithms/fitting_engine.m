@@ -33,7 +33,7 @@ switch algorithm
         options = gaoptimset('Generations', maxiter);
         [p,fval]=ga(@distance,length(param),[],[],[],[],LB,UB,[],options);
     case 3  % simulated annealing
-        options = optimoptions('simulannealbnd','MaxIterations',maxiter);
+        options = saoptimset('MaxIter',maxiter,'MaxFunEvals', maxiter);
         [p,fval]=simulannealbnd(@distance,param,LB,UB,options);
     case 4  % fmincon
         options = optimoptions('fmincon','Algorithm','interior-point','MaxIterations',maxiter,'MaxFunctionEvaluations',maxiter);
