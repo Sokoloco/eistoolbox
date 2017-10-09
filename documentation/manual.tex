@@ -30,8 +30,9 @@
 \usepackage[english]{babel}
 
 % **************** FONT DEFINITIONS ****************
-\usepackage{gentium}
+\usepackage{helvet}
 \usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault}
 
 % **************** OTHER PACKAGES ****************
 \usepackage{float}
@@ -103,7 +104,7 @@
 \vspace*{2cm}
 
 \begin{center}
-	\Large Version 0.2-104
+	\Large Version 0.2-124
 \end{center}
 
 \end{titlepage}
@@ -447,7 +448,6 @@ Not implemented yet
 
 \begin{itemize}
 	\item Levenberg-Marquardt
-	\item Nelder-Mead
 	\item BFGS
 	\item Powell
 \end{itemize}
@@ -470,24 +470,6 @@ Linear regression is used to compare the original input data with the fitted dat
 \end{itemize}
 
 This is achieved with the following steps:
-
-
-\begin{lstlisting}[language=Matlab, basicstyle=\scriptsize]
-% linear fit using polyfit
-p_re{idx} = polyfit(expected_real{idx},observed_real{idx},1); %p1=slope, p2=intersect
-% evaluate the line to get measured points
-yfit_re{idx} = polyval(p_re{idx},expected_real{idx});
-% calculate the residual values
-yresid_re{idx} = observed_real{idx} - yfit_re{idx};
-% square the residuals and get the residual sum of squares
-SSresid_re{idx} = sum(yresid_re{idx}.^2);
-% compute the total sum of squares by multiplying  variance by n-1
-SStotal_re{idx} = (length(observed_real{idx})-1) * var(observed_real{idx});
-% compute R^2
-rsq_re{idx} = 1 - SSresid_re{idx}/SStotal_re{idx};
-% compute adjusted R^2 to account for degrees of freedom
-rsq_adj_re{idx} = 1 - SSresid_re{idx}/SStotal_re{idx} * (length(observed_real{idx})-1)/(length(observed_real{idx})-length(p_re{idx}));
-\end{lstlisting}
 
 Linear fit using polyfit
 \begin{align}
@@ -567,16 +549,58 @@ m is the number of adjustable parameters in the model
 %
 %ToDo: This is not yet implemented. It depends on the optimizer functions.
 
-\chapter{Error messages}
 
-\begin{tabular}{llp{8cm}}
-	Error code 	& Error & Details \\
-	001			& No data loaded	& There is no input data yet. Add some impedance files in the format FREQ,REAL,IMAG. \\
-	002			& Invalid circuit	& The given circuit is not valid. Write using p(), s() and R1,C1,E2 (see chapter 4)\\
+\chapter{Operations menu}
+
+This allows to perform data operations on the RAM memory without modifying the original files. The user can remove any number of points from the end of the files, remove data points higher than a threshold, or plot the data at a specific frequency without fitting.
+
+
+\section{Remove last N points}
+
+This removes N points from the low-frequency part of the spectrum.
+
+\includegraphics[width=8cm]{remove2.png}
+
+\begin{tabular}{cc}
+\includegraphics[width=6cm]{remove1.pdf} & \includegraphics[width=6cm]{remove3.pdf} \\
+(a) Original data without modifications. & (b) After removing 20 points. \\
 \end{tabular}
 
 
-\newpage{}
+\section{Remove values higher than}
+
+This enables to remove points with very high impedance. This can happen when using an Agilent 4284A or similar devices with the GPIB interface, where callibration errors result in high-impedance data points.
+
+The user should be careful not to remove ALL data points accidentally. This can happen if the threshold is too low.
+
+Applying this to the sample files provided:
+
+\includegraphics[width=8cm]{hvremove2.png}
+
+\begin{tabular}{cc}
+	\includegraphics[width=6cm]{hvremove1.pdf} & \includegraphics[width=6cm]{hvremove3.pdf} \\
+	(a) Original data without modifications. & (b) After removing points $>$ 10e4. \\
+\end{tabular}
+
+
+\section{Plot data at single frequency}
+
+This option plots the data at a single frequency.
+
+The user can input the desired frequency, and data is plotted at the nearest found frequency point.
+
+Notice that if some data was removed earlier, this plots the next closest value.
+
+For the files provided as example, plotting the data at a frequency of 1 MHz:
+
+\includegraphics[width=8cm]{plotfreqdialog.png}
+
+\begin{tabular}{cc}
+	\includegraphics[width=6cm]{plotfreqa.pdf} & \includegraphics[width=6cm]{plotfreqb.pdf} \\
+	\includegraphics[width=6cm]{plotfreqc.pdf} & \includegraphics[width=6cm]{plotfreqd.pdf} \\
+\end{tabular}
+
+\newpage
 \chapter{Licenses for included software}
 
 \section{Zfit}
@@ -587,6 +611,16 @@ The original script is available at \cite{Dellis2010}.
 \section{fminsearchbnd}
 
 This function was written by John D'Errico and published on MathWorks MATLAB Central under an open-source license. The original file can be downloaded at \cite{DErrico2012}. The function is based on fminsearch and includes the possibility of using boundary conditions, such as the lower and upper limits for the individual circuit parameters.
+
+
+\section{export\_fig}
+
+This tool is used to save plots as PDF.
+
+
+
+
+% Bibliography
 
 \bibliographystyle{unsrt}
 \bibliography{ref}
