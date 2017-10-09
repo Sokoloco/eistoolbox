@@ -220,6 +220,22 @@ save_results(hObject, eventdata, handles);
 function menu_aboutdialog_Callback(hObject, eventdata, handles)
 menu_about();
 
+function menu_operations_Callback(hObject, eventdata, handles)
+
+function menu_remove_higherthan_Callback(hObject, eventdata, handles)
+% ToDo: replicate by copying removelastN();
+remove_higherthan(hObject, eventdata, handles, value1, value2)
+
+
+function menu_remove_lastN_Callback(hObject, eventdata, handles)
+Npoints = removelastN();    % opens the GUI and asks for N
+    % if N=-1 then user cancelled the operation
+    % else perform the removal
+    if Npoints>0
+        remove_lastN(hObject, eventdata, handles, Npoints);
+    end
+
+
 %% INTERNAL FUNCTIONS
 function addfiles(hObject, eventdata, handles)
 
@@ -281,11 +297,43 @@ function addfiles(hObject, eventdata, handles)
     close(h);
     
     disp('Info: Input data files succesfully loaded');
-    
     setappdata(handles.eismain,'data',data);
     setappdata(handles.eismain,'fnames',fnames);
     
     plotnyq(hObject, eventdata, handles);
+
+    
+function remove_higherthan(hObject, eventdata, handles, value1, value2)
+    
+    data =  getappdata(handles.eismain,'data');
+    
+    c=1;
+    for idx=1:1:length(data)
+        for idx2=1:1:length(data{idx})
+            if (data{idx}(idx2,2) < value1) && (data{idx}(idx2,3) < value2)
+                tmpdata{idx}(c,:)=data{idx}(idx2,:);
+                %tmpfnames{idx}=fnames{idx};
+                c = c+1;
+            end
+        end
+    end
+    
+    data=tmpdata;
+
+    setappdata(handles.eismain,'data',data);
+
+function remove_lastN(hObject, eventdata, handles, N)
+    
+    data =  getappdata(handles.eismain,'data');
+    
+    for idx=1:1:length(data)
+        for idx2=1:1:(length(data{idx})-N)
+            tmpdata{idx}(idx2,:)=data{idx}(idx2,:);
+        end
+    end
+    
+    data=tmpdata;
+    setappdata(handles.eismain,'data',data);
 
 function plotnyq(hObject, eventdata, handles)
 % plots input data as Nyquist
@@ -745,8 +793,6 @@ fig = gcf;
 % Adjust the size to match the table
 fig.Position = [20 100 800 600];
 set(fig,'Resize','off');
-
-
 
 % Calculate the goodness of fit and overall correlations
 calculate_correlations(hObject, eventdata, handles);
