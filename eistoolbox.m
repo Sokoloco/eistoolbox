@@ -234,6 +234,60 @@ Npoints = removelastN();    % opens the GUI and asks for N
         remove_lastN(hObject, eventdata, handles, Npoints);
     end
 
+function plot_singlefreq_Callback(hObject, eventdata, handles)
+desiredfreq = plotsinglefreq();
+% ToDo: interpolate to find the desired frequency
+% Right now we plot the closest frequency to the one entered
+
+data = getappdata(handles.eismain,'data');
+
+diffs=(data{1}(:,1)-desiredfreq);       % Subtract the desired freq from the frequencies column
+absdiffs= abs(diffs);                   % Get the absoulte value of differences
+[closestval,closestindex] = min(diffs);     % The closest value is found with the command 'min'
+
+disp(strcat('Info: User entered a desired frequency of: ',string(desiredfreq),'Hz'));
+disp(strcat('Info: Plotting at the closest frequency: ',string(closestval),'Hz'));
+
+% Here we assemble the data we are going to plot
+for idx=1:1:length(data)
+    indexnumber(idx)=idx;
+    %frequency(idx)=data{idx}(closestindex,1);
+    realvalue(idx)=data{idx}(closestindex,2);
+    imagvalue(idx)=data{idx}(closestindex,3);
+end
+
+f5 = figure(5);
+set(f5,'Name','Plot at specific frequency - Real');
+clf;  % Clears any old information already present in the diagram
+plot(indexnumber,realvalue);
+grid on;
+xlabel('File index number (N)');
+ylabel('Real part of Impedance (Ohm)');
+
+f6 = figure(6);
+set(f6,'Name','Plot at specific frequency - Imag');
+clf;  % Clears any old information already present in the diagram
+plot(indexnumber,imagvalue);
+grid on;
+xlabel('File index number (N)');
+ylabel('Imag part of Impedance (Ohm)');
+
+f7 = figure(7);
+set(f7,'Name','Plot at specific frequency - Magnitude');
+clf;  % Clears any old information already present in the diagram
+semilogy(indexnumber,sqrt(realvalue.^2 + imagvalue.^2));
+grid on;
+xlabel('File index number (N)');
+ylabel('Magnitude of Impedance (Ohm)');
+
+f8 = figure(8);
+set(f8,'Name','Plot at specific frequency - Phase');
+clf;  % Clears any old information already present in the diagram
+plot(indexnumber,(180/pi)*atan(imagvalue./realvalue));
+grid on;
+xlabel('File index number (N)');
+ylabel('Phase of Impedance (deg)');
+
 
 %% INTERNAL FUNCTIONS
 function addfiles(hObject, eventdata, handles)
@@ -653,7 +707,9 @@ if isempty(initparams); fprintf('Error: Init Params string is empty'); return; e
 
 zsim = computecircuit(initparams,circuitstring,data{1}(:,1));
 
-figure(4);
+f4 = figure(4);
+set(f4,'Name','Simulated Data');
+
 ax(1) = subplot(2,1,1);
 loglog(data{1}(:,1),zsim(:,1),'color','black');
 title('Simulated Magnitude');
