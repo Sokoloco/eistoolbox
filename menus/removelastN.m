@@ -1,4 +1,6 @@
 function varargout = removelastN(varargin)
+% Bug: error when trying to close without clicking any button
+
 % REMOVELASTN MATLAB code for removelastN.fig
 %      REMOVELASTN, by itself, creates a new REMOVELASTN or raises the existing
 %      singleton*.

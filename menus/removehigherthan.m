@@ -1,4 +1,6 @@
 function varargout = removehigherthan(varargin)
+% Bug: error when trying to close without clicking any button
+
 % REMOVEHIGHERTHAN MATLAB code for removehigherthan.fig
 %      REMOVEHIGHERTHAN, by itself, creates a new REMOVEHIGHERTHAN or raises the existing
 %      singleton*.

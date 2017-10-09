@@ -1,4 +1,6 @@
 function varargout = plotsinglefreq(varargin)
+% Bug: error when trying to close without clicking any button
+
 % PLOTSINGLEFREQ MATLAB code for plotsinglefreq.fig
 %      PLOTSINGLEFREQ, by itself, creates a new PLOTSINGLEFREQ or raises the existing
 %      singleton*.

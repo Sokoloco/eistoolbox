@@ -239,68 +239,66 @@ desiredfreq = plotsinglefreq();
 % ToDo: interpolate to find the desired frequency
 % Right now we plot the closest frequency to the one entered
 
-% ToDo: this only works if the dataset is complete,
-    % it does not work if user has already deleted some of the points
-
-data = getappdata(handles.eismain,'data');
-
-
-% Here we assemble the data we are going to plot
-for idx=1:1:length(data)
-    indexnumber(idx)=idx;
+if desiredfreq > 0
+    data = getappdata(handles.eismain,'data');
     
-    % Every data file has a different length
-    % The following lines find the closest frequency to the desired one
-    diffs=(data{idx}(:,1)-desiredfreq);             % Subtract the desired freq from the frequencies column
-    absdiffs = abs(diffs);                          % Get the absoulte value of differences
-    [closestval,closestindex] = min(absdiffs);      % The closest value is found with the command 'min'
+    % Here we assemble the data we are going to plot
+    for idx=1:1:length(data)
+        indexnumber(idx)=idx;
+
+        % Every data file has a different length
+        % The following lines find the closest frequency to the desired one
+        diffs=(data{idx}(:,1)-desiredfreq);             % Subtract the desired freq from the frequencies column
+        absdiffs = abs(diffs);                          % Get the absoulte value of differences
+        [closestval,closestindex] = min(absdiffs);      % The closest value is found with the command 'min'
+
+        frequency(idx)=data{idx}(closestindex,1);
+        realvalue(idx)=data{idx}(closestindex,2);
+        imagvalue(idx)=data{idx}(closestindex,3);
+    end
+
+    closestfreq = frequency(1);
+
+    disp(strcat('Info: User entered a desired frequency of: ',string(desiredfreq),'Hz'));
+    disp(strcat('Info: Plotting at the closest frequency: ',string(closestfreq),'Hz'));
+
+    f5 = figure(5);
+    set(f5,'Name','Plot at specific frequency - Real');
+    clf;  % Clears any old information already present in the diagram
+    plot(indexnumber,realvalue);
+    grid on;
+    title(strcat('Real plot at f=',string(closestfreq),'Hz'));
+    xlabel('File index number (N)');
+    ylabel('Real part of Impedance (Ohm)');
+
+    f6 = figure(6);
+    set(f6,'Name','Plot at specific frequency - Imag');
+    clf;  % Clears any old information already present in the diagram
+    plot(indexnumber,imagvalue);
+    grid on;
+    title(strcat('Imaginary plot at f=',string(closestfreq),'Hz'));
+    xlabel('File index number (N)');
+    ylabel('Imag part of Impedance (Ohm)');
+
+    f7 = figure(7);
+    set(f7,'Name','Plot at specific frequency - Magnitude');
+    clf;  % Clears any old information already present in the diagram
+    semilogy(indexnumber,sqrt(realvalue.^2 + imagvalue.^2));
+    grid on;
+    title(strcat('Magnitude plot at f=',string(closestfreq),'Hz'));
+    xlabel('File index number (N)');
+    ylabel('Magnitude of Impedance (Ohm)');
+
+    f8 = figure(8);
+    set(f8,'Name','Plot at specific frequency - Phase');
+    clf;  % Clears any old information already present in the diagram
+    plot(indexnumber,(180/pi)*atan(imagvalue./realvalue));
+    grid on;
+    title(strcat('Phase plot at f=',string(closestfreq),'Hz'));
+    xlabel('File index number (N)');
+    ylabel('Phase of Impedance (deg)');
     
-    frequency(idx)=data{idx}(closestindex,1);
-    realvalue(idx)=data{idx}(closestindex,2);
-    imagvalue(idx)=data{idx}(closestindex,3);
 end
-
-closestfreq = frequency(1);
-
-disp(strcat('Info: User entered a desired frequency of: ',string(desiredfreq),'Hz'));
-disp(strcat('Info: Plotting at the closest frequency: ',string(closestfreq),'Hz'));
-
-f5 = figure(5);
-set(f5,'Name','Plot at specific frequency - Real');
-clf;  % Clears any old information already present in the diagram
-plot(indexnumber,realvalue);
-grid on;
-title(strcat('Real plot at f=',string(closestfreq),'Hz'));
-xlabel('File index number (N)');
-ylabel('Real part of Impedance (Ohm)');
-
-f6 = figure(6);
-set(f6,'Name','Plot at specific frequency - Imag');
-clf;  % Clears any old information already present in the diagram
-plot(indexnumber,imagvalue);
-grid on;
-title(strcat('Imaginary plot at f=',string(closestfreq),'Hz'));
-xlabel('File index number (N)');
-ylabel('Imag part of Impedance (Ohm)');
-
-f7 = figure(7);
-set(f7,'Name','Plot at specific frequency - Magnitude');
-clf;  % Clears any old information already present in the diagram
-semilogy(indexnumber,sqrt(realvalue.^2 + imagvalue.^2));
-grid on;
-title(strcat('Magnitude plot at f=',string(closestfreq),'Hz'));
-xlabel('File index number (N)');
-ylabel('Magnitude of Impedance (Ohm)');
-
-f8 = figure(8);
-set(f8,'Name','Plot at specific frequency - Phase');
-clf;  % Clears any old information already present in the diagram
-plot(indexnumber,(180/pi)*atan(imagvalue./realvalue));
-grid on;
-title(strcat('Phase plot at f=',string(closestfreq),'Hz'));
-xlabel('File index number (N)');
-ylabel('Phase of Impedance (deg)');
-
 
 %% INTERNAL FUNCTIONS
 function addfiles(hObject, eventdata, handles)
