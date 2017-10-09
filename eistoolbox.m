@@ -311,7 +311,6 @@ function remove_higherthan(hObject, eventdata, handles, value1, value2)
         for idx2=1:1:length(data{idx})
             if (data{idx}(idx2,2) < value1) && (data{idx}(idx2,3) < value2)
                 tmpdata{idx}(c,:)=data{idx}(idx2,:);
-                %tmpfnames{idx}=fnames{idx};
                 c = c+1;
             end
         end
