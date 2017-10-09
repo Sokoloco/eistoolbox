@@ -223,9 +223,8 @@ menu_about();
 function menu_operations_Callback(hObject, eventdata, handles)
 
 function menu_remove_higherthan_Callback(hObject, eventdata, handles)
-% ToDo: replicate by copying removelastN();
-remove_higherthan(hObject, eventdata, handles, value1, value2)
-
+[maxReal, maxImag] = removehigherthan;
+remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
 
 function menu_remove_lastN_Callback(hObject, eventdata, handles)
 Npoints = removelastN();    % opens the GUI and asks for N

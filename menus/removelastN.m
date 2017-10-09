@@ -74,7 +74,6 @@ delete(hObject);
 
 function btn_lastN_remove_Callback(hObject, eventdata, handles)
     Npoints = str2double(get(handles.edit_N,'String'));
-    varargout= Npoints;  % this is returned to the GUI
     if (Npoints==0)
         disp('Info: No points to remove. Aborting.')
         handles.result = -1;
