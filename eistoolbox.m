@@ -306,8 +306,8 @@ function remove_higherthan(hObject, eventdata, handles, value1, value2)
     
     data =  getappdata(handles.eismain,'data');
     
-    c=1;
     for idx=1:1:length(data)
+        c=1;
         for idx2=1:1:length(data{idx})
             if (data{idx}(idx2,2) < value1) && (data{idx}(idx2,3) < value2)
                 tmpdata{idx}(c,:)=data{idx}(idx2,:);
@@ -317,7 +317,6 @@ function remove_higherthan(hObject, eventdata, handles, value1, value2)
     end
     
     data=tmpdata;
-
     setappdata(handles.eismain,'data',data);
 
 function remove_lastN(hObject, eventdata, handles, N)
