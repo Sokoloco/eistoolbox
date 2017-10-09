@@ -239,15 +239,22 @@ desiredfreq = plotsinglefreq();
 % ToDo: interpolate to find the desired frequency
 % Right now we plot the closest frequency to the one entered
 
+% ToDo: this only works if the dataset is complete,
+    % it does not work if user has already deleted some of the points
+
 data = getappdata(handles.eismain,'data');
 
-diffs=(data{1}(:,1)-desiredfreq);       % Subtract the desired freq from the frequencies column
-absdiffs= abs(diffs);                   % Get the absoulte value of differences
-[closestval,closestindex] = min(absdiffs);     % The closest value is found with the command 'min'
 
 % Here we assemble the data we are going to plot
 for idx=1:1:length(data)
     indexnumber(idx)=idx;
+    
+    % Every data file has a different length
+    % The following lines find the closest frequency to the desired one
+    diffs=(data{idx}(:,1)-desiredfreq);             % Subtract the desired freq from the frequencies column
+    absdiffs = abs(diffs);                          % Get the absoulte value of differences
+    [closestval,closestindex] = min(absdiffs);      % The closest value is found with the command 'min'
+    
     frequency(idx)=data{idx}(closestindex,1);
     realvalue(idx)=data{idx}(closestindex,2);
     imagvalue(idx)=data{idx}(closestindex,3);
