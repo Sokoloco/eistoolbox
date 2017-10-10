@@ -107,7 +107,41 @@ function btn_addfiles_Callback(hObject, eventdata, handles)
 addfiles(hObject, eventdata, handles);
 
 function btn_loadpredef_Callback(hObject, eventdata, handles)
-dialog_loadpredef();
+select = dialog_loadpredef();
+switch select
+    case 1 % Fill Randles circuit --------------------------
+        set(handles.edit_circuit,'String','s(R1,p(R1,C1))');
+        set(handles.edit_initparams,'String','[100, 100, 1e-6]');
+        set(handles.edit_LB,'String','[0, 0, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf]');
+    case 2 % Fill Randles with CPE
+        set(handles.edit_circuit,'String','s(R1,p(R1,E2)');
+        set(handles.edit_initparams,'String','[100, 100, 1E-6, 0.85]');
+        set(handles.edit_LB,'String','[0, 0, 0, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf, inf]');
+    case 3 % Fill Randles with Warburg
+        set(handles.edit_circuit,'String','s(R1,p(s(R1,E2),C1))');
+        set(handles.edit_initparams,'String','[100, 100, 1E-6, 0.5, 1E-6]');
+        set(handles.edit_LB,'String','[0, 0, 0, 0.5, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf, 0.5, inf]');
+    case 4 % Fill Voigt 2
+        set(handles.edit_circuit,'String','s(R1,p(R1,C1),p(R1,C1))');
+        set(handles.edit_initparams,'String','[100, 100, 1E-6, 100, 1E-6]');
+        set(handles.edit_LB,'String','[0, 0, 0, 0, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf, inf, inf]');
+    case 5 % Fill Voigt 3
+        set(handles.edit_circuit,'String','s(R1,p(R1,C1),p(R1,C1),p(R1,C1))');
+        set(handles.edit_initparams,'String','[100, 100, 1E-6, 100, 1E-6, 100, 1E-6]');
+        set(handles.edit_LB,'String','[0, 0, 0, 0, 0, 0, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf, inf, inf, inf, inf]');
+    case 6 % Fill Ladder
+        set(handles.edit_circuit,'String','s(R1,p(C1,s(R1,p(C1,R1))))');
+        set(handles.edit_initparams,'String','[100, 1E-6, 100, 1E-6, 100]');
+        set(handles.edit_LB,'String','[0, 0, 0, 0, 0]');
+        set(handles.edit_UB,'String','[inf, inf, inf, inf, inf]');
+    otherwise
+        disp('Circuit not implemented yet.');
+end
 
 function btn_loadcirc_Callback(hObject, eventdata, handles)
 loadckt(hObject, eventdata, handles);
