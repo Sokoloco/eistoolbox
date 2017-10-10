@@ -114,31 +114,37 @@ switch select
         set(handles.edit_initparams,'String','[100, 100, 1e-6]');
         set(handles.edit_LB,'String','[0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     case 2 % Fill Randles with CPE
         set(handles.edit_circuit,'String','s(R1,p(R1,E2)');
         set(handles.edit_initparams,'String','[100, 100, 1E-6, 0.85]');
         set(handles.edit_LB,'String','[0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     case 3 % Fill Randles with Warburg
         set(handles.edit_circuit,'String','s(R1,p(s(R1,E2),C1))');
         set(handles.edit_initparams,'String','[100, 100, 1E-6, 0.5, 1E-6]');
         set(handles.edit_LB,'String','[0, 0, 0, 0.5, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, 0.5, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     case 4 % Fill Voigt 2
         set(handles.edit_circuit,'String','s(R1,p(R1,C1),p(R1,C1))');
         set(handles.edit_initparams,'String','[100, 100, 1E-6, 100, 1E-6]');
         set(handles.edit_LB,'String','[0, 0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     case 5 % Fill Voigt 3
         set(handles.edit_circuit,'String','s(R1,p(R1,C1),p(R1,C1),p(R1,C1))');
         set(handles.edit_initparams,'String','[100, 100, 1E-6, 100, 1E-6, 100, 1E-6]');
         set(handles.edit_LB,'String','[0, 0, 0, 0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf, inf, inf, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     case 6 % Fill Ladder
         set(handles.edit_circuit,'String','s(R1,p(C1,s(R1,p(C1,R1))))');
         set(handles.edit_initparams,'String','[100, 1E-6, 100, 1E-6, 100]');
         set(handles.edit_LB,'String','[0, 0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf, inf]');
+        disp('Info: Predefined circuit succesfully loaded.');
     otherwise
         disp('Info: No circuit loaded. The user cancelled the operation.');
 end
@@ -268,16 +274,20 @@ menu_about();
 function menu_operations_Callback(hObject, eventdata, handles)
 
 function menu_remove_higherthan_Callback(hObject, eventdata, handles)
-[maxReal, maxImag] = removehigherthan;
-remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
+    [maxReal, maxImag] = removehigherthan;
+    remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
+    disp('Info: Data removed succesfully. Replotting Nyquist.');
+    plotnyq(hObject, eventdata, handles);
 
 function menu_remove_lastN_Callback(hObject, eventdata, handles)
-Npoints = removelastN();    % opens the GUI and asks for N
+    Npoints = removelastN();    % opens the GUI and asks for N
     % if N=-1 then user cancelled the operation
     % else perform the removal
     if Npoints>0
         remove_lastN(hObject, eventdata, handles, Npoints);
     end
+    disp('Info: Data removed succesfully. Replotting Nyquist.');
+    plotnyq(hObject, eventdata, handles);
 
 function plot_singlefreq_Callback(hObject, eventdata, handles)
 desiredfreq = plotsinglefreq();
