@@ -140,7 +140,7 @@ switch select
         set(handles.edit_LB,'String','[0, 0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf, inf]');
     otherwise
-        disp('Circuit not implemented yet.');
+        disp('Info: No circuit loaded. The user cancelled the operation.');
 end
 
 function btn_loadcirc_Callback(hObject, eventdata, handles)
@@ -172,6 +172,14 @@ plotreim1(hObject, eventdata, handles);
 
 function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
+
+function btn_openparams_Callback(hObject, eventdata, handles)
+show_resultstable(hObject, eventdata, handles);
+
+function btn_openzfitted_Callback(hObject, eventdata, handles)
+
+function btn_showcorrs_Callback(hObject, eventdata, handles)
+calculate_correlations(hObject, eventdata, handles);
 
 function btn_simulatecirc_Callback(hObject, eventdata, handles)
 simcircuit(hObject, eventdata, handles);
@@ -869,34 +877,40 @@ fittime = toc();
 set(handles.txt_savestatus,'string','Fitting results ready, please save');
 set(handles.txt_savestatus,'string',['Fit done. Time: ' num2str(fittime) ' seconds.']);
 
-
 plotnyq2(hObject, eventdata, handles);  % plot nyquist in second axes
 
-% Display a table with the fitting results in a new figure
-fres = figure(3);
-set(fres,'Name',['Fitting Results for circuit Z = ',circuit]);
-cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
-for idx=1:length(cnames)
-    if idx==1
-        cnames{idx}='Filename';
-    else
-        cnames{idx}=strcat('Param',int2str(idx-1));
-    end
-end
-
-setappdata(handles.eismain,'param_cnames',cnames);
-
-
-t = uitable(fres,'data',[fnames results],'ColumnWidth',{80},'ColumnName',cnames);
-set(t,'Position',[ 0 0 800 600]);
-fig = gcf;
-
-% Adjust the size to match the table
-fig.Position = [20 100 800 600];
-set(fig,'Resize','off');
+show_resultstable(hObject, eventdata, handles);
 
 % Calculate the goodness of fit and overall correlations
 calculate_correlations(hObject, eventdata, handles);
+
+
+function show_resultstable(hObject, eventdata, handles)
+    results=getappdata(handles.eismain,'results');
+    fnames=getappdata(handles.eismain,'fnames');
+    circuit = get(handles.edit_circuit,'String');
+
+    % Display a table with the fitting results in a new figure
+    fres = figure(3);
+    set(fres,'Name',['Fitting Results for circuit Z = ',circuit]);
+    cnames = cell(1,size(results,2)+1); % width = number of parameters + 1
+    for idx=1:length(cnames)
+        if idx==1
+            cnames{idx}='Filename';
+        else
+            cnames{idx}=strcat('Param',int2str(idx-1));
+        end
+    end
+
+    setappdata(handles.eismain,'param_cnames',cnames);
+
+    t = uitable(fres,'data',[fnames results],'ColumnWidth',{80},'ColumnName',cnames);
+    set(t,'Position',[ 0 0 800 600]);
+    fig = gcf;
+
+    % Adjust the size to match the table
+    fig.Position = [20 100 800 600];
+    set(fig,'Resize','off');
 
 function save_results(hObject, eventdata, handles)
 fnames = getappdata(handles.eismain,'fnames');
@@ -954,6 +968,4 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 
