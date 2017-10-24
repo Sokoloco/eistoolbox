@@ -24,7 +24,7 @@ function varargout = removehigherthan(varargin)
 
 % Edit the above text to modify the response to help removehigherthan
 
-% Last Modified by GUIDE v2.5 24-Oct-2017 11:24:58
+% Last Modified by GUIDE v2.5 24-Oct-2017 11:51:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,8 +54,11 @@ function removehigherthan_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to removehigherthan (see VARARGIN)
 
 % Choose default command line output for removehigherthan
-handles.maxreal = -1;
-handles.maximag = -1;
+handles.maxreal = NaN;
+handles.maximag = NaN;
+handles.minreal = NaN;
+handles.minimag = NaN;
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -64,8 +67,10 @@ guidata(hObject, handles);
 uiwait(handles.guiremoveHT);
 
 function varargout = removehigherthan_OutputFcn(hObject, eventdata, handles)
-    varargout{1} = handles.maxreal;
-    varargout{2} = handles.maximag;
+    varargout{1} = handles.minreal;
+    varargout{2} = handles.maxreal;    
+    varargout{3} = handles.minimag;
+    varargout{4} = handles.maximag;
     delete(hObject);
 
 % --- Executes when user attempts to close guiremoveHT.
@@ -79,27 +84,44 @@ function guiremoveHT_CloseRequestFcn(hObject, eventdata, handles)
         delete(hObject);
     end
 
-function realval_Callback(hObject, eventdata, handles)
+function maxrealval_Callback(hObject, eventdata, handles)
 
-function realval_CreateFcn(hObject, eventdata, handles)
+function maxrealval_CreateFcn(hObject, eventdata, handles)
 
-function imagval_Callback(hObject, eventdata, handles)
+function maximagval_Callback(hObject, eventdata, handles)
 
-function imagval_CreateFcn(hObject, eventdata, handles)
+function maximagval_CreateFcn(hObject, eventdata, handles)
 
 
 function btn_cancelHT_Callback(hObject, eventdata, handles)
-    handles.maxreal = -1;
-    handles.maximag = -1;
+    handles.maxreal = NaN;
+    handles.maximag = NaN;
+    handles.minreal = NaN;
+    handles.minimag = NaN;
     guidata(hObject, handles);
     close(handles.guiremoveHT);
 
 function btn_removeHT_Callback(hObject, eventdata, handles)
-    maxreal = str2double(get(handles.realval,'String'));
-    maximag = str2double(get(handles.imagval,'String'));
+    maxreal = str2double(get(handles.maxrealval,'String'));
+    maximag = str2double(get(handles.maximagval,'String'));
+    minreal = str2double(get(handles.minrealval,'String'));
+    minimag = str2double(get(handles.minimagval,'String'));
     %ToDo: check for consistency (i.e. user wrote garbage)
     handles.maxreal = maxreal;
     handles.maximag = maximag;
+    handles.minreal = minreal;
+    handles.minimag = minimag;
     guidata(hObject, handles);
-    disp(strcat('Info: We will remove values larger than Real: ',string(maxreal),'and Imag: ',string(maximag)));
+    disp('Info: We will apply the window function:');
+    disp(strcat('Real: ',string(minreal),string(maxreal)));
+    disp(strcat('Imag: ',string(minimag),string(maximag)));
     close(handles.guiremoveHT);
+
+function minrealval_Callback(hObject, eventdata, handles)
+
+function minrealval_CreateFcn(hObject, eventdata, handles)
+
+function minimagval_Callback(hObject, eventdata, handles)
+
+function minimagval_CreateFcn(hObject, eventdata, handles)
+

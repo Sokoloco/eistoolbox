@@ -274,12 +274,19 @@ menu_about();
 function menu_operations_Callback(hObject, eventdata, handles)
 
 function menu_remove_higherthan_Callback(hObject, eventdata, handles)
-    [maxReal, maxImag] = removehigherthan;
+
+    data =  getappdata(handles.eismain,'data');
+    if isempty(data)
+        disp('Error. There is no data loaded. Load some data.');
+        return;
+    end
+
+    [minReal, maxReal, minImag, maxImag] = removehigherthan;
     switch maxReal
-        case -1
+        case NaN
             disp('Info: The user cancelled the operation.');
         otherwise
-            remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
+            remove_higherthan(hObject, eventdata, handles, minReal, maxReal, minImag, maxImag);
             disp('Info: Data removed succesfully. Replotting Nyquist.');
             plotnyq(hObject, eventdata, handles);
     end
@@ -430,14 +437,17 @@ function addfiles(hObject, eventdata, handles)
     plotnyq(hObject, eventdata, handles);
 
     
-function remove_higherthan(hObject, eventdata, handles, value1, value2)
+function remove_higherthan(hObject, eventdata, handles, minReal, maxReal, minImag, maxImag)
     
     data =  getappdata(handles.eismain,'data');
     
     for idx=1:1:length(data)
         c=1;
         for idx2=1:1:length(data{idx})
-            if (data{idx}(idx2,2) < value1) && (data{idx}(idx2,3) < value2)
+            if ((data{idx}(idx2,2) >= minReal) && ...
+                (data{idx}(idx2,2) <= maxReal) && ...
+                (data{idx}(idx2,3) >= minImag) && ...
+                (data{idx}(idx2,3) <= maxImag))
                 tmpdata{idx}(c,:)=data{idx}(idx2,:);
                 c = c+1;
             end
