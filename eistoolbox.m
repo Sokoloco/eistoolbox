@@ -485,6 +485,7 @@ function plotnyq(hObject, eventdata, handles)
     % Now we plot all the acquired data from the files
     f1 = figure(1);
     set(f1,'Name','Measured Data');
+    set(f1,'Position',[360 450 400 300]);
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -519,6 +520,7 @@ function plotbod(hObject, eventdata, handles)
     % Now we plot all the acquired data from the files
     f1 = figure(1);
     set(f1,'Name','Measured Data');
+    set(f1,'Position',[360 450 400 300]);
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -564,6 +566,7 @@ function plotnyq2(hObject, eventdata, handles)
     % Display results from zbest in second plot
     f2 = figure(2);
     set(f2,'Name','Fitted Data');
+    set(f2,'Position',[360 50 400 300]);
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
@@ -599,6 +602,7 @@ function plotbod2(hObject, eventdata, handles)
     % Display results from zbest in second plot
     f2 = figure(2);
     set(f2,'Name','Fitted Data');
+    set(f2,'Position',[360 50 400 300]);
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -643,6 +647,7 @@ function plotreim1(hObject, eventdata, handles)
     % Now we plot all the acquired data from the files
     f1 = figure(1);
     set(f1,'Name','Measured Data');
+    set(f1,'Position',[360 450 400 300]);
     clf;  % Clears any old information already present in the diagram
     
     cm=colormap(hsv(length(data))); % define a colormap
@@ -686,6 +691,7 @@ function plotreim2(hObject, eventdata, handles)
     % Display results from zbest in second plot
     f2 = figure(2);
     set(f2,'Name','Fitted Data');
+    set(f2,'Position',[360 50 400 300]);
     clf;  % Clears any old information already present in the diagram
     clf;  % Clears any old information already present in the diagram
     
