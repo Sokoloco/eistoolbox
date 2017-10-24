@@ -46,6 +46,19 @@ end
 % End initialization code - DO NOT EDIT
 
 function plotsinglefreq_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to removehigherthan (see VARARGIN)
+
+% Choose default command line output for removehigherthan
+handles.desiredfreq = -1;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes removehigherthan wait for user response (see UIRESUME)
 uiwait(handles.guiplotsingle);
 
 function varargout = plotsinglefreq_OutputFcn(hObject, eventdata, handles) 

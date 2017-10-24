@@ -275,27 +275,35 @@ function menu_operations_Callback(hObject, eventdata, handles)
 
 function menu_remove_higherthan_Callback(hObject, eventdata, handles)
     [maxReal, maxImag] = removehigherthan;
-    remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
-    disp('Info: Data removed succesfully. Replotting Nyquist.');
-    plotnyq(hObject, eventdata, handles);
+    switch maxReal
+        case -1
+            disp('Info: The user cancelled the operation.');
+        otherwise
+            remove_higherthan(hObject, eventdata, handles, maxReal, maxImag);
+            disp('Info: Data removed succesfully. Replotting Nyquist.');
+            plotnyq(hObject, eventdata, handles);
+    end
 
 function menu_remove_lastN_Callback(hObject, eventdata, handles)
     Npoints = removelastN();    % opens the GUI and asks for N
-    % if N=-1 then user cancelled the operation
-    % else perform the removal
-    if Npoints>0
-        remove_lastN(hObject, eventdata, handles, Npoints);
+    switch Npoints
+        case -1
+            disp('Info: The user cancelled the operation.');
+        otherwise
+            remove_lastN(hObject, eventdata, handles, Npoints);
+            disp('Info: Data removed succesfully. Replotting Nyquist.');
+            plotnyq(hObject, eventdata, handles);
     end
-    disp('Info: Data removed succesfully. Replotting Nyquist.');
-    plotnyq(hObject, eventdata, handles);
 
 function plot_singlefreq_Callback(hObject, eventdata, handles)
 desiredfreq = plotsinglefreq();
-% ToDo: interpolate to find the desired frequency
-% Right now we plot the closest frequency to the one entered
 
 if desiredfreq > 0
     data = getappdata(handles.eismain,'data');
+    if isempty(data)
+        disp('Error: There is no data yet. Load some files.');
+        return;
+    end
     
     % Here we assemble the data we are going to plot
     for idx=1:1:length(data)

@@ -24,7 +24,7 @@ function varargout = removehigherthan(varargin)
 
 % Edit the above text to modify the response to help removehigherthan
 
-% Last Modified by GUIDE v2.5 09-Oct-2017 12:21:48
+% Last Modified by GUIDE v2.5 24-Oct-2017 11:24:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,7 +54,8 @@ function removehigherthan_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to removehigherthan (see VARARGIN)
 
 % Choose default command line output for removehigherthan
-handles.output = hObject;
+handles.maxreal = -1;
+handles.maximag = -1;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -62,10 +63,10 @@ guidata(hObject, handles);
 % UIWAIT makes removehigherthan wait for user response (see UIRESUME)
 uiwait(handles.guiremoveHT);
 
-function varargout = removehigherthan_OutputFcn(hObject, eventdata, handles) 
-varargout{1} = handles.maxreal;
-varargout{2} = handles.maximag;
-delete(hObject);
+function varargout = removehigherthan_OutputFcn(hObject, eventdata, handles)
+    varargout{1} = handles.maxreal;
+    varargout{2} = handles.maximag;
+    delete(hObject);
 
 % --- Executes when user attempts to close guiremoveHT.
 function guiremoveHT_CloseRequestFcn(hObject, eventdata, handles)
@@ -91,7 +92,6 @@ function btn_cancelHT_Callback(hObject, eventdata, handles)
     handles.maxreal = -1;
     handles.maximag = -1;
     guidata(hObject, handles);
-    disp('Info: The user cancelled the operation');
     close(handles.guiremoveHT);
 
 function btn_removeHT_Callback(hObject, eventdata, handles)
@@ -103,4 +103,3 @@ function btn_removeHT_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
     disp(strcat('Info: We will remove values larger than Real: ',string(maxreal),'and Imag: ',string(maximag)));
     close(handles.guiremoveHT);
-

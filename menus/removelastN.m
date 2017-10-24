@@ -24,7 +24,7 @@ function varargout = removelastN(varargin)
 
 % Edit the above text to modify the response to help removelastN
 
-% Last Modified by GUIDE v2.5 09-Oct-2017 11:52:01
+% Last Modified by GUIDE v2.5 24-Oct-2017 11:34:33
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,7 +55,7 @@ function removelastN_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to removelastN (see VARARGIN)
 
 % Choose default command line output for removelastN
-handles.output = hObject;
+handles.result = -1;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -94,7 +94,6 @@ function btn_lastN_remove_Callback(hObject, eventdata, handles)
 function btn_lastN_cancel_Callback(hObject, eventdata, handles)
     handles.result = -1;
     guidata(hObject, handles);
-    disp('Info: The user cancelled the operation');
     close(handles.guiremoveN);
 
 function edit_N_Callback(hObject, eventdata, handles)
@@ -127,4 +126,3 @@ else
     % The GUI is no longer waiting, just close it
     delete(hObject);
 end
-
