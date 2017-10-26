@@ -39,11 +39,13 @@ switch algorithm
         options = optimoptions('fmincon','Algorithm','interior-point','MaxIter',maxiter,'MaxFunEvals',maxiter);
         [p,fval]=fmincon(@distance,param,[],[],[],[],LB,UB,[],options);
 	case 5	% iFit - levm
-		try
+        try
             options = fminlm('defaults');
             options.MaxFunEvals = maxiter;
             options.MaxIterations = maxiter;
-            [p,fval]=fminlm(@distance,param,options,LB,UB);
+            constraints.min = LB;
+            constraints.max = UB;
+            [p,fval]=fminlm(@distance,param,options,constraints);
         catch
             error('iFit library was not detected. Extract the iFit library (from http://ifit.mccode.org/) in the root directory of the eistoolbox.');
         end
