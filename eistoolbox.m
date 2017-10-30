@@ -116,7 +116,7 @@ switch select
         set(handles.edit_UB,'String','[inf, inf, inf]');
         disp('Info: Predefined circuit succesfully loaded.');
     case 2 % Fill Randles with CPE
-        set(handles.edit_circuit,'String','s(R1,p(R1,E2)');
+        set(handles.edit_circuit,'String','s(R1,p(R1,E2))');
         set(handles.edit_initparams,'String','[100, 100, 1E-6, 0.85]');
         set(handles.edit_LB,'String','[0, 0, 0, 0]');
         set(handles.edit_UB,'String','[inf, inf, inf, inf]');
