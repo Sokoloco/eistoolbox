@@ -179,6 +179,9 @@ plotreim1(hObject, eventdata, handles);
 function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
 
+function btn_3d1_Callback(hObject, eventdata, handles)
+plot3d1(hObject,eventdata,handles);
+
 function btn_openparams_Callback(hObject, eventdata, handles)
 show_resultstable(hObject, eventdata, handles);
 
@@ -550,6 +553,7 @@ function plotbod(hObject, eventdata, handles)
     
     disp('Info: Input data files succesfully plotted');
     set(handles.txt_savestatus,'string','Input data plotted');
+    return;
 
 function plotnyq2(hObject, eventdata, handles)
 % plots input data as Nyquist
@@ -585,6 +589,7 @@ function plotnyq2(hObject, eventdata, handles)
     xlabel('Impedance Real [\Omega]');
     ylabel('Impedance Imag [\Omega]');
     disp('Info: Fitted data succesfully plotted');
+    return;
 
 function plotbod2(hObject, eventdata, handles)
 % plots input data as Bode
@@ -631,6 +636,7 @@ function plotbod2(hObject, eventdata, handles)
     axis(ax(2),'tight');
     
     disp('Info: Fitted data succesfully plotted');
+    return;
     
 
 function plotreim1(hObject, eventdata, handles)
@@ -675,6 +681,7 @@ function plotreim1(hObject, eventdata, handles)
     axis(ax(1),'tight');    % rescale axis to fit data
     axis(ax(2),'tight');    % rescale axis to fit data
     disp('Info: Input data files succesfully plotted');
+    return;
     
 function plotreim2(hObject, eventdata, handles)
     zbest=getappdata(handles.eismain,'zbest');  % fitting data
@@ -720,6 +727,55 @@ function plotreim2(hObject, eventdata, handles)
     axis(ax(1),'tight');    % rescale axis to fit data
     axis(ax(2),'tight');    % rescale axis to fit data
     disp('Info: Fitted data succesfully plotted');
+    return;
+
+function plot3d1(hObject,eventdata,handles)
+% plots input data as 3D plot
+    data=getappdata(handles.eismain,'data');
+
+    if isempty(data)
+        disp('Error: there is NO input data selected yet. Add some files first!');
+        set(handles.txt_savestatus,'string','Error: NO input data');
+        return;
+    end
+    
+    disp('Info: Plotting 3d representation of input data files');
+
+    % Now we plot all the acquired data from the files
+    f1 = figure(1);
+    set(f1,'Name','Measured Data');
+    set(f1,'Position',[360 450 400 300]);
+    clf;  % Clears any old information already present in the diagram
+    
+    cm=colormap(hsv(length(data))); % define a colormap
+    for idx=1:length(data)
+        frequency=data{idx}(:,1);
+        %magnitude=sqrt(data{idx}(:,2).^2 + abs(data{idx}(:,3)).^2);
+        %phase=atan(data{idx}(:,3) ./ data{idx}(:,2))*180/pi;
+        realz=data{idx}(:,2);
+        imagz=abs(data{idx}(:,3));
+        ax(1) = scatter3(frequency,realz,imagz,'Marker','.');
+        hold on;
+        %grid on;
+        h.MarkerFaceColor = 0.8*cm(idx,:);
+        h.MarkerSize=5;
+        title('Magnitude');
+        xlabel('Frequency [Hz]');
+        ylabel('Impedance Real [\Omega]');
+        zlabel('Impedance Imag [\Omega]');
+        %set(ax(1),'FontSize',7);
+    end
+    rotate3d on;
+    %axis(ax(1),'tight');    % rescale axis to fit data
+    set(gca, 'XScale', 'log');
+    set(gca, 'YScale', 'log');
+    set(gca, 'ZScale', 'log');
+    
+    disp('Info: Input data files succesfully plotted');
+    disp('Info: Use the mouse to rotate the 3d plot');
+    set(handles.txt_savestatus,'string','Input data plotted');
+    return;
+    
     
 function loadckt(hObject, eventdata, handles)
 [fileName, filePath] = uigetfile( ...
@@ -1002,3 +1058,4 @@ close(h);
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
