@@ -754,12 +754,10 @@ function plot3d1(hObject,eventdata,handles)
         %phase=atan(data{idx}(:,3) ./ data{idx}(:,2))*180/pi;
         realz=data{idx}(:,2);
         imagz=abs(data{idx}(:,3));
-        ax(1) = scatter3(frequency,realz,imagz,'Marker','.');
+        ax(1) = scatter3(frequency,realz,imagz,8,'MarkerEdgeColor',0.8*cm(idx,:),'MarkerFaceColor',0.8*cm(idx,:));
         hold on;
         %grid on;
-        h.MarkerFaceColor = 0.8*cm(idx,:);
-        h.MarkerSize=5;
-        title('Magnitude');
+        title('3d Plot');
         xlabel('Frequency [Hz]');
         ylabel('Impedance Real [\Omega]');
         zlabel('Impedance Imag [\Omega]');
@@ -867,6 +865,20 @@ semilogx(data{1}(:,1),zsim(:,2),'color','black');
 title('Simulated Phase');
 xlabel('Frequency [Hz]');
 ylabel('Phase [degrees]');
+grid on;
+
+set(ax(1),'FontSize',7);
+set(ax(2),'FontSize',7);
+axis(ax(1),'tight');    % rescale axis to fit data
+axis(ax(2),'tight');    % rescale axis to fit data
+
+
+fn = figure();
+set(fn,'Name','Simulated Data');
+plot(zsim(:,1),abs(zsim(:,2)),'color','black');
+%title('Simulated Magnitude');
+xlabel('Impedance Real [\Omega]');
+ylabel('Impedance Imag [\Omega]');
 grid on;
 
 set(ax(1),'FontSize',7);
